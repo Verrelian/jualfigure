@@ -20,3 +20,6 @@ Route::get('profil', function () {
 Route::get('edit_profil', function () {
     return view('edit_profil');
 });
+Route::get('product1', function () {
+    return view('product1');
+});
