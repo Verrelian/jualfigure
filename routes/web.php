@@ -23,3 +23,11 @@ Route::get('edit_profil', function () {
 Route::get('product1', function () {
     return view('product1');
 });
+
+Route::get('dashboard', function () {
+    return view('dashboard');
+});
+
+Route::get('list_of_game', function () {
+    return view('list_of_game');
+});
