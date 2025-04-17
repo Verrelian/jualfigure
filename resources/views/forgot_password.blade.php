@@ -5,85 +5,44 @@
     <link rel="icon" href="btc.png" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .gradient-background {
-            background: linear-gradient(180deg, #282568 0%, #4F49CE 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
 
-        .logo {
-            width: 100px;
-            height: auto;
-            position: absolute;
-            top: 20px;
-            left: 20px;
-        }
-
-        .custom-input {
-            border-radius: 50px;
-            padding: 10px 12px;
-            background-color: rgba(255, 255, 255, 0.9);
-        }
-
-        .custom-button {
-            background: #424242;
-            color: white;
-            padding: 10px 30px;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .custom-button:hover {
-            background-color: #555555;
-        }
-
-        .page-title {
-            color: white;
-            font-size: 2.5rem;
-            font-weight: 600;
-        }
-
-        .input-label {
-            color: white;
-            text-align: center;
-        }
-    </style>
+    <!-- Flowbite + Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
 </head>
+<body class="min-h-screen bg-gradient-to-b from-[#282568] to-[#4F49CE] flex items-center justify-center">
 
-<body>
-    <div class="gradient-background">
-        <img src="btc.png" alt="BTC Logo" class="logo">
-        <div class="container text-center">
-        <div class="container text-center mt-5">
-        <h1>Forgot Password?</h1>
+    <!-- Logo -->
+    <img src="btc.png" alt="BTC Logo" class="w-24 h-auto absolute top-5 left-5">
+
+    <!-- Form Container -->
+    <div class="bg-white bg-opacity-90 rounded-xl shadow-lg p-8 w-full max-w-md text-center">
+        <h1 class="text-3xl font-semibold text-gray-800 mb-6">Forgot Password?</h1>
+
         <form method="POST" action="">
-    <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="text" name="username" class="form-control" placeholder="Masukkan Username Anda" required>
-    </div>
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" name="email" class="form-control" placeholder="Masukkan Email Anda" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Next</button>
-</form>
+            <div class="mb-4 text-left">
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" name="username" placeholder="Masukkan Username Anda" required
+                       class="w-full mt-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+            </div>
+
+            <div class="mb-4 text-left">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" name="email" placeholder="Masukkan Email Anda" required
+                       class="w-full mt-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+            </div>
+
+            <button type="submit"
+                    class="bg-gray-800 hover:bg-gray-700 text-white font-medium py-2 px-6 rounded-full transition duration-300 w-full">
+                Next
+            </button>
+        </form>
 
         <?php if (isset($error)): ?>
-            <p class="text-danger mt-3"><?= $error ?></p>
+            <p class="text-red-600 mt-4"><?= $error ?></p>
         <?php endif; ?>
     </div>
-</form>
 
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
