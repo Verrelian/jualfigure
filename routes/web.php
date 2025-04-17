@@ -23,7 +23,6 @@ Route::get('edit_profil', function () {
 Route::get('product1', function () {
     return view('product1');
 });
-
-Route::get('praktikumyudik', function () {
+Route::get('praktikumyudikk', function () {
     return view('praktikumyudik');
 });
