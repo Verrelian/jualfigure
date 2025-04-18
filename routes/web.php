@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 Route::get('login', function () {
     return view('login');
 });
+
 Route::get('register', function () {
     return view('register');
 });
@@ -31,6 +32,10 @@ Route::get('list_of_game', function () {
     return view('list_of_game');
 });
 
-Route::get('gambar', function () {
-    return view('gambar');
+Route::get('dashboard', function () {
+    return view('dashboard');
+});
+
+Route::get('gambar_v', function () {
+    return view('gambar_v');
 });
