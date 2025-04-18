@@ -26,3 +26,11 @@ Route::get('product1', function () {
 Route::get('praktikumyudikk', function () {
     return view('praktikumyudik');
 });
+
+Route::get('list_of_game', function () {
+    return view('list_of_game');
+});
+
+Route::get('gambar', function () {
+    return view('gambar');
+});
