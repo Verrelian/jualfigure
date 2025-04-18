@@ -7,9 +7,9 @@
     <title>Forgot Password</title>
 
     <!-- Flowbite + Tailwind c -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.tailwindcss.com" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-gradient-to-b from-[#282568] to-[#4F49CE] flex items-center justify-center">
 

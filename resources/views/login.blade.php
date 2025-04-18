@@ -5,8 +5,8 @@
   <link rel="icon" href="btc.png" type="image/x-icon">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 <body class="m-0 font-sans bg-gradient-to-b from-[#1a1a5c] to-[#2c2c6c] text-white min-h-screen flex items-center justify-center">
   <div class="bg-[#202040] p-8 rounded-lg shadow-lg w-full max-w-md">
