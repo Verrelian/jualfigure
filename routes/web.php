@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 Route::get('login', function () {
     return view('login');
 });
+
 Route::get('register', function () {
     return view('register');
 });
@@ -37,4 +38,3 @@ Route::get('/', [ProductController::class, 'index'])->name('products.list'); // 
 Route::get('praktikumyudikk', function () {
     return view('praktikumyudik');
 });
-
