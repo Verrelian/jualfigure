@@ -7,16 +7,13 @@ Route::get('login', function () {
     return view('login');
 });
 
-Route::get('register', function () {
-    return view('register');
-});
-Route::get('forgot_password', function () {
-    return view('forgot_password');
-});
-
 Route::get('product1', function () {
     return view('product1');
 });
+
+Route::get('praktikumyudik', function () {
+  return view('praktikumyudik');
+
 // Halaman utama profil
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
 
@@ -35,6 +32,5 @@ Route::get('/webs', function () {
 });
 
 Route::get('/', [ProductController::class, 'index'])->name('products.list'); // List Product
-Route::get('praktikumyudikk', function () {
-    return view('praktikumyudik');
+   
 });
