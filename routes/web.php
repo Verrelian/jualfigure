@@ -39,6 +39,8 @@ Route::get('praktikumyudikk', function () {
  
 Route::get('/', function () {
     return view('pages.home');
+Route::get('/', [ProductController::class, 'index'])->name('products.list'); // List Product
+
 });
 
 Route::get('/products', function () {
