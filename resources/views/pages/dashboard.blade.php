@@ -10,16 +10,14 @@
     </div>
 
     <!-- Product Ranking -->
-    @include('component.product-ranking', [
-        'rankings' => [
-            ['image' => '/images/figure1.jpg', 'title' => 'Figure 1'],
-            ['image' => '/images/figure2.jpg', 'title' => 'Figure 2'],
-            ['image' => '/images/figure3.jpg', 'title' => 'Figure 3'],
-            ['image' => '/images/figure4.jpg', 'title' => 'Figure 4'],
-            ['image' => '/images/figure5.jpg', 'title' => 'Figure 5'],
-            ['image' => '/images/figure6.jpg', 'title' => 'Figure 6'],
-        ]
-    ])
+    @include('component.product_ranking'), [
+        'rankings' =>
+            ['image' => 'image/p1.jpg', 'title' => 'Figure 1'],
+            ['image' => 'image/p2.jpg', 'title' => 'Figure 2'],
+            ['image' => 'image/p3.jpg', 'title' => 'Figure 3'],
+            ['image' => 'image/p4.jpg', 'title' => 'Figure 4'],
+            ['image' => 'image/p5.jpg', 'title' => 'Figure 5']
+    ]
 
     <!-- Product Items -->
     <div class="mt-8">
