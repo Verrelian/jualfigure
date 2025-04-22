@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Login MOLE</title>
+  <link rel="icon" href="{{ asset('images/favicon.jpg') }}" type="image/jpg">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">

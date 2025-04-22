@@ -32,4 +32,5 @@ Route::get('/webs', function () {
 });
 
 Route::get('/', [ProductController::class, 'index'])->name('products.list'); // List Product
+
 });
