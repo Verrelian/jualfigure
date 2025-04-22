@@ -17,8 +17,6 @@ Route::get('/home', function () {
     return view('pages.home');
 });
 
-
-
 Route::get('register', function () {
     return view('register');
 });
@@ -32,15 +30,12 @@ Route::get('/webs', function () {
     return view('welcome'); // atau halaman dashboard
 });
 
-
 Route::get('praktikumyudikk', function () {
     return view('praktikumyudik');
 }); 
  
 Route::get('/', function () {
     return view('pages.home');
-Route::get('/', [ProductController::class, 'index'])->name('products.list'); // List Product
-
 });
 
 Route::get('/products', function () {
