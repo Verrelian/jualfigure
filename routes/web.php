@@ -14,7 +14,7 @@ Route::get('/dashboard', function () {
 })->name('dashboard');
 
 Route::get('/home', function () {
-    return view('pages.home');
+    return view('pages.dashboard');
 });
 
 Route::get('register', function () {
@@ -34,10 +34,19 @@ Route::get('praktikumyudikk', function () {
     return view('praktikumyudik');
 }); 
  
-Route::get('/', function () {
-    return view('pages.home');
+
+Route::get('/product-detail', function () {
+    return view('pages.product-detail');
 });
 
-Route::get('/products', function () {
-    return view('pages.products');
+Route::get('/detail', function () {
+    return view('pages.order-detail');
+});
+
+Route::get('/order-detail', function () {
+    return view('pages.order-detail');
+});
+
+Route::get('/praktikum7', function () {
+    return view('pages.praktikum7home');
 });
