@@ -5,3 +5,4 @@
 @section('content')
     @include('component.product-detail-card')
 @endsection
+

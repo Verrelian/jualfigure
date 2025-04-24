@@ -9,3 +9,4 @@
         <p class="mt-3">🧾 From ‘Rurouni Kenshin’, the main character Kenshin Himura has been sculpted as a non-scale figure!Kenshin is posed sitting on a chair with a gentle yet strong expression on his face.</p>
     </div>
 </div>
+
