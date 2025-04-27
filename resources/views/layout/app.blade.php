@@ -9,7 +9,7 @@
     <!-- Flowbite CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css" rel="stylesheet" />
 </head>
-<body class="bg-gray-600">
+<body class="min-h-screen p-4" style="background: linear-gradient(to bottom, #C5C4C0, #777284);">
    <!-- navbar -->
     @include('component.navbar')
     

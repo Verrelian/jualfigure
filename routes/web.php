@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\ProductvController;
 
 Route::get('login', function () {
     return view('login');
@@ -41,3 +42,9 @@ Route::get('/', function () {
 Route::get('/products', function () {
     return view('pages.products');
 });
+
+Route::get('/appv', function () {
+    return view('pages.homev');
+});
+
+Route::get('/produk', [ProductvController::class, 'show']);

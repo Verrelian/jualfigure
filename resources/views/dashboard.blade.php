@@ -21,7 +21,7 @@
 
   <!-- Header with integrated hamburger menu and search -->
   <header class="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-3 bg-white shadow-md z-40">
-    <div class="flex items-center gap-2">
+    <div class="container mx-auto pt-20">
       <button aria-label="Open Menu" class="text-gray-700 hover:text-blue-500" onclick="document.getElementById('sidebar').classList.remove('hidden')">
         <i class="fas fa-bars text-xl"></i>
       </button>
@@ -42,7 +42,7 @@
   <div id="sidebar" class="fixed top-0 left-0 w-72 h-full bg-gray-800 text-white z-50 hidden">
     <div class="flex items-center justify-between p-4">
       <div class="flex items-center">
-        <img src="image/logo.jpeg" alt="MOLE Logo" class="w-12 h-12 rounded-full">
+        <img src="{{ asset('image/logo.jpeg') }}" alt="MOLE Logo" class="w-12 h-12 rounded-full">
         <span class="text-xl font-bold ml-2">MOLE</span>
       </div>
       <button class="text-white text-2xl" onclick="document.getElementById('sidebar').classList.add('hidden')">&times;</button>
