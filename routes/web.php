@@ -31,10 +31,6 @@ Route::get('/webs', function () {
     return view('welcome'); // atau halaman dashboard
 });
 
-Route::get('praktikumyudikk', function () {
-    return view('praktikumyudik');
-}); 
- 
 Route::get('/product-detail', function () {
     return view('pages.product-detail');
 });
@@ -55,8 +51,4 @@ Route::get('/detail', function () {
 
 Route::get('/order-detail', function () {
     return view('pages.order-detail');
-});
-
-Route::get('/praktikum7', function () {
-    return view('pages.praktikum7home');
 });
