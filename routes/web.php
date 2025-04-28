@@ -2,9 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ListProductController;
 
 Route::get('login', function () {
     return view('login');
+});
+
+Route::get('dashboard_page', function () {
+    return view('dashboard_page');
 });
 
 Route::get('product1', function () {
@@ -12,25 +18,18 @@ Route::get('product1', function () {
 });
 
 Route::get('praktikumyudik', function () {
-  return view('praktikumyudik');
+    return view('praktikumyudik');
+});
 
-// Halaman utama profil
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-
-// Halaman edit profil
 Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-
-// Proses update profil
 Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-
-// Optional: jika ada logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-// Halaman tambahan jika diperlukan
 Route::get('/webs', function () {
-    return view('welcome'); // atau halaman dashboard
+    return view('welcome');
 });
 
-Route::get('/', [ProductController::class, 'index'])->name('products.list'); // List Product
-   
-});
+// Route ke controller kamu
+Route::get('/', [ProductController::class, 'index'])->name('products.list');
+Route::get('/pratikum', [ListProductController::class, 'index']);
