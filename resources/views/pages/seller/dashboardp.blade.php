@@ -17,33 +17,33 @@
         <h2 class="text-lg font-bold mb-3">Product Ranking</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             @include('component.product-ranking', [
-                'image' => 'image/p1.jpg',
+                'image' => '/images/p1.jpg',
                 'title' => '[Exclusive Sale]',
                 'description' => 'Pop Up Parade SP Figure Belle / Rin - Zenless Zone Zero (17,7cm)',
             ])
             @include('component.product-ranking', [
-                'image' => 'images/p2.jpg',
+                'image' => '/images/p2.jpg',
                 'title' => '[Exclusive Sale]',
                 'description' => 'Pop Up Parade Gawr Gura - Hololive (17,7cm)',
             ])
             @include('component.product-ranking', [
-                'image' => 'images/p3.png',
+                'image' => '/images/p3.png',
                 'title' => '[Exclusive Sale]',
                 'description' => 'Pop Up Parade Frieren - Sousou no Frieren',
             ])
             @include('component.product-ranking', [
-                'image' => 'images/p4.png',
+                'image' => '/images/p4.png',
                 'title' => '[Exclusive Sale]',
                 'description' => 'Pop Up Parade Satoru Gojo - Murasaki Ver. Jujutsu Kaisen (18cm)',
             ])
             @include('component.product-ranking', [
-                'image' => 'images/p5.jpg',
+                'image' => '/images/p5.jpg',
                 'title' => '[Exclusive Sale]',
                 'description' => 'Pop Up Parade Blue Eyes White Dragon - Yu-Gi-Oh! (17,5cm)',
             ])
 
             @include('component.product-ranking', [
-                'image' => 'images/p6.jpg',
+                'image' => '/images/p6.jpg',
                 'title' => '[Exclusive Sale]',
                 'description' => 'Pop Up Parade Aventurine - Honkai Star Rail (16cm)',
             ])
@@ -56,31 +56,31 @@
         <h2 class="text-lg font-bold mb-3">Product Items</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             @include('component.product-card', [
-                'image' => 'images/figure1.png',
+                'image' => '/images/figure1.png',
                 'title' => 'Anime Figure 1',
                 'description' => 'Limited Edition Figure',
                 'price' => '$89.99'
             ])
             @include('component.product-card', [
-                'image' => 'images/figure2.png',
+                'image' => '/images/figure2.png',
                 'title' => 'Anime Figure 2',
                 'description' => 'Premium Collection',
                 'price' => '$79.99'
             ])
             @include('component.product-card', [
-                'image' => 'images/figure3.jpg',
+                'image' => '/images/figure3.jpg',
                 'title' => 'Anime Figure 3',
                 'description' => 'Special Edition',
                 'price' => '$99.99'
             ])
             @include('component.product-card', [
-                'image' => 'images/figure4.jpg',
+                'image' => '/images/figure4.jpg',
                 'title' => 'Anime Figure 4',
                 'description' => 'Collector Item',
                 'price' => '$129.99'
             ])
             @include('component.product-card', [
-                'image' => 'images/figure5.png',
+                'image' => '/images/figure5.png',
                 'title' => 'Anime Figure 5',
                 'description' => 'Rare Figure',
                 'price' => '$149.99'

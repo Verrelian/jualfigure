@@ -5,7 +5,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\ProductvController;
+use App\Http\Controllers\CrudController;
 
+Route::get('seller/crud', [CrudController::class, 'index'])->name('crud.index');
 Route::get('login', function () {
     return view('login');
 });
@@ -14,9 +16,10 @@ Route::get('/dashboard', function () {
     return view('pages.dashboard');
 })->name('dashboard');
 
-Route::get('/dashboardp', function () {
-    return view('pages.dashboardp');
+Route::get('seller/dashboardp', function () {
+    return view('pages.seller.dashboardp');
 })->name('dashboardp');
+
 
 Route::get('/home', function () {
     return view('pages.dashboard');
@@ -55,4 +58,7 @@ Route::get('/detail', function () {
 
 Route::get('/order-detail', function () {
     return view('pages.order-detail');
+});
+Route::get('/seller/crud', function () {
+    return view('pages.seller.crud');
 });
