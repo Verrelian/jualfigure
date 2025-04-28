@@ -14,6 +14,10 @@ Route::get('/dashboard', function () {
     return view('pages.dashboard');
 })->name('dashboard');
 
+Route::get('/dashboardp', function () {
+    return view('pages.dashboardp');
+})->name('dashboardp');
+
 Route::get('/home', function () {
     return view('pages.dashboard');
 });
