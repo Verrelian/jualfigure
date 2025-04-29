@@ -60,28 +60,33 @@
             </div>
         </div>
 
-        <!-- Payment Modal (Dark Style Like in Image) -->
-        <div id="paymentModal" class="fixed inset-0 bg-gray-900 bg-opacity-95 flex items-center justify-center z-50 hidden">
-            <div class="bg-gray-900 rounded-lg w-full max-w-md p-6 shadow-xl text-white">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold" id="orderNumber">#{{ mt_rand(1000000, 9999999) }}</h3>
-                    <button id="closeModal" class="text-gray-400 hover:text-gray-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="text-gray-400 text-sm mb-6">
-                    <p id="orderDate">{{ date('d F Y, h:i a') }}</p>
+<!-- Payment Modal  -->
+<div id="paymentModal" class="fixed inset-0 bg-gray-900 bg-opacity-95 flex items-center justify-center z-50 hidden">
+    <div class="bg-gray-900 rounded-lg w-full max-w-4xl p-4 shadow-xl text-white flex flex-col" style="height: auto; max-height: 80vh;">
+        <div class="flex justify-between items-center mb-3">
+            <h3 class="text-xl font-bold" id="orderNumber">#{{ mt_rand(1000000, 9999999) }}</h3>
+            <button id="closeModal" class="text-gray-400 hover:text-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        
+        <div class="flex flex-1 overflow-hidden">
+            <!-- Left Side - Product Info -->
+            <div class="w-1/2 pr-4 overflow-y-auto">
+                <div class="text-gray-400 text-sm mb-4">
+                    <!-- Perubahan dari {{ date('d F Y, h:i a') }} menjadi span kosong yang akan diisi dengan JavaScript -->
+                    <p id="orderDate"></p>
                     <p class="mt-1">Estimated Delivery: 3-5 business days</p>
                 </div>
                 
                 <!-- Item Details -->
-                <div class="flex mb-6">
-                    <div class="w-1/4">
+                <div class="flex mb-4">
+                    <div class="w-1/3">
                         <img src="{{ asset($product['image']) }}" alt="{{ $product['title'] }}" class="w-full h-auto rounded">
                     </div>
-                    <div class="w-3/4 pl-4">
+                    <div class="w-2/3 pl-4">
                         <div class="flex items-start mb-1">
                             <span class="inline-block bg-pink-500 h-3 w-3 rounded-full mr-2 mt-1"></span>
                             <span class="font-semibold">Item</span>
@@ -90,15 +95,18 @@
                         <p class="text-sm mb-1">Company: {{ $product['specifications']['Manufacturer'] }}</p>
                         <p class="text-sm mb-1">Condition: Opened Box (Near Mint)</p>
                         <p class="text-sm">Quantity: 1x</p>
-                        
-                        <p class="text-sm mt-4 text-gray-400">
-                            As her popularity never seems to lose any momentum, she's back again! Featuring multiple interchangeable parts, singing pose, silly "hatsune miku" face, and her iconic look.
-                        </p>
                     </div>
                 </div>
-
+                
+                <p class="text-sm text-gray-400 mb-4">
+                   REMINDER!!JANGAN SAMPAI SALAH BELI KETIKA SUDAH CHECKOUT BARANG ANDA AKAN MASUK PESANAN..
+                </p>
+            </div>
+            
+            <!-- Right Side - Payment Info -->
+            <div class="w-1/2 pl-4 border-l border-gray-700 overflow-y-auto">
                 <!-- Payment Method Section -->
-                <div class="mb-6">
+                <div class="mb-4">
                     <label class="block text-gray-400 mb-2">Payment Method</label>
                     <div class="relative">
                         <select id="paymentMethod" class="block w-full bg-gray-800 border border-gray-700 rounded py-2 pl-3 pr-10 text-white appearance-none focus:outline-none focus:border-blue-500">
@@ -117,45 +125,72 @@
                 </div>
 
                 <!-- Price Details -->
-                <div>
-                    <div class="text-gray-400 text-sm">
-                        <div id="priceDetails">
-                            <div class="flex justify-between py-2">
-                                <span>Description</span>
-                                <span id="basePrice">IDR {{ number_format(floatval(str_replace('$', '', $product['price'])) * 15000, 2) }}</span>
-                            </div>
-                            <div class="flex justify-between py-2 border-t border-gray-800">
-                                <span>Subtotal (1 item)</span>
-                                <span id="subtotalPrice">IDR {{ number_format(floatval(str_replace('$', '', $product['price'])) * 15000, 2) }}</span>
-                            </div>
-                            <div class="flex justify-between py-2 border-t border-gray-800">
-                                <span>Shipping</span>
-                                <span id="shippingPrice">IDR 8,000.00</span>
-                            </div>
-                            <div class="flex justify-between py-2 border-t border-gray-800">
-                                <span>Estimated Tax(5%)</span>
-                                <span id="taxPrice">IDR {{ number_format(floatval(str_replace('$', '', $product['price'])) * 15000 * 0.05, 2) }}</span>
-                            </div>
-                            <div class="flex justify-between py-2 border-t border-gray-800 font-bold">
-                                <span>Total</span>
-                                <span id="totalPrice">IDR {{ number_format(floatval(str_replace('$', '', $product['price'])) * 15000 * 1.05 + 8000, 2) }}</span>
-                            </div>
+                <div class="text-gray-400 text-sm">
+                    <div id="priceDetails">
+                        <div class="flex justify-between py-2">
+                            <span>Description</span>
+                            <span id="basePrice">IDR {{ number_format(floatval(str_replace('$', '', $product['price'])) * 15000, 2) }}</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-t border-gray-800">
+                            <span>Subtotal (1 item)</span>
+                            <span id="subtotalPrice">IDR {{ number_format(floatval(str_replace('$', '', $product['price'])) * 15000, 2) }}</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-t border-gray-800">
+                            <span>Shipping</span>
+                            <span id="shippingPrice">IDR 8,000.00</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-t border-gray-800">
+                            <span>Estimated Tax(5%)</span>
+                            <span id="taxPrice">IDR {{ number_format(floatval(str_replace('$', '', $product['price'])) * 15000 * 0.05, 2) }}</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-t border-gray-800 font-bold">
+                            <span>Total</span>
+                            <span id="totalPrice">IDR {{ number_format(floatval(str_replace('$', '', $product['price'])) * 15000 * 1.05 + 8000, 2) }}</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-6">
+                <div class="mt-4">
                     <button id="confirmPayment" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded font-medium text-center">
                         Checkout
                     </button>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- Payment Receipt Modal -->
-        <div id="receiptModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
-            <div class="bg-white rounded-lg w-full max-w-md p-6 shadow-xl">
-                <div class="flex justify-between items-center mb-6">
+<!-- Payment Receipt Modal -->
+<div id="receiptModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg w-full max-w-3xl shadow-xl" style="height: auto; max-height: 80vh;">
+        <div class="flex">
+            <!-- Left Side - Success Icon and Basic Info -->
+            <div class="w-1/3 p-4 bg-gray-50 rounded-l-lg flex flex-col items-center justify-center">
+                <img src="{{ asset('images/success-icon.png') }}" alt="Success" class="w-20 h-20 mb-4" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMGY5ZDU4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9ImZlYXRoZXIgZmVhdGhlci1jaGVjay1jaXJjbGUiPjxwYXRoIGQ9Ik0yMiAxMS4wOFYxMmExMCAxMCAwIDEgMS01LjkzLTkuMTQiPjwvcGF0aD48cG9seWxpbmUgcG9pbnRzPSIyMiA0IDEyIDE0LjAxIDkgMTEuMDEiPjwvcG9seWxpbmU+PC9zdmc+'; this.classList.add('p-2')">
+                <h4 class="text-center text-lg font-bold text-green-600 mb-2">Payment Successful!</h4>
+                <p class="text-center text-sm text-gray-600 mb-6">Your order has been processed successfully.</p>
+                
+                <div class="flex flex-col w-full space-y-1 text-sm mb-4">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Order ID:</span>
+                        <span class="font-semibold" id="receiptOrderNumber"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Date:</span>
+                        <span id="receiptDate"></span>
+                    </div>
+                </div>
+                
+                <div class="mt-auto w-full">
+                    <button id="downloadReceipt" class="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded font-medium">
+                        Download Receipt
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Right Side - Order Details -->
+            <div class="w-2/3 p-4 overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
                     <h3 class="text-xl font-bold text-gray-800">Payment Receipt</h3>
                     <button id="closeReceiptModal" class="text-gray-400 hover:text-gray-600">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -163,60 +198,43 @@
                         </svg>
                     </button>
                 </div>
-
-                <!-- Receipt Content -->
-                <div class="border-t border-b border-gray-200 py-6 mb-6">
-                    <div class="flex justify-center mb-4">
-                        <img src="{{ asset('images/success-icon.png') }}" alt="Success" class="w-16 h-16" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMGY5ZDU4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9ImZlYXRoZXIgZmVhdGhlci1jaGVjay1jaXJjbGUiPjxwYXRoIGQ9Ik0yMiAxMS4wOFYxMmExMCAxMCAwIDEgMS01LjkzLTkuMTQiPjwvcGF0aD48cG9seWxpbmUgcG9pbnRzPSIyMiA0IDEyIDE0LjAxIDkgMTEuMDEiPjwvcG9seWxpbmU+PC9zdmc+'; this.classList.add('p-2')">
+                
+                <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-600">Payment Method:</span>
+                        <span id="receiptPaymentMethod"></span>
                     </div>
-                    <h4 class="text-center text-xl font-bold text-green-600 mb-2">Payment Successful!</h4>
-                    <p class="text-center text-gray-600 mb-4">Your order has been processed successfully.</p>
-                    
-                    <div class="bg-gray-50 rounded-lg p-4 mb-4">
-                        <div class="flex justify-between text-sm mb-2">
-                            <span class="text-gray-600">Order ID:</span>
-                            <span class="font-semibold" id="receiptOrderNumber"></span>
-                        </div>
-                        <div class="flex justify-between text-sm mb-2">
-                            <span class="text-gray-600">Date:</span>
-                            <span id="receiptDate"></span>
-                        </div>
-                        <div class="flex justify-between text-sm mb-2">
-                            <span class="text-gray-600">Payment Method:</span>
-                            <span id="receiptPaymentMethod"></span>
-                        </div>
-                        <div class="flex justify-between text-sm font-semibold">
-                            <span class="text-gray-600">Virtual Account Number:</span>
-                            <span id="virtualAccountNumber"></span>
-                        </div>
+                    <div class="flex justify-between text-sm font-semibold">
+                        <span class="text-gray-600">Virtual Account Number:</span>
+                        <span id="virtualAccountNumber"></span>
                     </div>
-                    
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <h5 class="font-semibold mb-3 text-gray-800">Order Details</h5>
-                        <div class="flex justify-between text-sm mb-2">
-                            <span class="text-gray-600">Product:</span>
-                            <span class="text-right">{{ $product['title'] }}</span>
-                        </div>
-                        <div class="flex justify-between text-sm mb-2">
-                            <span class="text-gray-600">Quantity:</span>
-                            <span>1</span>
-                        </div>
-                        <div class="flex justify-between text-sm mb-2 pt-2 border-t border-gray-200">
-                            <span class="text-gray-600">Subtotal:</span>
-                            <span id="receiptSubtotal"></span>
-                        </div>
-                        <div class="flex justify-between text-sm mb-2">
-                            <span class="text-gray-600">Shipping:</span>
-                            <span id="receiptShipping"></span>
-                        </div>
-                        <div class="flex justify-between text-sm mb-2">
-                            <span class="text-gray-600">Tax:</span>
-                            <span id="receiptTax"></span>
-                        </div>
-                        <div class="flex justify-between font-bold pt-2 border-t border-gray-200">
-                            <span>Total:</span>
-                            <span id="receiptTotal"></span>
-                        </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                    <h5 class="font-semibold mb-3 text-gray-800">Order Details</h5>
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-600">Product:</span>
+                        <span class="text-right">{{ $product['title'] }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-600">Quantity:</span>
+                        <span>1</span>
+                    </div>
+                    <div class="flex justify-between text-sm mb-2 pt-2 border-t border-gray-200">
+                        <span class="text-gray-600">Subtotal:</span>
+                        <span id="receiptSubtotal"></span>
+                    </div>
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-600">Shipping:</span>
+                        <span id="receiptShipping"></span>
+                    </div>
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-600">Tax:</span>
+                        <span id="receiptTax"></span>
+                    </div>
+                    <div class="flex justify-between font-bold pt-2 border-t border-gray-200">
+                        <span>Total:</span>
+                        <span id="receiptTotal"></span>
                     </div>
                 </div>
                 
@@ -225,16 +243,15 @@
                     <p>Estimated delivery: <span class="font-semibold">3-5 business days</span> after payment verification.</p>
                 </div>
                 
-                <div class="flex justify-between">
-                    <button id="downloadReceipt" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded font-medium">
-                        Download Receipt
-                    </button>
-                    <button id="closeReceiptBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium">
+                <div class="text-right">
+                    <button id="closeReceiptBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-medium">
                         Done
                     </button>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
         <!-- Related Products -->
         <div class="mb-8">
@@ -259,104 +276,127 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Elements for payment modal
-            const buyNowBtn = document.getElementById('buyNowBtn');
-            const paymentModal = document.getElementById('paymentModal');
-            const closeModal = document.getElementById('closeModal');
-            const confirmPayment = document.getElementById('confirmPayment');
-            const paymentMethod = document.getElementById('paymentMethod');
-            
-            // Elements for receipt modal
-            const receiptModal = document.getElementById('receiptModal');
-            const closeReceiptModal = document.getElementById('closeReceiptModal');
-            const closeReceiptBtn = document.getElementById('closeReceiptBtn');
-            const downloadReceipt = document.getElementById('downloadReceipt');
-            
-            // Generate random order number
-            const orderNumber = document.getElementById('orderNumber').textContent;
-            
-            // Open payment modal when Buy Now button is clicked
-            buyNowBtn.addEventListener('click', function() {
-                paymentModal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; // Prevent scrolling
-            });
-            
-            // Close payment modal when close button is clicked
-            closeModal.addEventListener('click', function() {
-                paymentModal.classList.add('hidden');
-                document.body.style.overflow = 'auto'; // Enable scrolling
-            });
-            
-            // Close payment modal when clicking outside the modal content
-            paymentModal.addEventListener('click', function(e) {
-                if (e.target === paymentModal) {
-                    paymentModal.classList.add('hidden');
-                    document.body.style.overflow = 'auto'; // Enable scrolling
-                }
-            });
-            
-            // Handle payment confirmation
-            confirmPayment.addEventListener('click', function() {
-                if (paymentMethod.value === '') {
-                    alert('Please select a payment method');
-                    return;
-                }
-                
-                // Close payment modal
-                paymentModal.classList.add('hidden');
-                
-                // Prepare receipt data
-                document.getElementById('receiptOrderNumber').textContent = orderNumber;
-                document.getElementById('receiptDate').textContent = document.getElementById('orderDate').textContent;
-                document.getElementById('receiptPaymentMethod').textContent = paymentMethod.options[paymentMethod.selectedIndex].text;
-                
-                // Generate random virtual account number based on selected bank
-                let bankPrefix = '';
-                switch(paymentMethod.value) {
-                    case 'bca': bankPrefix = '014'; break;
-                    case 'bni': bankPrefix = '009'; break;
-                    case 'mandiri': bankPrefix = '008'; break;
-                    case 'bri': bankPrefix = '002'; break;
-                    default: bankPrefix = '123';
-                }
-                const virtualAccount = bankPrefix + Math.floor(10000000000 + Math.random() * 90000000000);
-                document.getElementById('virtualAccountNumber').textContent = virtualAccount;
-                
-                // Set price details
-                document.getElementById('receiptSubtotal').textContent = document.getElementById('subtotalPrice').textContent;
-                document.getElementById('receiptShipping').textContent = document.getElementById('shippingPrice').textContent;
-                document.getElementById('receiptTax').textContent = document.getElementById('taxPrice').textContent;
-                document.getElementById('receiptTotal').textContent = document.getElementById('totalPrice').textContent;
-                
-                // Show receipt modal
-                receiptModal.classList.remove('hidden');
-            });
-            
-            // Close receipt modal
-            closeReceiptModal.addEventListener('click', function() {
-                receiptModal.classList.add('hidden');
-                document.body.style.overflow = 'auto'; // Enable scrolling
-            });
-            
-            closeReceiptBtn.addEventListener('click', function() {
-                receiptModal.classList.add('hidden');
-                document.body.style.overflow = 'auto'; // Enable scrolling
-            });
-            
-            // Close receipt modal when clicking outside the modal content
-            receiptModal.addEventListener('click', function(e) {
-                if (e.target === receiptModal) {
-                    receiptModal.classList.add('hidden');
-                    document.body.style.overflow = 'auto'; // Enable scrolling
-                }
-            });
-            
-            // Download receipt functionality
-            downloadReceipt.addEventListener('click', function() {
-                alert('Receipt download functionality would be implemented here. In a real application, this would generate a PDF or print version of the receipt.');
-            });
-        });
+document.addEventListener('DOMContentLoaded', function() {
+    // Fungsi untuk mendapatkan tanggal dan waktu saat ini dalam format yang diinginkan
+    function getCurrentDateTime() {
+        const now = new Date();
+        
+        // Format tanggal: DD/MM/YYYY
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Bulan dimulai dari 0
+        const year = now.getFullYear();
+        
+        // Format waktu: HH:MM:SS
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        
+        return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+    }
+
+    // Elements for payment modal
+    const buyNowBtn = document.getElementById('buyNowBtn');
+    const paymentModal = document.getElementById('paymentModal');
+    const closeModal = document.getElementById('closeModal');
+    const confirmPayment = document.getElementById('confirmPayment');
+    const paymentMethod = document.getElementById('paymentMethod');
+    
+    // Elements for receipt modal
+    const receiptModal = document.getElementById('receiptModal');
+    const closeReceiptModal = document.getElementById('closeReceiptModal');
+    const closeReceiptBtn = document.getElementById('closeReceiptBtn');
+    const downloadReceipt = document.getElementById('downloadReceipt');
+    
+    // Generate random order number
+    const orderNumber = document.getElementById('orderNumber').textContent;
+    
+    // Open payment modal when Buy Now button is clicked
+    buyNowBtn.addEventListener('click', function() {
+        // Update order date with current date and time when Buy Now is clicked
+        const orderDateElement = document.getElementById('orderDate');
+        if (orderDateElement) {
+            orderDateElement.textContent = getCurrentDateTime();
+        }
+        
+        paymentModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+    });
+    
+    // Close payment modal when close button is clicked
+    closeModal.addEventListener('click', function() {
+        paymentModal.classList.add('hidden');
+        document.body.style.overflow = 'auto'; // Enable scrolling
+    });
+    
+    // Close payment modal when clicking outside the modal content
+    paymentModal.addEventListener('click', function(e) {
+        if (e.target === paymentModal) {
+            paymentModal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Enable scrolling
+        }
+    });
+    
+    // Handle payment confirmation
+    confirmPayment.addEventListener('click', function() {
+        if (paymentMethod.value === '') {
+            alert('Please select a payment method');
+            return;
+        }
+        
+        // Close payment modal
+        paymentModal.classList.add('hidden');
+        
+        // Prepare receipt data
+        document.getElementById('receiptOrderNumber').textContent = orderNumber;
+        document.getElementById('receiptDate').textContent = document.getElementById('orderDate').textContent;
+        document.getElementById('receiptPaymentMethod').textContent = paymentMethod.options[paymentMethod.selectedIndex].text;
+        
+        // Generate random virtual account number based on selected bank
+        let bankPrefix = '';
+        switch(paymentMethod.value) {
+            case 'bca': bankPrefix = '014'; break;
+            case 'bni': bankPrefix = '009'; break;
+            case 'mandiri': bankPrefix = '008'; break;
+            case 'bri': bankPrefix = '002'; break;
+            default: bankPrefix = '123';
+        }
+        const virtualAccount = bankPrefix + Math.floor(10000000000 + Math.random() * 90000000000);
+        document.getElementById('virtualAccountNumber').textContent = virtualAccount;
+        
+        // Set price details
+        document.getElementById('receiptSubtotal').textContent = document.getElementById('subtotalPrice').textContent;
+        document.getElementById('receiptShipping').textContent = document.getElementById('shippingPrice').textContent;
+        document.getElementById('receiptTax').textContent = document.getElementById('taxPrice').textContent;
+        document.getElementById('receiptTotal').textContent = document.getElementById('totalPrice').textContent;
+        
+        // Show receipt modal
+        receiptModal.classList.remove('hidden');
+    });
+    
+    // Close receipt modal
+    closeReceiptModal.addEventListener('click', function() {
+        receiptModal.classList.add('hidden');
+        document.body.style.overflow = 'auto'; // Enable scrolling
+    });
+    
+    closeReceiptBtn.addEventListener('click', function() {
+        receiptModal.classList.add('hidden');
+        document.body.style.overflow = 'auto'; // Enable scrolling
+    });
+    
+    // Close receipt modal when clicking outside the modal content
+    receiptModal.addEventListener('click', function(e) {
+        if (e.target === receiptModal) {
+            receiptModal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Enable scrolling
+        }
+    });
+    
+    // Download receipt functionality
+    downloadReceipt.addEventListener('click', function() {
+        alert('Receipt download functionality would be implemented here. In a real application, this would generate a PDF or print version of the receipt.');
+    });
+});
 
         document.addEventListener('DOMContentLoaded', function() {
     // Elements for wishlist
