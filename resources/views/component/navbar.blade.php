@@ -1,8 +1,8 @@
 <nav class="bg-white border-b border-gray-200 shadow-sm">
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3">
     <!-- Logo dan Brand -->
-    <a href="#" class="flex items-center space-x-3">
-      <img src="/images/icon.png" class="h-10" alt="M.O.L.E Logo" />
+    <a href="{{ url('/dashboard') }}" class="flex items-center space-x-3">
+    <img src="{{ asset('images/icon.png') }}" class="h-10" alt="M.O.L.E Logo" />
       <span class="self-center text-xl font-semibold whitespace-nowrap text-gray-800">M.O.L.E</span>
     </a>
 
@@ -27,7 +27,7 @@
     <div class="flex items-center">
       <!-- Main Navigation -->
       <div class="hidden md:flex md:space-x-6 me-6">
-          <a href="{{ url('/seller/dashboardp') }}" class="{{ Request::is('seller/dashboardp') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">Dashboard</a>
+          <a href="{{ url('/dashboard') }}" class="{{ Request::is('/dashboard') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">Dashboard</a>
 
           <a href="{{ url('/seller/crud') }}" class="{{ Request::is('seller/crud') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">Produk</a>
 
@@ -35,7 +35,7 @@
 
           <a href="#" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Statistik</a>
 
-          <a href="#" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Toko</a>
+          <a href="{{ url('/seller/dashboardp') }}" class="{{ Request::is('/seller/dashboardp') ? 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Toko</a>
       </div>
 
 
