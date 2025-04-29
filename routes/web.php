@@ -4,10 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\BerandaController;
-use App\Http\Controllers\P6tController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CrudController;
 
-
+Route::get('seller/crud', [CrudController::class, 'index'])->name('crud.index');
 Route::get('login', function () {
     return view('login');
 });
@@ -15,6 +15,11 @@ Route::get('login', function () {
 Route::get('/dashboard', function () {
     return view('pages.dashboard');
 })->name('dashboard');
+
+Route::get('seller/dashboardp', function () {
+    return view('pages.seller.dashboardp');
+})->name('dashboardp');
+
 
 Route::get('/home', function () {
     return view('pages.dashboard');
@@ -33,14 +38,19 @@ Route::get('/webs', function () {
     return view('welcome'); // atau halaman dashboard
 });
 
-Route::get('praktikumyudikk', function () {
-    return view('praktikumyudik');
-}); 
- 
-
 Route::get('/product-detail', function () {
     return view('pages.product-detail');
 });
+
+Route::get('/products', function () {
+    return view('pages.products');
+});
+
+Route::get('/appv', function () {
+    return view('pages.homev');
+});
+
+Route::get('/produk', [ProductvController::class, 'show']);
 
 Route::get('/detail', function () {
     return view('pages.order-detail');
@@ -49,12 +59,6 @@ Route::get('/detail', function () {
 Route::get('/order-detail', function () {
     return view('pages.order-detail');
 });
-
-Route::get('/praktikum7', function () {
-    return view('pages.praktikum7home');
-});
-
-Route::get('/p6', [P6tController::class, 'index']);
 
 Route::get('/appv', function () {
     return view('pages.dashboard');
@@ -66,3 +70,8 @@ Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.d
 Route::get('/wishlist', function () {
     return view('pages.wishlist');
 })->name('wishlist');
+
+Route::get('/seller/crud', function () {
+    return view('pages.seller.crud');
+});
+
