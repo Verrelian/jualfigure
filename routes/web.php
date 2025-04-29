@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\P6tController;
+use App\Http\Controllers\ProductController;
+
 
 Route::get('login', function () {
     return view('login');
@@ -50,3 +53,16 @@ Route::get('/order-detail', function () {
 Route::get('/praktikum7', function () {
     return view('pages.praktikum7home');
 });
+
+Route::get('/p6', [P6tController::class, 'index']);
+
+Route::get('/appv', function () {
+    return view('pages.dashboard');
+});
+
+Route::get('/product-detail', [ProductController::class, 'index'])->name('home');
+Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
+
+Route::get('/wishlist', function () {
+    return view('pages.wishlist');
+})->name('wishlist');

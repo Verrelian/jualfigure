@@ -73,21 +73,21 @@
     <div class="flex flex-col items-center mb-6">
       <img src="images/mole.png" alt="MOLE Logo" class="w-56 mb-2">
       <h1 class="text-xl font-bold text-center text-black">
-        <span class="text-green-600 font-bold" id="title-text">Login</span> nih kalo udah!
+        <span class="text-green-600 font-bold" id="title-text">Login Nih Kalo Udah!</span>
       </h1>
     </div>
 
     <!-- Tabs (Login/Register Switch) -->
     <div class="flex justify-center mb-6 gap-2">
-      <button id="login-tab" class="tab-button active px-6 py-2 bg-black text-white rounded-l-lg shadow">Login</button>
-      <button id="register-tab" class="tab-button px-6 py-2 bg-white text-black rounded-r-lg shadow">Register</button>
+      <a href="/mole/dashboard"><button id="login-tab" class="tab-button active px-6 py-2 bg-black text-white rounded-l-lg shadow">Login</button></a>
+      <a href="/mole/login"><button id="register-tab" class="tab-button px-6 py-2 bg-white text-black rounded-r-lg shadow">Register</button></a>
     </div>
 
     <!-- Forms Container -->
     <div class="form-container">
       <!-- Login Form -->
       <div id="login-form" class="form-section active">
-        <form method="POST" action="#">
+        <form method="#" action="/mole/dashboard">
           <div class="mb-4">
             <label for="login-username" class="block text-sm font-semibold text-gray-700">Username</label>
             <input type="text" id="login-username" name="username" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" placeholder="Enter your username">
@@ -116,7 +116,7 @@
 
       <!-- Register Form -->
       <div id="register-form" class="form-section">
-        <form method="POST" action="#">
+        <form method="#" action="#">
           <div class="mb-4">
             <label for="register-username" class="block text-sm font-semibold text-gray-700">Username</label>
             <input type="text" id="register-username" name="username" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" placeholder="Choose a username">
@@ -154,7 +154,7 @@
           </div>
 
           <button type="submit" class="w-full bg-blue-100 hover:bg-blue-200 text-black font-semibold py-2 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg mb-4">
-            Send Reset Link
+            Reset Password
           </button>
 
           <div class="text-center">
