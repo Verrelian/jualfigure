@@ -26,11 +26,11 @@
                     <span class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold mb-3">{{ $product['type'] }}</span>
                     <h1 class="text-2xl font-bold mb-3">{{ $product['title'] }}</h1>
                     <div class="text-xl font-bold text-red-600 mb-4">{{ $product['price'] }}</div>
-                    
+
                     <div class="mb-6">
                         <p class="text-gray-700">{{ $product['description'] }}</p>
                     </div>
-                    
+
                     <div class="mb-6">
                         <h3 class="font-bold text-lg mb-2">Specifications</h3>
                         <div class="bg-gray-50 rounded-lg p-4">
@@ -42,7 +42,7 @@
                             @endforeach
                         </div>
                     </div>
-                    
+
                     <div class="flex space-x-4">
                         <button id="buyNowBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-semibold flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -75,7 +75,7 @@
                     <p id="orderDate">{{ date('d F Y, h:i a') }}</p>
                     <p class="mt-1">Estimated Delivery: 3-5 business days</p>
                 </div>
-                
+
                 <!-- Item Details -->
                 <div class="flex mb-6">
                     <div class="w-1/4">
@@ -90,7 +90,7 @@
                         <p class="text-sm mb-1">Company: {{ $product['specifications']['Manufacturer'] }}</p>
                         <p class="text-sm mb-1">Condition: Opened Box (Near Mint)</p>
                         <p class="text-sm">Quantity: 1x</p>
-                        
+
                         <p class="text-sm mt-4 text-gray-400">
                             As her popularity never seems to lose any momentum, she's back again! Featuring multiple interchangeable parts, singing pose, silly "hatsune miku" face, and her iconic look.
                         </p>
@@ -171,7 +171,7 @@
                     </div>
                     <h4 class="text-center text-xl font-bold text-green-600 mb-2">Payment Successful!</h4>
                     <p class="text-center text-gray-600 mb-4">Your order has been processed successfully.</p>
-                    
+
                     <div class="bg-gray-50 rounded-lg p-4 mb-4">
                         <div class="flex justify-between text-sm mb-2">
                             <span class="text-gray-600">Order ID:</span>
@@ -190,7 +190,7 @@
                             <span id="virtualAccountNumber"></span>
                         </div>
                     </div>
-                    
+
                     <div class="bg-gray-50 rounded-lg p-4">
                         <h5 class="font-semibold mb-3 text-gray-800">Order Details</h5>
                         <div class="flex justify-between text-sm mb-2">
@@ -219,12 +219,12 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="text-sm text-gray-600 mb-6">
                     <p class="mb-2">Please complete your payment by transferring to the virtual account number shown above. Your order will be processed once payment is verified.</p>
                     <p>Estimated delivery: <span class="font-semibold">3-5 business days</span> after payment verification.</p>
                 </div>
-                
+
                 <div class="flex justify-between">
                     <button id="downloadReceipt" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded font-medium">
                         Download Receipt
@@ -266,28 +266,28 @@
             const closeModal = document.getElementById('closeModal');
             const confirmPayment = document.getElementById('confirmPayment');
             const paymentMethod = document.getElementById('paymentMethod');
-            
+
             // Elements for receipt modal
             const receiptModal = document.getElementById('receiptModal');
             const closeReceiptModal = document.getElementById('closeReceiptModal');
             const closeReceiptBtn = document.getElementById('closeReceiptBtn');
             const downloadReceipt = document.getElementById('downloadReceipt');
-            
+
             // Generate random order number
             const orderNumber = document.getElementById('orderNumber').textContent;
-            
+
             // Open payment modal when Buy Now button is clicked
             buyNowBtn.addEventListener('click', function() {
                 paymentModal.classList.remove('hidden');
                 document.body.style.overflow = 'hidden'; // Prevent scrolling
             });
-            
+
             // Close payment modal when close button is clicked
             closeModal.addEventListener('click', function() {
                 paymentModal.classList.add('hidden');
                 document.body.style.overflow = 'auto'; // Enable scrolling
             });
-            
+
             // Close payment modal when clicking outside the modal content
             paymentModal.addEventListener('click', function(e) {
                 if (e.target === paymentModal) {
@@ -295,22 +295,22 @@
                     document.body.style.overflow = 'auto'; // Enable scrolling
                 }
             });
-            
+
             // Handle payment confirmation
             confirmPayment.addEventListener('click', function() {
                 if (paymentMethod.value === '') {
                     alert('Please select a payment method');
                     return;
                 }
-                
+
                 // Close payment modal
                 paymentModal.classList.add('hidden');
-                
+
                 // Prepare receipt data
                 document.getElementById('receiptOrderNumber').textContent = orderNumber;
                 document.getElementById('receiptDate').textContent = document.getElementById('orderDate').textContent;
                 document.getElementById('receiptPaymentMethod').textContent = paymentMethod.options[paymentMethod.selectedIndex].text;
-                
+
                 // Generate random virtual account number based on selected bank
                 let bankPrefix = '';
                 switch(paymentMethod.value) {
@@ -322,28 +322,28 @@
                 }
                 const virtualAccount = bankPrefix + Math.floor(10000000000 + Math.random() * 90000000000);
                 document.getElementById('virtualAccountNumber').textContent = virtualAccount;
-                
+
                 // Set price details
                 document.getElementById('receiptSubtotal').textContent = document.getElementById('subtotalPrice').textContent;
                 document.getElementById('receiptShipping').textContent = document.getElementById('shippingPrice').textContent;
                 document.getElementById('receiptTax').textContent = document.getElementById('taxPrice').textContent;
                 document.getElementById('receiptTotal').textContent = document.getElementById('totalPrice').textContent;
-                
+
                 // Show receipt modal
                 receiptModal.classList.remove('hidden');
             });
-            
+
             // Close receipt modal
             closeReceiptModal.addEventListener('click', function() {
                 receiptModal.classList.add('hidden');
                 document.body.style.overflow = 'auto'; // Enable scrolling
             });
-            
+
             closeReceiptBtn.addEventListener('click', function() {
                 receiptModal.classList.add('hidden');
                 document.body.style.overflow = 'auto'; // Enable scrolling
             });
-            
+
             // Close receipt modal when clicking outside the modal content
             receiptModal.addEventListener('click', function(e) {
                 if (e.target === receiptModal) {
@@ -351,7 +351,7 @@
                     document.body.style.overflow = 'auto'; // Enable scrolling
                 }
             });
-            
+
             // Download receipt functionality
             downloadReceipt.addEventListener('click', function() {
                 alert('Receipt download functionality would be implemented here. In a real application, this would generate a PDF or print version of the receipt.');
@@ -368,14 +368,14 @@
     const productPrice = "{{ $product['price'] }}";
     const productType = "{{ $product['type'] }}";
     const productManufacturer = "{{ $product['specifications']['Manufacturer'] }}";
-    
+
     // Function to display notification
     function showNotification(message, isSuccess = true) {
         const notification = document.createElement('div');
         notification.className = `fixed top-4 right-4 px-4 py-2 rounded-md shadow-lg z-50 transition-opacity duration-300 ${isSuccess ? 'bg-gray-800 text-white' : 'bg-red-500 text-white'}`;
         notification.innerText = message;
         document.body.appendChild(notification);
-        
+
         setTimeout(() => {
             notification.style.opacity = '0';
             setTimeout(() => {
@@ -383,25 +383,25 @@
             }, 300);
         }, 3000);
     }
-    
+
     // Function to check if product is in wishlist
     function isInWishlist(productId) {
         const wishlist = getWishlist();
         return wishlist.some(item => item.id === productId);
     }
-    
+
     // Function to get wishlist from localStorage
     function getWishlist() {
         const wishlistData = localStorage.getItem('wishlist');
         return wishlistData ? JSON.parse(wishlistData) : [];
     }
-    
+
     // Function to save wishlist to localStorage
     function saveWishlist(wishlist) {
         localStorage.setItem('wishlist', JSON.stringify(wishlist));
         updateWishlistCount();
     }
-    
+
     // Function to update wishlist count
     function updateWishlistCount() {
         const wishlist = getWishlist();
@@ -410,12 +410,12 @@
             wishlistCountElement.textContent = wishlist.length;
         }
     }
-    
+
     // Function to toggle wishlist
     function toggleWishlist() {
         const wishlist = getWishlist();
         const productInWishlist = isInWishlist(productId);
-        
+
         if (productInWishlist) {
             // Remove from wishlist
             const updatedWishlist = wishlist.filter(item => item.id !== productId);
@@ -441,7 +441,7 @@
             showNotification(`${productTitle} added to wishlist`);
         }
     }
-    
+
     // Function to update heart icon appearance
     function updateHeartIcon(isWishlisted) {
         if (isWishlisted) {
@@ -452,13 +452,13 @@
             heartIcon.style.color = ''; // Default color
         }
     }
-    
+
     // Initialize heart icon state
     updateHeartIcon(isInWishlist(productId));
-    
+
     // Initialize wishlist count
     updateWishlistCount();
-    
+
     // Event listener for wishlist button
     if (wishlistBtn) {
         wishlistBtn.addEventListener('click', toggleWishlist);

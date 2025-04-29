@@ -103,7 +103,7 @@ class ProductController extends Controller
     // Display all products (your existing homepage)
     public function index()
     {
-        return view('pages.dashboard');
+        return view('pages.product-detail');
     }
 
     // Show single product details
@@ -118,7 +118,7 @@ class ProductController extends Controller
         $relatedProducts = array_filter($this->products, function($item) use ($id) {
             return $item['id'] != $id;
         });
-        
+
         // Get just 3 related products
         $relatedProducts = array_slice($relatedProducts, 0, 3);
 
