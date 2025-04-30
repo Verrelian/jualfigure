@@ -166,7 +166,7 @@
 
 <!-- Payment Receipt Modal -->
 <div id="receiptModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg w-full max-w-3xl shadow-xl" style="height: auto; max-height: 80vh;">
+    <div class="bg-white rounded-lg w-full max-w-3xl shadow-xl max-h-[80vh] overflow-y-auto">
         <div class="flex">
             <!-- Left Side - Success Icon and Basic Info -->
             <div class="w-1/3 p-4 bg-gray-50 rounded-l-lg flex flex-col items-center justify-center">
@@ -297,8 +297,8 @@
         </div>
     </div>
 
-    <script>
-document.addEventListener('DOMContentLoaded', function() {
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
     // Fungsi untuk mendapatkan tanggal dan waktu saat ini dalam format yang diinginkan
     function getCurrentDateTime() {
         const now = new Date();

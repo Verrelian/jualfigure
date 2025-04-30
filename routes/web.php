@@ -8,8 +8,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CrudController;
 
 Route::get('seller/crud', [CrudController::class, 'index'])->name('crud.index');
-Route::get('login', function () {
-    return view('login');
+Route::get('/login', function () {
+    return view('pages.login');
 });
 
 Route::get('/dashboard', function () {
@@ -19,6 +19,18 @@ Route::get('/dashboard', function () {
 Route::get('seller/dashboardp', function () {
     return view('pages.seller.dashboardp');
 })->name('dashboardp');
+
+Route::get('seller/product', function () {
+    return view('pages.seller.product');
+})->name('product');
+
+Route::get('seller/order', function () {
+    return view('pages.seller.order');
+})->name('order');
+
+Route::get('seller/laporan', function () {
+    return view('pages.seller.laporan');
+})->name('laporan');
 
 
 Route::get('/home', function () {

@@ -16,7 +16,6 @@
 </head>
 <body class="min-h-screen" style="background: linear-gradient(to bottom, #C5C4C0, #777284);">
    <!-- navbar -->
-    @include('component.seller.navbar')
 
     <!-- Main Content -->
     <main class="container mx-auto p-4">
