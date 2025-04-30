@@ -104,6 +104,8 @@ class ProductController extends Controller
             'title' => 'Nendroid Parade Cute Anime Figure - Honkai Star Rail (16cm)',
             'type' => '[Anime Figure]',
             'price' => '$29.99',
+            'price' => '$89.99',
+
             'description' => 'This exclusive Aventurine figure from Honkai Star Rail stands 16cm tall and showcases the character\'s unique design with impressive detail and dynamic posing.',
             'specifications' => [
                 'Height' => '16cm',
@@ -172,16 +174,13 @@ class ProductController extends Controller
                 'Release Date' => 'March 2025',
                 'Series' => 'Marvel'
             ]
-        ],
-        
-
-        
+        ]
     ];
 
     // Display all products (your existing homepage)
     public function index()
     {
-        return view('pages.dashboard');
+        return view('pages.product-detail');
     }
 
     // Show single product details
@@ -196,7 +195,7 @@ class ProductController extends Controller
         $relatedProducts = array_filter($this->products, function($item) use ($id) {
             return $item['id'] != $id;
         });
-        
+
         // Get just 3 related products
         $relatedProducts = array_slice($relatedProducts, 0, 3);
 

@@ -26,11 +26,11 @@
                     <span class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold mb-3">{{ $product['type'] }}</span>
                     <h1 class="text-2xl font-bold mb-3">{{ $product['title'] }}</h1>
                     <div class="text-xl font-bold text-red-600 mb-4">{{ $product['price'] }}</div>
-                    
+
                     <div class="mb-6">
                         <p class="text-gray-700">{{ $product['description'] }}</p>
                     </div>
-                    
+
                     <div class="mb-6">
                         <h3 class="font-bold text-lg mb-2">Specifications</h3>
                         <div class="bg-gray-50 rounded-lg p-4">
@@ -42,7 +42,7 @@
                             @endforeach
                         </div>
                     </div>
-                    
+
                     <div class="flex space-x-4">
                         <button id="buyNowBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-semibold flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -71,7 +71,7 @@
                 </svg>
             </button>
         </div>
-        
+
         <div class="flex flex-1 overflow-hidden">
             <!-- Left Side - Product Info -->
             <div class="w-1/2 pr-4 overflow-y-auto">
@@ -80,7 +80,7 @@
                     <p id="orderDate"></p>
                     <p class="mt-1">Estimated Delivery: 3-5 business days</p>
                 </div>
-                
+
                 <!-- Item Details -->
                 <div class="flex mb-4">
                     <div class="w-1/3">
@@ -95,14 +95,18 @@
                         <p class="text-sm mb-1">Company: {{ $product['specifications']['Manufacturer'] }}</p>
                         <p class="text-sm mb-1">Condition: Opened Box (Near Mint)</p>
                         <p class="text-sm">Quantity: 1x</p>
+
+                        <p class="text-sm mt-4 text-gray-400">
+                            As her popularity never seems to lose any momentum, she's back again! Featuring multiple interchangeable parts, singing pose, silly "hatsune miku" face, and her iconic look.
+                        </p>
                     </div>
                 </div>
-                
+
                 <p class="text-sm text-gray-400 mb-4">
                    REMINDER!!JANGAN SAMPAI SALAH BELI KETIKA SUDAH CHECKOUT BARANG ANDA AKAN MASUK PESANAN..
                 </p>
             </div>
-            
+
             <!-- Right Side - Payment Info -->
             <div class="w-1/2 pl-4 border-l border-gray-700 overflow-y-auto">
                 <!-- Payment Method Section -->
@@ -169,7 +173,7 @@
                 <img src="{{ asset('images/success-icon.png') }}" alt="Success" class="w-20 h-20 mb-4" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMGY5ZDU4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9ImZlYXRoZXIgZmVhdGhlci1jaGVjay1jaXJjbGUiPjxwYXRoIGQ9Ik0yMiAxMS4wOFYxMmExMCAxMCAwIDEgMS01LjkzLTkuMTQiPjwvcGF0aD48cG9seWxpbmUgcG9pbnRzPSIyMiA0IDEyIDE0LjAxIDkgMTEuMDEiPjwvcG9seWxpbmU+PC9zdmc+'; this.classList.add('p-2')">
                 <h4 class="text-center text-lg font-bold text-green-600 mb-2">Payment Successful!</h4>
                 <p class="text-center text-sm text-gray-600 mb-6">Your order has been processed successfully.</p>
-                
+
                 <div class="flex flex-col w-full space-y-1 text-sm mb-4">
                     <div class="flex justify-between">
                         <span class="text-gray-600">Order ID:</span>
@@ -180,14 +184,14 @@
                         <span id="receiptDate"></span>
                     </div>
                 </div>
-                
+
                 <div class="mt-auto w-full">
                     <button id="downloadReceipt" class="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded font-medium">
                         Download Receipt
                     </button>
                 </div>
             </div>
-            
+
             <!-- Right Side - Order Details -->
             <div class="w-2/3 p-4 overflow-y-auto">
                 <div class="flex justify-between items-center mb-4">
@@ -198,51 +202,68 @@
                         </svg>
                     </button>
                 </div>
-                
-                <div class="bg-gray-50 rounded-lg p-4 mb-4">
-                    <div class="flex justify-between text-sm mb-2">
-                        <span class="text-gray-600">Payment Method:</span>
-                        <span id="receiptPaymentMethod"></span>
+
+                <!-- Receipt Content -->
+                <div class="border-t border-b border-gray-200 py-6 mb-6">
+                    <div class="flex justify-center mb-4">
+                        <img src="{{ asset('images/success-icon.png') }}" alt="Success" class="w-16 h-16" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMGY5ZDU4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9ImZlYXRoZXIgZmVhdGhlci1jaGVjay1jaXJjbGUiPjxwYXRoIGQ9Ik0yMiAxMS4wOFYxMmExMCAxMCAwIDEgMS01LjkzLTkuMTQiPjwvcGF0aD48cG9seWxpbmUgcG9pbnRzPSIyMiA0IDEyIDE0LjAxIDkgMTEuMDEiPjwvcG9seWxpbmU+PC9zdmc+'; this.classList.add('p-2')">
                     </div>
-                    <div class="flex justify-between text-sm font-semibold">
-                        <span class="text-gray-600">Virtual Account Number:</span>
-                        <span id="virtualAccountNumber"></span>
+                    <h4 class="text-center text-xl font-bold text-green-600 mb-2">Payment Successful!</h4>
+                    <p class="text-center text-gray-600 mb-4">Your order has been processed successfully.</p>
+
+                    <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Order ID:</span>
+                            <span class="font-semibold" id="receiptOrderNumber"></span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Date:</span>
+                            <span id="receiptDate"></span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Payment Method:</span>
+                            <span id="receiptPaymentMethod"></span>
+                        </div>
+                        <div class="flex justify-between text-sm font-semibold">
+                            <span class="text-gray-600">Virtual Account Number:</span>
+                            <span id="virtualAccountNumber"></span>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h5 class="font-semibold mb-3 text-gray-800">Order Details</h5>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Product:</span>
+                            <span class="text-right">{{ $product['title'] }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Quantity:</span>
+                            <span>1</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-2 pt-2 border-t border-gray-200">
+                            <span class="text-gray-600">Subtotal:</span>
+                            <span id="receiptSubtotal"></span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Shipping:</span>
+                            <span id="receiptShipping"></span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Tax:</span>
+                            <span id="receiptTax"></span>
+                        </div>
+                        <div class="flex justify-between font-bold pt-2 border-t border-gray-200">
+                            <span>Total:</span>
+                            <span id="receiptTotal"></span>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="bg-gray-50 rounded-lg p-4 mb-4">
-                    <h5 class="font-semibold mb-3 text-gray-800">Order Details</h5>
-                    <div class="flex justify-between text-sm mb-2">
-                        <span class="text-gray-600">Product:</span>
-                        <span class="text-right">{{ $product['title'] }}</span>
-                    </div>
-                    <div class="flex justify-between text-sm mb-2">
-                        <span class="text-gray-600">Quantity:</span>
-                        <span>1</span>
-                    </div>
-                    <div class="flex justify-between text-sm mb-2 pt-2 border-t border-gray-200">
-                        <span class="text-gray-600">Subtotal:</span>
-                        <span id="receiptSubtotal"></span>
-                    </div>
-                    <div class="flex justify-between text-sm mb-2">
-                        <span class="text-gray-600">Shipping:</span>
-                        <span id="receiptShipping"></span>
-                    </div>
-                    <div class="flex justify-between text-sm mb-2">
-                        <span class="text-gray-600">Tax:</span>
-                        <span id="receiptTax"></span>
-                    </div>
-                    <div class="flex justify-between font-bold pt-2 border-t border-gray-200">
-                        <span>Total:</span>
-                        <span id="receiptTotal"></span>
-                    </div>
-                </div>
-                
+
                 <div class="text-sm text-gray-600 mb-6">
                     <p class="mb-2">Please complete your payment by transferring to the virtual account number shown above. Your order will be processed once payment is verified.</p>
                     <p>Estimated delivery: <span class="font-semibold">3-5 business days</span> after payment verification.</p>
                 </div>
-                
+
                 <div class="text-right">
                     <a href="{{ url('/order-status') }}">
                     <button id="closeReceiptBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-medium">
@@ -281,17 +302,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fungsi untuk mendapatkan tanggal dan waktu saat ini dalam format yang diinginkan
     function getCurrentDateTime() {
         const now = new Date();
-        
+
         // Format tanggal: DD/MM/YYYY
         const day = String(now.getDate()).padStart(2, '0');
         const month = String(now.getMonth() + 1).padStart(2, '0'); // Bulan dimulai dari 0
         const year = now.getFullYear();
-        
+
         // Format waktu: HH:MM:SS
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
         const seconds = String(now.getSeconds()).padStart(2, '0');
-        
+
         return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
     }
 
@@ -301,16 +322,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeModal = document.getElementById('closeModal');
     const confirmPayment = document.getElementById('confirmPayment');
     const paymentMethod = document.getElementById('paymentMethod');
-    
+
     // Elements for receipt modal
     const receiptModal = document.getElementById('receiptModal');
     const closeReceiptModal = document.getElementById('closeReceiptModal');
     const closeReceiptBtn = document.getElementById('closeReceiptBtn');
     const downloadReceipt = document.getElementById('downloadReceipt');
-    
+
     // Generate random order number
     const orderNumber = document.getElementById('orderNumber').textContent;
-    
+
     // Open payment modal when Buy Now button is clicked
     buyNowBtn.addEventListener('click', function() {
         // Update order date with current date and time when Buy Now is clicked
@@ -318,17 +339,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if (orderDateElement) {
             orderDateElement.textContent = getCurrentDateTime();
         }
-        
+
         paymentModal.classList.remove('hidden');
         document.body.style.overflow = 'hidden'; // Prevent scrolling
     });
-    
+
     // Close payment modal when close button is clicked
     closeModal.addEventListener('click', function() {
         paymentModal.classList.add('hidden');
         document.body.style.overflow = 'auto'; // Enable scrolling
     });
-    
+
     // Close payment modal when clicking outside the modal content
     paymentModal.addEventListener('click', function(e) {
         if (e.target === paymentModal) {
@@ -336,22 +357,22 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.style.overflow = 'auto'; // Enable scrolling
         }
     });
-    
+
     // Handle payment confirmation
     confirmPayment.addEventListener('click', function() {
         if (paymentMethod.value === '') {
             alert('Please select a payment method');
             return;
         }
-        
+
         // Close payment modal
         paymentModal.classList.add('hidden');
-        
+
         // Prepare receipt data
         document.getElementById('receiptOrderNumber').textContent = orderNumber;
         document.getElementById('receiptDate').textContent = document.getElementById('orderDate').textContent;
         document.getElementById('receiptPaymentMethod').textContent = paymentMethod.options[paymentMethod.selectedIndex].text;
-        
+
         // Generate random virtual account number based on selected bank
         let bankPrefix = '';
         switch(paymentMethod.value) {
@@ -363,28 +384,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         const virtualAccount = bankPrefix + Math.floor(10000000000 + Math.random() * 90000000000);
         document.getElementById('virtualAccountNumber').textContent = virtualAccount;
-        
+
         // Set price details
         document.getElementById('receiptSubtotal').textContent = document.getElementById('subtotalPrice').textContent;
         document.getElementById('receiptShipping').textContent = document.getElementById('shippingPrice').textContent;
         document.getElementById('receiptTax').textContent = document.getElementById('taxPrice').textContent;
         document.getElementById('receiptTotal').textContent = document.getElementById('totalPrice').textContent;
-        
+
         // Show receipt modal
         receiptModal.classList.remove('hidden');
     });
-    
+
     // Close receipt modal
     closeReceiptModal.addEventListener('click', function() {
         receiptModal.classList.add('hidden');
         document.body.style.overflow = 'auto'; // Enable scrolling
     });
-    
+
     closeReceiptBtn.addEventListener('click', function() {
         receiptModal.classList.add('hidden');
         document.body.style.overflow = 'auto'; // Enable scrolling
     });
-    
+
     // Close receipt modal when clicking outside the modal content
     receiptModal.addEventListener('click', function(e) {
         if (e.target === receiptModal) {
@@ -392,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.style.overflow = 'auto'; // Enable scrolling
         }
     });
-    
+
     // Download receipt functionality
     downloadReceipt.addEventListener('click', function() {
         alert('Receipt download functionality would be implemented here. In a real application, this would generate a PDF or print version of the receipt.');
@@ -409,14 +430,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const productPrice = "{{ $product['price'] }}";
     const productType = "{{ $product['type'] }}";
     const productManufacturer = "{{ $product['specifications']['Manufacturer'] }}";
-    
+
     // Function to display notification
     function showNotification(message, isSuccess = true) {
         const notification = document.createElement('div');
         notification.className = `fixed top-4 right-4 px-4 py-2 rounded-md shadow-lg z-50 transition-opacity duration-300 ${isSuccess ? 'bg-gray-800 text-white' : 'bg-red-500 text-white'}`;
         notification.innerText = message;
         document.body.appendChild(notification);
-        
+
         setTimeout(() => {
             notification.style.opacity = '0';
             setTimeout(() => {
@@ -424,25 +445,25 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 300);
         }, 3000);
     }
-    
+
     // Function to check if product is in wishlist
     function isInWishlist(productId) {
         const wishlist = getWishlist();
         return wishlist.some(item => item.id === productId);
     }
-    
+
     // Function to get wishlist from localStorage
     function getWishlist() {
         const wishlistData = localStorage.getItem('wishlist');
         return wishlistData ? JSON.parse(wishlistData) : [];
     }
-    
+
     // Function to save wishlist to localStorage
     function saveWishlist(wishlist) {
         localStorage.setItem('wishlist', JSON.stringify(wishlist));
         updateWishlistCount();
     }
-    
+
     // Function to update wishlist count
     function updateWishlistCount() {
         const wishlist = getWishlist();
@@ -451,12 +472,12 @@ document.addEventListener('DOMContentLoaded', function() {
             wishlistCountElement.textContent = wishlist.length;
         }
     }
-    
+
     // Function to toggle wishlist
     function toggleWishlist() {
         const wishlist = getWishlist();
         const productInWishlist = isInWishlist(productId);
-        
+
         if (productInWishlist) {
             // Remove from wishlist
             const updatedWishlist = wishlist.filter(item => item.id !== productId);
@@ -482,7 +503,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showNotification(`${productTitle} added to wishlist`);
         }
     }
-    
+
     // Function to update heart icon appearance
     function updateHeartIcon(isWishlisted) {
         if (isWishlisted) {
@@ -493,13 +514,13 @@ document.addEventListener('DOMContentLoaded', function() {
             heartIcon.style.color = ''; // Default color
         }
     }
-    
+
     // Initialize heart icon state
     updateHeartIcon(isInWishlist(productId));
-    
+
     // Initialize wishlist count
     updateWishlistCount();
-    
+
     // Event listener for wishlist button
     if (wishlistBtn) {
         wishlistBtn.addEventListener('click', toggleWishlist);
