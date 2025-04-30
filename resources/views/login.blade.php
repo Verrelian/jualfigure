@@ -79,8 +79,10 @@
 
     <!-- Tabs (Login/Register Switch) -->
     <div class="flex justify-center mb-6 gap-2">
-      <a href="/mole/dashboard"><button id="login-tab" class="tab-button active px-6 py-2 bg-black text-white rounded-l-lg shadow">Login</button></a>
-      <a href="/mole/login"><button id="register-tab" class="tab-button px-6 py-2 bg-white text-black rounded-r-lg shadow">Register</button></a>
+<!-- Benar -->
+<button id="login-tab" class="tab-button active px-6 py-2 bg-black text-white rounded-l-lg shadow">Login</button>
+<button id="register-tab" class="tab-button px-6 py-2 bg-white text-black rounded-r-lg shadow">Register</button>
+
     </div>
 
     <!-- Forms Container -->
