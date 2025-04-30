@@ -13,9 +13,9 @@
            <!-- Header/Menu -->
 <div class="bg-black text-white p-4">
     <div class="flex items-center justify-between">
-        <!-- Logo Gambar (JomoFigure) -->
+
+        <img src="{{ asset('images/icon.png') }}" alt="Mole Logo" class="w-10"> <!-- Ganti 'path_to_your_logo.png' dengan path logo yang kamu inginkan -->
         <div class="text-lg font-bold">
-            <img src="{{ asset('path_to_your_logo.png') }}" alt="Mole Logo" class="w-32"> <!-- Ganti 'path_to_your_logo.png' dengan path logo yang kamu inginkan -->
         </div>
 
         <!-- Hamburger Icon (Desktop) -->
@@ -63,16 +63,7 @@
                                     <input type="email" class="w-full border border-gray-300 rounded p-1.5 text-sm" value="">
                                 </div>
                             </div>
-                            
-                            <!-- Second Row -->
-                            <div class="flex mb-3 space-x-3">
-                                <div class="w-1/3">
-                                    <label class="block text-gray-600 text-xs mb-1">Name:</label>
-                                    <input type="text" class="w-full border border-gray-300 rounded p-1.5 text-sm" value="">
-                                </div>
-                                <div class="w-1/3">
-                                    <label class="block text-gray-600 text-xs mb-1">Username:</label>
-                                    <input type="text" class="w-full border border-gray-300 rounded p-1.5 text-sm" value="">
+                        
                                 </div>
                                 <div class="w-1/3">
                                     <label class="block text-gray-600 text-xs mb-1">Country:</label>

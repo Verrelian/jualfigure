@@ -1,4 +1,4 @@
-@extends('layout.apps')
+@extends('layout.app')
 
 @section('content')
 <div class="flex min-h-screen">

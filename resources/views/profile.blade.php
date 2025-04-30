@@ -27,9 +27,8 @@
     <!-- Dropdown Menu -->
     <div id="dropdown-menu"
         class="absolute top-12 left-3 bg-white text-black rounded-lg shadow-lg w-40 hidden z-50">
-        <a href="/webs" class="block px-4 py-2 hover:bg-gray-100">Home</a>
-        <a href="/" class="block px-4 py-2 hover:bg-gray-100">List Product</a>
-        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
+        <a href="{{ url('/dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">Home</a>
+        <a href="{{url ('/login') }}" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
     </div>
 </div>
             

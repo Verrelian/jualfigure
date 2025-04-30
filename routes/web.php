@@ -25,7 +25,7 @@ Route::get('/home', function () {
     return view('pages.dashboard');
 });
 
-Route::get('register', function () {
+Route::get('/register', function () {
     return view('register');
 });
 
@@ -50,8 +50,6 @@ Route::get('/appv', function () {
     return view('pages.homev');
 });
 
-Route::get('/produk', [ProductvController::class, 'show']);
-
 Route::get('/detail', function () {
     return view('pages.order-detail');
 });
@@ -75,3 +73,23 @@ Route::get('/seller/crud', function () {
     return view('pages.seller.crud');
 });
 
+Route::get('/order-status', function () {
+    return view('pages.order-status');
+})->name('order.status');
+
+Route::get('/explore', function () {
+    return view('pages.explore');
+});
+
+Route::get('/leaderboard', function () {
+    return view('pages.leaderboard');
+});
+
+
+Route::get('profile', function () {
+    return view('profile');
+});
+
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
