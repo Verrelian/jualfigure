@@ -75,3 +75,14 @@ Route::get('/seller/crud', function () {
     return view('pages.seller.crud');
 });
 
+Route::get('/order-status', function () {
+    return view('pages.order-status');
+})->name('order.status');
+
+Route::get('/explore', function () {
+    return view('pages.explore');
+});
+
+Route::get('/leaderboard', function () {
+    return view('leaderboard');
+});

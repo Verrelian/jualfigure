@@ -86,7 +86,7 @@ class ProductController extends Controller
         6 => [
             'id' => 6,
             'image' => 'images/p6.jpg',
-            'title' => 'Pop Up Parade Aventurine - Honkai Star Rail (16cm)',
+            'title' => 'Nendroid Parade Aventurine - Honkai Star Rail (16cm)',
             'type' => '[Exclusive Sale]',
             'price' => '$79.99',
             'description' => 'This exclusive Aventurine figure from Honkai Star Rail stands 16cm tall and showcases the character\'s unique design with impressive detail and dynamic posing.',
@@ -101,7 +101,7 @@ class ProductController extends Controller
         7 => [
             'id' => 7,
             'image' => 'images/figure1.png',
-            'title' => 'Pop up Parade Cute Anime Figure - Honkai Star Rail (16cm)',
+            'title' => 'Nendroid Parade Cute Anime Figure - Honkai Star Rail (16cm)',
             'type' => '[Anime Figure]',
             'price' => '$29.99',
             'description' => 'This exclusive Aventurine figure from Honkai Star Rail stands 16cm tall and showcases the character\'s unique design with impressive detail and dynamic posing.',
@@ -116,7 +116,7 @@ class ProductController extends Controller
         8 => [
             'id' => 8,
             'image' => 'images/figure2.png',
-            'title' => 'Pop Up Parade Rin with Blue hair - Yu-Gi-Oh! (15,5cm)',
+            'title' => 'Nendroid Parade Rin with Blue hair - Yu-Gi-Oh! (15,5cm)',
             'type' => '[Anime Figure]',
             'price' => '$29.99',
             'description' => 'Rin with any expression is so adorable this figure with uniqe design and cute',

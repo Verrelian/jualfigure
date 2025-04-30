@@ -244,9 +244,10 @@
                 </div>
                 
                 <div class="text-right">
+                    <a href="{{ url('/order-status') }}">
                     <button id="closeReceiptBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-medium">
                         Done
-                    </button>
+                    </button></a>
                 </div>
             </div>
         </div>

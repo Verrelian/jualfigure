@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('layout.apps')
 
 @section('type', 'Home - Figure Collection Store')
 
@@ -6,7 +6,7 @@
     <!-- Banner Gabungan -->
 <div class="flex justify-center">
     <div class="w-[75%] bg-white rounded-3xl overflow-hidden shadow-md mb-10 relative h-60">
-        @include('component.banner')
+        @include('component.seller.banner')
         <img src="{{ asset('images/banner.jpeg') }}" alt="Banner" class="absolute inset-0 w-full h-full object-cover z-0">
     </div>
 </div>

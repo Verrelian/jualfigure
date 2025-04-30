@@ -56,7 +56,7 @@
                 'id' => 6,
                 'image' => 'images/p6.jpg',
                 'type' => '[Exclusive Sale]',
-                'title' => 'Pop Up Parade Aventurine - Honkai Star Rail (16cm)',
+                'title' => 'Nendroid Parade Aventurine - Honkai Star Rail (16cm)',
                 'price' => '$79.99'
             ])
         </div>
@@ -71,14 +71,14 @@
                 'id' => 7,
                 'image' => 'images/figure1.png',
                 'type' => 'Anime Figure',
-                'title' => ' Pop up Parade Cute Anime Figure',
+                'title' => ' Nendroid Parade Cute Anime Figure',
                 'price' => '$29.99'
             ])
             @include('component.product-card', [
                 'id' => 8,
                 'image' => 'images/figure2.png',
                 'type' => 'Anime Figure',
-                'title' => 'Pop Up Parade Rin with Blue hair - Yu-Gi-Oh! (15,5cm)',
+                'title' => 'Nendroid Parade Rin with Blue hair - Yu-Gi-Oh! (15,5cm)',
                 'price' => '$29.99'
             ])
             @include('component.product-card', [
