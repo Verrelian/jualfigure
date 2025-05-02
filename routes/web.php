@@ -33,6 +33,7 @@ Route::get('seller/laporan', function () {
     return view('pages.seller.laporan');
 })->name('laporan');
 
+
 Route::get('/home', function () {
     return view('pages.dashboard');
 });

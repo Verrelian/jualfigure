@@ -75,12 +75,8 @@
               </a>
             </li>
             <li>
-              <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                <svg class="w-4 h-4 me-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                </svg>
-                Keluar
-              </a>
+
+
             </li>
           </ul>
         </div>
@@ -94,7 +90,23 @@
         </svg>
       </button>
     </div>
-  </div>
+  </div>              <!-- Tombol Logout -->
+              <a href="#" onclick="logout()" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <svg class="w-4 h-4 me-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                  </path>
+                </svg>
+                Keluar
+              </a>
+
+              <!-- Script Logout -->
+              <script>
+                function logout() {
+                  localStorage.removeItem('currentUser');
+                  window.location.href = '/mole/login';
+                }
+              </script>
 
   <!-- Mobile menu - hidden by default -->
   <div class="hidden md:hidden" id="mobile-menu">
