@@ -1,20 +1,9 @@
 @extends('layout.apps')
 
-@section('type', 'Home - Figure Collection Store')
-
 @section('content')
 <div class="flex min-h-screen">
   <!-- Sidebar -->
-  <aside class="w-64 bg-gray-800 text-white p-4 space-y-4">
-    <h2 class="text-xl font-bold mb-6">MOLE Seller</h2>
-    <nav class="space-y-2">
-      <a href="/mole/seller/crud" class="block py-2 px-3 rounded hover:bg-gray-700">Dashboard</a>
-      <a href="/products" class="block py-2 px-3 rounded hover:bg-gray-700">Produk</a>
-      <a href="/orders" class="block py-2 px-3 rounded hover:bg-gray-700">Pesanan</a>
-      <a href="/sales-report" class="block py-2 px-3 rounded bg-gray-700">Laporan Penjualan</a>
-    </nav>
-  </aside>
-
+   @include('component.seller.sidebar')
   <!-- Main Content -->
   <main class="flex-1 bg-gray-100 p-6">
     <h1 class="text-2xl font-semibold mb-4">Laporan Penjualan</h1>
