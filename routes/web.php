@@ -59,9 +59,6 @@ Route::get('/products', function () {
     return view('pages.products');
 });
 
-Route::get('/appv', function () {
-    return view('pages.homev');
-});
 
 Route::get('/detail', function () {
     return view('pages.order-detail');
@@ -69,10 +66,6 @@ Route::get('/detail', function () {
 
 Route::get('/order-detail', function () {
     return view('pages.order-detail');
-});
-
-Route::get('/appv', function () {
-    return view('pages.dashboard');
 });
 
 Route::get('/product-detail', [ProductController::class, 'index'])->name('home');
