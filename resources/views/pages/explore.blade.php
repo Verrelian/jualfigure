@@ -79,35 +79,35 @@
         <h2 class="text-lg font-bold mb-3">New Releases</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             @include('component.product-card', [
-                'id' => 12,
+                'id' => 9,
                 'image' => 'images/figure3.jpg',
                 'type' => 'New Release',
                 'title' => 'PVC Figure Himura Kenshin - Rurouni Kenshin (18cm)',
                 'price' => '$59.99'
             ])
             @include('component.product-card', [
-                'id' => 13,
+                'id' => 3,
                 'image' => 'images/p3.png',
                 'type' => 'New Release',
                 'title' => 'Pop Up Parade Frieren - Sousou no Frieren (17cm)',
                 'price' => '$49.99'
             ])
             @include('component.product-card', [
-                'id' => 14,
+                'id' => 6,
                 'image' => 'images/p6.jpg',
                 'type' => 'New Release',
                 'title' => 'Nendroid Aventurine - Honkai Star Rail (10cm)',
                 'price' => '$39.99'
             ])
             @include('component.product-card', [
-                'id' => 15,
+                'id' => 2,
                 'image' => 'images/p2.jpg',
                 'type' => 'New Release',
                 'title' => 'Pop Up Parade Gawr Gura - Hololive Special Edition',
                 'price' => '$54.99'
             ])
             @include('component.product-card', [
-                'id' => 16,
+                'id' => 10,
                 'image' => 'images/p4.png',
                 'type' => 'New Release',
                 'title' => 'Pop Up Parade Satoru Gojo - Jujutsu Kaisen',
@@ -132,14 +132,7 @@
                 <p class="font-medium">Yugi Oh</p>
                 <p class="text-xs text-gray-500">2 items</p>
             </div>
-            <div class="bg-white p-3 rounded-md text-center shadow-sm hover:shadow-md transition-shadow">
-                <p class="font-medium">Naruto</p>
-                <p class="text-xs text-gray-500">0 items</p>
-            </div>
-            <div class="bg-white p-3 rounded-md text-center shadow-sm hover:shadow-md transition-shadow">
-                <p class="font-medium">My Hero Academia</p>
-                <p class="text-xs text-gray-500">0 items</p>
-            </div>
+
             <div class="bg-white p-3 rounded-md text-center shadow-sm hover:shadow-md transition-shadow">
                 <p class="font-medium">All</p>
                 <p class="text-xs text-gray-500">10+ series</p>
