@@ -1,9 +1,4 @@
-<aside class="w-64 bg-gray-100 text-black flex flex-col p-4 space-y-6">
-  <!-- Logo -->
-  <div class="flex items-center space-x-2">
-    <img src="{{ asset('images/icon.png') }}" alt="MOLE Logo" class="h-10 w-10">
-    <span class="text-2xl font-bold">M.O.L.E</span>
-  </div>
+<aside class="w-64 bg-white border-b border-gray-200 shadow-sm text-black flex flex-col p-4 space-y-6">
 
   <!-- Seller Profile -->
   <div class="flex items-center space-x-3 p-2 rounded bg-gray-700">
