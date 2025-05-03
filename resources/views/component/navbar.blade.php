@@ -33,7 +33,9 @@
 
           <a href="{{url ('/leaderboard') }}" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Leaderboard</a>
 
-          <a href="{{ url('/explore') }}" class="{{ Request::is('/seller/dashboardp') ? 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Explorasi</a>
+          <a href="{{url ('/explore') }}" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Explore</a>
+
+          <a href="{{url ('/order-status') }}" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Order</a>
       </div>
 
 

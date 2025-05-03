@@ -171,8 +171,8 @@
             <!-- Left Side - Success Icon and Basic Info -->
             <div class="w-1/3 p-4 bg-gray-50 rounded-l-lg flex flex-col items-center justify-center">
                 <img src="{{ asset('images/success-icon.png') }}" alt="Success" class="w-20 h-20 mb-4" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMGY5ZDU4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9ImZlYXRoZXIgZmVhdGhlci1jaGVjay1jaXJjbGUiPjxwYXRoIGQ9Ik0yMiAxMS4wOFYxMmExMCAxMCAwIDEgMS01LjkzLTkuMTQiPjwvcGF0aD48cG9seWxpbmUgcG9pbnRzPSIyMiA0IDEyIDE0LjAxIDkgMTEuMDEiPjwvcG9seWxpbmU+PC9zdmc+'; this.classList.add('p-2')">
-                <h4 class="text-center text-lg font-bold text-green-600 mb-2">Payment Successful!</h4>
-                <p class="text-center text-sm text-gray-600 mb-6">Your order has been processed successfully.</p>
+                <h4 class="text-center text-lg font-bold text-green-600 mb-2">Payment info!</h4>
+                <p class="text-center text-sm text-gray-600 mb-6">Your order has been processed..</p>
 
                 <div class="flex flex-col w-full space-y-1 text-sm mb-4">
                     <div class="flex justify-between">
@@ -208,16 +208,16 @@
                     <div class="flex justify-center mb-4">
                         <img src="{{ asset('images/success-icon.png') }}" alt="Success" class="w-16 h-16" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMGY5ZDU4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9ImZlYXRoZXIgZmVhdGhlci1jaGVjay1jaXJjbGUiPjxwYXRoIGQ9Ik0yMiAxMS4wOFYxMmExMCAxMCAwIDEgMS01LjkzLTkuMTQiPjwvcGF0aD48cG9seWxpbmUgcG9pbnRzPSIyMiA0IDEyIDE0LjAxIDkgMTEuMDEiPjwvcG9seWxpbmU+PC9zdmc+'; this.classList.add('p-2')">
                     </div>
-                    <h4 class="text-center text-xl font-bold text-green-600 mb-2">Payment Successful!</h4>
-                    <p class="text-center text-gray-600 mb-4">Your order has been processed successfully.</p>
+                    <h4 class="text-center text-xl font-bold text-green-600 mb-2">Payment!</h4>
+                    <p class="text-center text-gray-600 mb-4">Your order has been Add to order status please check.</p>
 
                     <div class="bg-gray-50 rounded-lg p-4 mb-4">
                         <div class="flex justify-between text-sm mb-2">
-                            <span class="text-gray-600">Order ID:</span>
+                            <span class="text-gray-600">Info:If you done for payment please check your order list</span>
                             <span class="font-semibold" id="receiptOrderNumber"></span>
                         </div>
                         <div class="flex justify-between text-sm mb-2">
-                            <span class="text-gray-600">Date:</span>
+                            <span class="text-gray-600">Name Store:Market Place of Legends</span>
                             <span id="receiptDate"></span>
                         </div>
                         <div class="flex justify-between text-sm mb-2">
