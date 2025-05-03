@@ -43,6 +43,24 @@
                         </div>
                     </div>
 
+                    <!-- Quantity Selector -->
+                    <div class="mb-6">
+                        <h3 class="font-bold text-lg mb-2">Quantity</h3>
+                        <div class="flex items-center">
+                            <button id="decreaseQuantity" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded-l-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <input type="number" id="quantityInput" class="w-16 text-center border-t border-b border-gray-300 py-1" value="1" min="1" max="99">
+                            <button id="increaseQuantity" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded-r-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="flex space-x-4">
                         <button id="buyNowBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-semibold flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -76,7 +94,6 @@
             <!-- Left Side - Product Info -->
             <div class="w-1/2 pr-4 overflow-y-auto">
                 <div class="text-gray-400 text-sm mb-4">
-                    <!-- Perubahan dari {{ date('d F Y, h:i a') }} menjadi span kosong yang akan diisi dengan JavaScript -->
                     <p id="orderDate"></p>
                     <p class="mt-1">Estimated Delivery: 3-5 business days</p>
                 </div>
@@ -94,7 +111,7 @@
                         <p class="text-sm mb-1">Product: {{ $product['title'] }}</p>
                         <p class="text-sm mb-1">Company: {{ $product['specifications']['Manufacturer'] }}</p>
                         <p class="text-sm mb-1">Condition: Opened Box (Near Mint)</p>
-                        <p class="text-sm">Quantity: 1x</p>
+                        <p class="text-sm">Quantity: <span id="modalQuantity">1</span>x</p>
 
                         <p class="text-sm mt-4 text-gray-400">
                             As her popularity never seems to lose any momentum, she's back again! Featuring multiple interchangeable parts, singing pose, silly "hatsune miku" face, and her iconic look.
@@ -133,10 +150,14 @@
                     <div id="priceDetails">
                         <div class="flex justify-between py-2">
                             <span>Description</span>
-                            <span id="basePrice">IDR {{ number_format(floatval(str_replace('$', '', $product['price'])) * 15000, 2) }}</span>
+                            <span id="unitPrice">IDR {{ number_format(floatval(str_replace('$', '', $product['price'])) * 15000, 2) }}</span>
                         </div>
                         <div class="flex justify-between py-2 border-t border-gray-800">
-                            <span>Subtotal (1 item)</span>
+                            <span>Quantity</span>
+                            <span id="modalQuantityDisplay">1</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-t border-gray-800">
+                            <span>Subtotal</span>
                             <span id="subtotalPrice">IDR {{ number_format(floatval(str_replace('$', '', $product['price'])) * 15000, 2) }}</span>
                         </div>
                         <div class="flex justify-between py-2 border-t border-gray-800">
@@ -214,11 +235,11 @@
                     <div class="bg-gray-50 rounded-lg p-4 mb-4">
                         <div class="flex justify-between text-sm mb-2">
                             <span class="text-gray-600">Info:If you done for payment please check your order list</span>
-                            <span class="font-semibold" id="receiptOrderNumber"></span>
+                            <span class="font-semibold" id="receiptOrderNumber2"></span>
                         </div>
                         <div class="flex justify-between text-sm mb-2">
                             <span class="text-gray-600">Name Store:Market Place of Legends</span>
-                            <span id="receiptDate"></span>
+                            <span id="receiptDate2"></span>
                         </div>
                         <div class="flex justify-between text-sm mb-2">
                             <span class="text-gray-600">Payment Method:</span>
@@ -238,7 +259,7 @@
                         </div>
                         <div class="flex justify-between text-sm mb-2">
                             <span class="text-gray-600">Quantity:</span>
-                            <span>1</span>
+                            <span id="receiptQuantity">1</span>
                         </div>
                         <div class="flex justify-between text-sm mb-2 pt-2 border-t border-gray-200">
                             <span class="text-gray-600">Subtotal:</span>
@@ -299,6 +320,83 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+    // Base price per unit (in IDR)
+    const basePrice = parseFloat({{ floatval(str_replace('$', '', $product['price'])) * 15000 }});
+    const shippingPrice = 8000;
+    const taxRate = 0.05;
+    
+    // Elements for quantity selector
+    const quantityInput = document.getElementById('quantityInput');
+    const decreaseBtn = document.getElementById('decreaseQuantity');
+    const increaseBtn = document.getElementById('increaseQuantity');
+    
+    // Function to get current quantity
+    function getQuantity() {
+        return parseInt(quantityInput.value) || 1;
+    }
+    
+    // Function to update quantity
+    function updateQuantity(newQuantity) {
+        // Ensure quantity is at least 1
+        newQuantity = Math.max(1, newQuantity);
+        
+        // Update input value
+        quantityInput.value = newQuantity;
+        
+        // Update labels in modal
+        document.getElementById('modalQuantity').textContent = newQuantity;
+        document.getElementById('modalQuantityDisplay').textContent = newQuantity;
+        document.getElementById('receiptQuantity').textContent = newQuantity;
+        
+        // Recalculate prices
+        updatePrices();
+    }
+    
+    // Function to update all price calculations
+    function updatePrices() {
+        const quantity = getQuantity();
+        const subtotal = basePrice * quantity;
+        const tax = subtotal * taxRate;
+        const total = subtotal + tax + shippingPrice;
+        
+        // Update price displays
+        document.getElementById('subtotalPrice').textContent = 'IDR ' + numberFormat(subtotal);
+        document.getElementById('taxPrice').textContent = 'IDR ' + numberFormat(tax);
+        document.getElementById('totalPrice').textContent = 'IDR ' + numberFormat(total);
+        
+        // Update receipt prices too
+        document.getElementById('receiptSubtotal').textContent = 'IDR ' + numberFormat(subtotal);
+        document.getElementById('receiptShipping').textContent = 'IDR ' + numberFormat(shippingPrice);
+        document.getElementById('receiptTax').textContent = 'IDR ' + numberFormat(tax);
+        document.getElementById('receiptTotal').textContent = 'IDR ' + numberFormat(total);
+    }
+    
+    // Format number with commas and 2 decimal places
+    function numberFormat(number) {
+        return number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    }
+    
+    // Quantity button event listeners
+    decreaseBtn.addEventListener('click', function() {
+        updateQuantity(getQuantity() - 1);
+    });
+    
+    increaseBtn.addEventListener('click', function() {
+        updateQuantity(getQuantity() + 1);
+    });
+    
+    // Input change event listener
+    quantityInput.addEventListener('change', function() {
+        updateQuantity(getQuantity());
+    });
+    
+    // Prevent non-numeric input
+    quantityInput.addEventListener('keypress', function(e) {
+        if (!/^\d*$/.test(e.key)) {
+            e.preventDefault();
+        }
+    });
+
     // Fungsi untuk mendapatkan tanggal dan waktu saat ini dalam format yang diinginkan
     function getCurrentDateTime() {
         const now = new Date();
@@ -340,6 +438,9 @@
             orderDateElement.textContent = getCurrentDateTime();
         }
 
+        // Update quantity in the modal
+        updateQuantity(getQuantity());
+        
         paymentModal.classList.remove('hidden');
         document.body.style.overflow = 'hidden'; // Prevent scrolling
     });
