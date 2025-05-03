@@ -81,6 +81,7 @@ Route::get('/seller/crud', function () {
 });
 
 Route::get('/order-status/{id?}', [OrderController::class, 'status'])->name('order.status');
+Route::get('/order-history/{id?}', [OrderController::class, 'status'])->name('order.history');
 
 Route::get('/explore', function () {
     return view('pages.explore');
