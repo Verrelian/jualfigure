@@ -280,7 +280,7 @@
           window.location.href = '/mole/dashboard';
         } else if (role === 'penjual') {
           // Redirect to penjual dashboard
-          window.location.href = '/mole/seller/dashboardp';
+          window.location.href = '/mole/seller/crud';
         }
       });
 

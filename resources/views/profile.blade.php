@@ -31,7 +31,7 @@
         <a href="{{url ('/login') }}" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
     </div>
 </div>
-            
+
             <!-- Profile Content -->
             <div class="flex">
                 <!-- Left side (Profile info & toys) -->
@@ -42,13 +42,13 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
                         </svg>
                     </div>
-                    
+
                     <!-- Tabs -->
                     <div class="flex space-x-4 mb-4">
                         <button id="posts-tab" class="px-4 py-1 bg-gray-200 rounded-md text-sm font-medium">Posts</button>
                         <button id="toys-tab" class="px-4 py-1 bg-gray-200 rounded-md text-sm font-medium text-blue-500 border-b-2 border-blue-500">Toys</button>
                     </div>
-                    
+
                     <!-- Toys Collection -->
                     <div class="grid grid-cols-5 gap-3 mb-6">
                         <!-- Toy 1 -->
@@ -58,7 +58,7 @@
                             </div>
                             <span class="text-xs text-gray-500">Golden Toy</span>
                         </div>
-                        
+
                         <!-- Toy 2 -->
                         <div class="flex flex-col items-center">
                             <div class="bg-green-100 rounded-md p-2 w-full flex justify-center mb-1">
@@ -66,7 +66,7 @@
                             </div>
                             <span class="text-xs text-gray-500">Emerald</span>
                         </div>
-                        
+
                         <!-- Toy 3 -->
                         <div class="flex flex-col items-center">
                             <div class="bg-purple-100 rounded-md p-2 w-full flex justify-center mb-1">
@@ -74,7 +74,7 @@
                             </div>
                             <span class="text-xs text-gray-500">Wizard</span>
                         </div>
-                        
+
                         <!-- Toy 4 -->
                         <div class="flex flex-col items-center">
                             <div class="bg-pink-100 rounded-md p-2 w-full flex justify-center mb-1">
@@ -82,7 +82,7 @@
                             </div>
                             <span class="text-xs text-gray-500">Princess</span>
                         </div>
-                        
+
                         <!-- Toy 5 -->
                         <div class="flex flex-col items-center">
                             <div class="bg-teal-100 rounded-md p-2 w-full flex justify-center mb-1">
@@ -91,14 +91,14 @@
                             <span class="text-xs text-gray-500">Emerald</span>
                         </div>
                     </div>
-                    
+
                     <!-- Action Buttons -->
                     <div class="flex space-x-2">
                         <button id="view-post-btn" class="bg-black text-white rounded-full px-6 py-2 text-sm font-medium">View Post</button>
                         <button id="view-toys-btn" class="bg-gray-200 text-black rounded-full px-6 py-2 text-sm font-medium">View Toys</button>
                     </div>
                 </div>
-                
+
                 <!-- Right side (User info) -->
                 <div class="w-1/3 p-4 bg-gray-50">
                     <div class="flex flex-col items-center">
@@ -106,12 +106,12 @@
                         <div class="w-16 h-16 rounded-full overflow-hidden mb-2">
                             <img src="image/muka.jpg" alt="Profile" class="w-full h-full object-cover">
                         </div>
-                        
+
                         <!-- User Info -->
                         <div class="text-center">
                             <h3 class="font-bold">Loyal Hunter</h3>
                             <p class="text-sm text-gray-600">Stephen Hawking</p>
-                            
+
                             <!-- Counts -->
                             <div class="flex justify-center space-x-6 my-2 text-xs">
                                 <div>
@@ -123,7 +123,7 @@
                                     <p class="font-bold">28k</p>
                                 </div>
                             </div>
-                            
+
                             <!-- Edit Profile Button -->
                             <button id="edit-profile-btn" class="bg-black text-white rounded-lg w-full py-1 text-sm mt-2">Edit Profile</button>
                         </div>
@@ -141,24 +141,24 @@
             document.getElementById('toys-tab').classList.remove('text-blue-500', 'border-b-2', 'border-blue-500');
             // Additional logic to show posts content
         });
-        
+
         document.getElementById('toys-tab').addEventListener('click', function() {
             // Switch to toys tab
             this.classList.add('text-blue-500', 'border-b-2', 'border-blue-500');
             document.getElementById('posts-tab').classList.remove('text-blue-500', 'border-b-2', 'border-blue-500');
             // Additional logic to show toys content
         });
-        
+
         document.getElementById('view-post-btn').addEventListener('click', function() {
             // Navigate to posts view
             document.getElementById('posts-tab').click();
         });
-        
+
         document.getElementById('edit-profile-btn').addEventListener('click', function () {
     window.location.href = "{{ route('profile.edit') }}";
 });
 
-        
+
         // Toggle Dropdown Menu
     const menuButton = document.getElementById('menu-button');
     const dropdownMenu = document.getElementById('dropdown-menu');
