@@ -163,7 +163,38 @@
         </div>
     </div>
 </div>
+<!-- Modal Bukti Pembayaran -->
+<div id="buktiModal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden">
+    <div class="bg-gray-800 text-white rounded-lg p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-bold">Upload Bukti Pembayaran</h2>
+            <button onclick="closeBuktiModal()" class="text-gray-400 hover:text-white">
+                &times;
+            </button>
+        </div>
 
+        <p class="mb-2 text-sm text-gray-300">
+            Silakan transfer ke nomor rekening berikut dan upload bukti pembayaran:
+        </p>
+
+        <div class="mb-4">
+            <p><strong>Bank:</strong> BCA</p>
+            <p><strong>No. Rekening:</strong> 1234567890</p>
+            <p><strong>Atas Nama:</strong> PT MOLE Store</p>
+        </div>
+
+        <form action="upload_bukti.php" method="POST" enctype="multipart/form-data">
+            <label for="buktiPembayaran" class="block text-sm mb-1">Upload Bukti:</label>
+            <input type="file" name="buktiPembayaran" id="buktiPembayaran" required
+                   class="block w-full text-sm text-gray-300 bg-gray-700 rounded p-2 mb-4">
+
+            <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold">
+                Kirim Bukti Pembayaran
+            </button>
+        </form>
+    </div>
+</div>
 <!-- Payment Receipt Modal -->
 <div id="receiptModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-lg w-full max-w-3xl shadow-xl max-h-[80vh] overflow-y-auto">
@@ -296,7 +327,6 @@
             </div>
         </div>
     </div>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
     // Fungsi untuk mendapatkan tanggal dan waktu saat ini dalam format yang diinginkan
@@ -329,202 +359,289 @@
     const closeReceiptBtn = document.getElementById('closeReceiptBtn');
     const downloadReceipt = document.getElementById('downloadReceipt');
 
+    // Elements for bukti pembayaran modal
+    const buktiModal = document.getElementById('buktiModal');
+
     // Generate random order number
-    const orderNumber = document.getElementById('orderNumber').textContent;
+    const orderNumber = document.getElementById('orderNumber')?.textContent || 'ORD-' + Math.floor(100000 + Math.random() * 900000);
+
+    // Function to close bukti modal
+    function closeBuktiModal() {
+        buktiModal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
 
     // Open payment modal when Buy Now button is clicked
-    buyNowBtn.addEventListener('click', function() {
-        // Update order date with current date and time when Buy Now is clicked
-        const orderDateElement = document.getElementById('orderDate');
-        if (orderDateElement) {
-            orderDateElement.textContent = getCurrentDateTime();
-        }
+    if (buyNowBtn) {
+        buyNowBtn.addEventListener('click', function() {
+            // Update order date with current date and time when Buy Now is clicked
+            const orderDateElement = document.getElementById('orderDate');
+            if (orderDateElement) {
+                orderDateElement.textContent = getCurrentDateTime();
+            }
 
-        paymentModal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
-    });
+            paymentModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        });
+    }
 
     // Close payment modal when close button is clicked
-    closeModal.addEventListener('click', function() {
-        paymentModal.classList.add('hidden');
-        document.body.style.overflow = 'auto'; // Enable scrolling
-    });
-
-    // Close payment modal when clicking outside the modal content
-    paymentModal.addEventListener('click', function(e) {
-        if (e.target === paymentModal) {
+    if (closeModal) {
+        closeModal.addEventListener('click', function() {
             paymentModal.classList.add('hidden');
             document.body.style.overflow = 'auto'; // Enable scrolling
-        }
-    });
+        });
+    }
+
+    // Close payment modal when clicking outside the modal content
+    if (paymentModal) {
+        paymentModal.addEventListener('click', function(e) {
+            if (e.target === paymentModal) {
+                paymentModal.classList.add('hidden');
+                document.body.style.overflow = 'auto'; // Enable scrolling
+            }
+        });
+    }
 
     // Handle payment confirmation
-    confirmPayment.addEventListener('click', function() {
-        if (paymentMethod.value === '') {
-            alert('Please select a payment method');
-            return;
+    if (confirmPayment) {
+        confirmPayment.addEventListener('click', function() {
+            if (paymentMethod.value === '') {
+                alert('Please select a payment method');
+                return;
+            }
+
+            // Close payment modal
+            paymentModal.classList.add('hidden');
+
+            // Show bukti pembayaran modal
+            buktiModal.classList.remove('hidden');
+        });
+    }
+
+    // Show receipt after bukti pembayaran is submitted
+    if (buktiModal) {
+        const buktiForm = buktiModal.querySelector('form');
+        if (buktiForm) {
+            buktiForm.addEventListener('submit', function(e) {
+                e.preventDefault(); // Prevent actual form submission
+
+                // Close bukti modal
+                closeBuktiModal();
+
+                // Prepare receipt data
+                document.getElementById('receiptOrderNumber').textContent = orderNumber;
+                document.getElementById('receiptDate').textContent = document.getElementById('orderDate').textContent;
+                document.getElementById('receiptPaymentMethod').textContent = paymentMethod.options[paymentMethod.selectedIndex].text;
+
+                // Generate random virtual account number based on selected bank
+                let bankPrefix = '';
+                switch(paymentMethod.value) {
+                    case 'bca': bankPrefix = '014'; break;
+                    case 'bni': bankPrefix = '009'; break;
+                    case 'mandiri': bankPrefix = '008'; break;
+                    case 'bri': bankPrefix = '002'; break;
+                    default: bankPrefix = '123';
+                }
+                const virtualAccount = bankPrefix + Math.floor(10000000000 + Math.random() * 90000000000);
+                document.getElementById('virtualAccountNumber').textContent = virtualAccount;
+
+                // Set price details
+                document.getElementById('receiptSubtotal').textContent = document.getElementById('subtotalPrice').textContent;
+                document.getElementById('receiptShipping').textContent = document.getElementById('shippingPrice').textContent;
+                document.getElementById('receiptTax').textContent = document.getElementById('taxPrice').textContent;
+                document.getElementById('receiptTotal').textContent = document.getElementById('totalPrice').textContent;
+
+                // Show receipt modal
+                receiptModal.classList.remove('hidden');
+            });
         }
+    }
 
-        // Close payment modal
-        paymentModal.classList.add('hidden');
-
-        // Prepare receipt data
-        document.getElementById('receiptOrderNumber').textContent = orderNumber;
-        document.getElementById('receiptDate').textContent = document.getElementById('orderDate').textContent;
-        document.getElementById('receiptPaymentMethod').textContent = paymentMethod.options[paymentMethod.selectedIndex].text;
-
-        // Generate random virtual account number based on selected bank
-        let bankPrefix = '';
-        switch(paymentMethod.value) {
-            case 'bca': bankPrefix = '014'; break;
-            case 'bni': bankPrefix = '009'; break;
-            case 'mandiri': bankPrefix = '008'; break;
-            case 'bri': bankPrefix = '002'; break;
-            default: bankPrefix = '123';
-        }
-        const virtualAccount = bankPrefix + Math.floor(10000000000 + Math.random() * 90000000000);
-        document.getElementById('virtualAccountNumber').textContent = virtualAccount;
-
-        // Set price details
-        document.getElementById('receiptSubtotal').textContent = document.getElementById('subtotalPrice').textContent;
-        document.getElementById('receiptShipping').textContent = document.getElementById('shippingPrice').textContent;
-        document.getElementById('receiptTax').textContent = document.getElementById('taxPrice').textContent;
-        document.getElementById('receiptTotal').textContent = document.getElementById('totalPrice').textContent;
-
-        // Show receipt modal
-        receiptModal.classList.remove('hidden');
-    });
-
-    // Close receipt modal
-    closeReceiptModal.addEventListener('click', function() {
-        receiptModal.classList.add('hidden');
-        document.body.style.overflow = 'auto'; // Enable scrolling
-    });
-
-    closeReceiptBtn.addEventListener('click', function() {
-        receiptModal.classList.add('hidden');
-        document.body.style.overflow = 'auto'; // Enable scrolling
-    });
-
-    // Close receipt modal when clicking outside the modal content
-    receiptModal.addEventListener('click', function(e) {
-        if (e.target === receiptModal) {
+    // Close receipt modal buttons
+    if (closeReceiptModal) {
+        closeReceiptModal.addEventListener('click', function() {
             receiptModal.classList.add('hidden');
             document.body.style.overflow = 'auto'; // Enable scrolling
-        }
-    });
+        });
+    }
+
+    if (closeReceiptBtn) {
+        closeReceiptBtn.addEventListener('click', function() {
+            receiptModal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Enable scrolling
+        });
+    }
+
+    // Close receipt modal when clicking outside the modal content
+    if (receiptModal) {
+        receiptModal.addEventListener('click', function(e) {
+            if (e.target === receiptModal) {
+                receiptModal.classList.add('hidden');
+                document.body.style.overflow = 'auto'; // Enable scrolling
+            }
+        });
+    }
 
     // Download receipt functionality
-    downloadReceipt.addEventListener('click', function() {
-        alert('Receipt download functionality would be implemented here. In a real application, this would generate a PDF or print version of the receipt.');
-    });
-});
+    if (downloadReceipt) {
+        downloadReceipt.addEventListener('click', function() {
+            alert('Receipt download functionality would be implemented here. In a real application, this would generate a PDF or print version of the receipt.');
+        });
+    }
 
-        document.addEventListener('DOMContentLoaded', function() {
-    // Elements for wishlist
+    // Update bank account information in the bukti modal when payment method changes
+    if (paymentMethod) {
+        paymentMethod.addEventListener('change', function() {
+            const bank = this.value;
+            let accountNumber = '';
+            let accountName = 'PT MOLE Store';
+
+            switch(bank) {
+                case 'bca':
+                    accountNumber = '1234567890';
+                    break;
+                case 'bni':
+                    accountNumber = '0987654321';
+                    break;
+                case 'mandiri':
+                    accountNumber = '2468135790';
+                    break;
+                case 'bri':
+                    accountNumber = '1357924680';
+                    break;
+                default:
+                    accountNumber = '1234567890';
+            }
+
+            // Update the bank account information in the bukti modal
+            const bankNameElement = document.querySelector('#buktiModal strong:nth-of-type(1)');
+            const accountNumberElement = document.querySelector('#buktiModal strong:nth-of-type(2)');
+            const accountNameElement = document.querySelector('#buktiModal strong:nth-of-type(3)');
+
+            if (bankNameElement && bankNameElement.nextSibling) {
+                bankNameElement.nextSibling.textContent = ': ' + bank.toUpperCase();
+            }
+            if (accountNumberElement && accountNumberElement.nextSibling) {
+                accountNumberElement.nextSibling.textContent = ': ' + accountNumber;
+            }
+            if (accountNameElement && accountNameElement.nextSibling) {
+                accountNameElement.nextSibling.textContent = ': ' + accountName;
+            }
+        });
+    }
+
+    // Wishlist functionality
     const wishlistBtn = document.getElementById('wishlistBtn');
     const heartIcon = document.getElementById('heartIcon');
-    const productId = {{ $product['id'] }};
-    const productTitle = "{{ $product['title'] }}";
-    const productImage = "{{ asset($product['image']) }}";
-    const productPrice = "{{ $product['price'] }}";
-    const productType = "{{ $product['type'] }}";
-    const productManufacturer = "{{ $product['specifications']['Manufacturer'] }}";
 
-    // Function to display notification
-    function showNotification(message, isSuccess = true) {
-        const notification = document.createElement('div');
-        notification.className = `fixed top-4 right-4 px-4 py-2 rounded-md shadow-lg z-50 transition-opacity duration-300 ${isSuccess ? 'bg-gray-800 text-white' : 'bg-red-500 text-white'}`;
-        notification.innerText = message;
-        document.body.appendChild(notification);
+    if (wishlistBtn && heartIcon) {
+        try {
+            const productId = productId || null; // This would be set by your template
+            const productTitle = productTitle || "Product";
+            const productImage = productImage || "";
+            const productPrice = productPrice || "";
+            const productType = productType || "";
+            const productManufacturer = productManufacturer || "";
 
-        setTimeout(() => {
-            notification.style.opacity = '0';
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 300);
-        }, 3000);
-    }
+            // Function to display notification
+            function showNotification(message, isSuccess = true) {
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 px-4 py-2 rounded-md shadow-lg z-50 transition-opacity duration-300 ${isSuccess ? 'bg-gray-800 text-white' : 'bg-red-500 text-white'}`;
+                notification.innerText = message;
+                document.body.appendChild(notification);
 
-    // Function to check if product is in wishlist
-    function isInWishlist(productId) {
-        const wishlist = getWishlist();
-        return wishlist.some(item => item.id === productId);
-    }
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
 
-    // Function to get wishlist from localStorage
-    function getWishlist() {
-        const wishlistData = localStorage.getItem('wishlist');
-        return wishlistData ? JSON.parse(wishlistData) : [];
-    }
+            // Function to check if product is in wishlist
+            function isInWishlist(productId) {
+                const wishlist = getWishlist();
+                return wishlist.some(item => item.id === productId);
+            }
 
-    // Function to save wishlist to localStorage
-    function saveWishlist(wishlist) {
-        localStorage.setItem('wishlist', JSON.stringify(wishlist));
-        updateWishlistCount();
-    }
+            // Function to get wishlist from localStorage
+            function getWishlist() {
+                const wishlistData = localStorage.getItem('wishlist');
+                return wishlistData ? JSON.parse(wishlistData) : [];
+            }
 
-    // Function to update wishlist count
-    function updateWishlistCount() {
-        const wishlist = getWishlist();
-        const wishlistCountElement = document.getElementById('wishlistCount');
-        if (wishlistCountElement) {
-            wishlistCountElement.textContent = wishlist.length;
-        }
-    }
+            // Function to save wishlist to localStorage
+            function saveWishlist(wishlist) {
+                localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                updateWishlistCount();
+            }
 
-    // Function to toggle wishlist
-    function toggleWishlist() {
-        const wishlist = getWishlist();
-        const productInWishlist = isInWishlist(productId);
-
-        if (productInWishlist) {
-            // Remove from wishlist
-            const updatedWishlist = wishlist.filter(item => item.id !== productId);
-            saveWishlist(updatedWishlist);
-            updateHeartIcon(false);
-            showNotification(`${productTitle} removed from wishlist`);
-        } else {
-            // Add to wishlist
-            const product = {
-                id: productId,
-                title: productTitle,
-                price: productPrice,
-                image: productImage,
-                type: productType,
-                isWishlisted: true,
-                specifications: {
-                    Manufacturer: productManufacturer
+            // Function to update wishlist count
+            function updateWishlistCount() {
+                const wishlist = getWishlist();
+                const wishlistCountElement = document.getElementById('wishlistCount');
+                if (wishlistCountElement) {
+                    wishlistCountElement.textContent = wishlist.length;
                 }
-            };
-            wishlist.push(product);
-            saveWishlist(wishlist);
-            updateHeartIcon(true);
-            showNotification(`${productTitle} added to wishlist`);
+            }
+
+            // Function to toggle wishlist
+            function toggleWishlist() {
+                const wishlist = getWishlist();
+                const productInWishlist = isInWishlist(productId);
+
+                if (productInWishlist) {
+                    // Remove from wishlist
+                    const updatedWishlist = wishlist.filter(item => item.id !== productId);
+                    saveWishlist(updatedWishlist);
+                    updateHeartIcon(false);
+                    showNotification(`${productTitle} removed from wishlist`);
+                } else {
+                    // Add to wishlist
+                    const product = {
+                        id: productId,
+                        title: productTitle,
+                        price: productPrice,
+                        image: productImage,
+                        type: productType,
+                        isWishlisted: true,
+                        specifications: {
+                            Manufacturer: productManufacturer
+                        }
+                    };
+                    wishlist.push(product);
+                    saveWishlist(wishlist);
+                    updateHeartIcon(true);
+                    showNotification(`${productTitle} added to wishlist`);
+                }
+            }
+
+            // Function to update heart icon appearance
+            function updateHeartIcon(isWishlisted) {
+                if (isWishlisted) {
+                    heartIcon.setAttribute('fill', 'currentColor');
+                    heartIcon.style.color = '#e53e3e'; // Red color
+                } else {
+                    heartIcon.setAttribute('fill', 'none');
+                    heartIcon.style.color = ''; // Default color
+                }
+            }
+
+            // Initialize heart icon state
+            if (productId) {
+                updateHeartIcon(isInWishlist(productId));
+            }
+
+            // Initialize wishlist count
+            updateWishlistCount();
+
+            // Event listener for wishlist button
+            wishlistBtn.addEventListener('click', toggleWishlist);
+        } catch (error) {
+            console.error("Error initializing wishlist:", error);
         }
-    }
-
-    // Function to update heart icon appearance
-    function updateHeartIcon(isWishlisted) {
-        if (isWishlisted) {
-            heartIcon.setAttribute('fill', 'currentColor');
-            heartIcon.style.color = '#e53e3e'; // Red color
-        } else {
-            heartIcon.setAttribute('fill', 'none');
-            heartIcon.style.color = ''; // Default color
-        }
-    }
-
-    // Initialize heart icon state
-    updateHeartIcon(isInWishlist(productId));
-
-    // Initialize wishlist count
-    updateWishlistCount();
-
-    // Event listener for wishlist button
-    if (wishlistBtn) {
-        wishlistBtn.addEventListener('click', toggleWishlist);
     }
 });
-    </script>
+</script>
 @endsection
