@@ -146,14 +146,6 @@
             <input type="password" id="confirm-password" name="password_confirmation" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" placeholder="Confirm your password" required>
           </div>
 
-          <div class="mb-4">
-            <label for="register-role" class="block text-sm font-semibold text-gray-700">Daftar sebagai</label>
-            <select id="register-role" name="role" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" required>
-              <option value="pembeli">Pembeli</option>
-              <option value="penjual">Penjual</option>
-            </select>
-          </div>
-
           <button type="submit" id="register-button" class="w-full bg-blue-100 hover:bg-blue-200 text-black font-semibold py-2 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
             Register
           </button>

@@ -32,7 +32,7 @@
                 </svg>
                 <h3 class="text-xl font-bold text-gray-700 mb-2">Your wishlist is empty</h3>
                 <p class="text-gray-500 mb-6 text-center">Explore our collection and add your favorite figures!</p>
-                <a href="{{ route('home') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-semibold">
+                <a href="{{ route('explore') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-semibold">
                     Explore Collection
                 </a>
             </div>
@@ -76,25 +76,25 @@
             const emptyWishlist = document.getElementById('emptyWishlist');
             const clearWishlistBtn = document.getElementById('clearWishlist');
             const itemTemplate = document.getElementById('wishlistItemTemplate');
-            
+
             // Function to get wishlist from localStorage
             function getWishlist() {
                 const wishlistData = localStorage.getItem('wishlist');
                 return wishlistData ? JSON.parse(wishlistData) : [];
             }
-            
+
             // Function to save wishlist to localStorage
             function saveWishlist(wishlist) {
                 localStorage.setItem('wishlist', JSON.stringify(wishlist));
             }
-            
+
             // Function to display notification
             function showNotification(message, isSuccess = true) {
                 const notification = document.createElement('div');
                 notification.className = `fixed top-4 right-4 px-4 py-2 rounded-md shadow-lg z-50 transition-opacity duration-300 ${isSuccess ? 'bg-gray-800 text-white' : 'bg-red-500 text-white'}`;
                 notification.innerText = message;
                 document.body.appendChild(notification);
-                
+
                 setTimeout(() => {
                     notification.style.opacity = '0';
                     setTimeout(() => {
@@ -102,89 +102,89 @@
                     }, 300);
                 }, 3000);
             }
-            
+
             // Function to render wishlist items
             function renderWishlist() {
                 const wishlist = getWishlist();
-                
+
                 // Clear container except for the empty message
                 const items = wishlistContainer.querySelectorAll('.wishlist-item');
                 items.forEach(item => item.remove());
-                
+
                 if (wishlist.length === 0) {
                     emptyWishlist.classList.remove('hidden');
                     return;
                 }
-                
+
                 emptyWishlist.classList.add('hidden');
-                
+
                 // Add wishlist items
                 wishlist.forEach(item => {
                     const clone = document.importNode(itemTemplate.content, true);
-                    
+
                     // Set item details
                     const productLink = clone.querySelector('.product-link');
                     productLink.href = `/mole/product/${item.id}`;
-                    
+
                     const productImage = clone.querySelector('.product-image');
                     productImage.src = item.image;
                     productImage.alt = item.title;
-                    
+
                     clone.querySelector('.product-type').textContent = item.type;
                     clone.querySelector('.product-title').textContent = item.title;
                     clone.querySelector('.product-price').textContent = item.price;
-                    
+
                     // Add event listener to remove button
                     const removeBtn = clone.querySelector('.remove-wishlist');
                     removeBtn.dataset.productId = item.id;
                     removeBtn.addEventListener('click', function() {
                         removeFromWishlist(item.id, item.title);
                     });
-                    
+
                     // Add event listener to buy now button
                     const buyBtn = clone.querySelector('.add-to-cart');
                     buyBtn.addEventListener('click', function() {
                         window.location.href = `/product/${item.id}`;
                     });
-                    
+
                     wishlistContainer.appendChild(clone);
                 });
             }
-            
+
             // Function to remove item from wishlist
             function removeFromWishlist(productId, productTitle) {
                 const wishlist = getWishlist();
                 const updatedWishlist = wishlist.filter(item => item.id !== productId);
                 saveWishlist(updatedWishlist);
                 renderWishlist();
-                
+
                 // Update wishlist count in header if it exists
                 const wishlistCountElement = document.getElementById('wishlistCount');
                 if (wishlistCountElement) {
                     wishlistCountElement.textContent = updatedWishlist.length;
                 }
-                
+
                 showNotification(`${productTitle} removed from wishlist`);
             }
-            
+
             // Clear entire wishlist
             clearWishlistBtn.addEventListener('click', function() {
                 if (getWishlist().length === 0) return;
-                
+
                 if (confirm('Are you sure you want to clear your wishlist?')) {
                     saveWishlist([]);
                     renderWishlist();
-                    
+
                     // Update wishlist count in header if it exists
                     const wishlistCountElement = document.getElementById('wishlistCount');
                     if (wishlistCountElement) {
                         wishlistCountElement.textContent = '0';
                     }
-                    
+
                     showNotification('Wishlist has been cleared');
                 }
             });
-            
+
             // Initialize
             renderWishlist();
         });
