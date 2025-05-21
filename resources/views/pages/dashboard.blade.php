@@ -2,16 +2,17 @@
 
 @section('type', 'Home - Figure Collection Store')
 
-@section('content')
-    <!-- Banner Gabungan -->
-<div class="flex justify-center">
-    <div class="w-[75%] bg-white rounded-3xl overflow-hidden shadow-md mb-10 relative h-60">
+@section('banner')
+<!-- Banner Gabungan -->
+<div class="relative w-full h-60">
+    <div class="w-[100%] bg-white shadow-md mb-10 relative h-60">
         @include('component.banner')
         <img src="{{ asset('images/banner.jpeg') }}" alt="Banner" class="absolute inset-0 w-full h-full object-cover z-0">
     </div>
 </div>
+@endsection
 
-
+@section('content')
     <!-- Product Ranking -->
     <div class="bg-gray-200 p-4 rounded-md mt-7 mb-7">
         <h2 class="text-lg font-bold mb-3">Product Ranking</h2>

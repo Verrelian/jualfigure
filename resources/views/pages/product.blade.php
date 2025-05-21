@@ -3,8 +3,8 @@
 @section('title', 'Himura Kenshin Figure - Rurouni Kenshin')
 
 @section('content')
-    @include('components.back-button', ['backUrl' => route('home')])
-    
+    @include('components.back-button', ['backUrl' => route('dashboard')])
+
     <div class="row mt-3">
         <div class="col-lg-6">
             <div class="row">
@@ -17,17 +17,17 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-lg-6">
             <div class="product-info">
                 <h2>[Hanami SALE] PVC Non Scale Figure Himura Kenshin - Rurouni Kenshin</h2>
                 <div class="price-tag">IDR 699,000</div>
-                
+
                 <div class="mb-3">
                     <label for="quantity">Quantity</label>
                     @include('components.quantity-control', ['quantity' => 1])
                 </div>
-                
+
                 <div class="product-description">
                     <p>From "Rurouni Kenshin", the main character Kenshin Himura has been sculpted as a non-scale figure!</p>
                     <p>Kenshin is posed sitting on a chair with a gentle yet strong expression on his face.</p>
@@ -36,7 +36,7 @@
                     <p>Bring Kenshin Himura home at an affordable price and with a lot of attention to detail!</p>
                     <p>Painted plastic non-scale complete product. Approximately 155mm in height.</p>
                 </div>
-                
+
                 <form action="{{ route('cart.add') }}" method="POST" id="buy-form">
                     @csrf
                     <input type="hidden" name="product_id" value="1">
@@ -53,13 +53,13 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const buyNowBtn = document.getElementById('buy-now-btn');
-        
+
         if (buyNowBtn) {
             buyNowBtn.addEventListener('click', function() {
                 document.getElementById('buy-form').submit();
             });
         }
-        
+
         const wishlistBtn = document.querySelector('.wishlist-btn');
         if (wishlistBtn) {
             wishlistBtn.addEventListener('click', function() {

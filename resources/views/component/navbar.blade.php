@@ -26,19 +26,32 @@
     <!-- Navigation and User Menu -->
     <div class="flex items-center">
       <!-- Main Navigation -->
-      <div class="hidden md:flex md:space-x-6 me-6">
-          <a href="{{ url('/dashboard') }}" class="{{ Request::is('/dashboard') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">Beranda</a>
+    <div class="hidden md:flex md:space-x-6 me-6">
+        <a href="{{ url('/dashboard') }}"
+          class="{{ Request::is('dashboard') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
+          Beranda
+        </a>
 
-          <a href="{{ url('/wishlist') }}" class="{{ Request::is('seller/crud') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">Whislist</a>
+        <a href="{{ url('/explore') }}"
+          class="{{ Request::is('explore') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
+          Explore
+        </a>
 
-          <a href="{{url ('/leaderboard') }}" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Leaderboard</a>
+        <a href="{{ url('/wishlist') }}"
+          class="{{ Request::is('wishlist') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
+          Wishlist
+        </a>
 
-          <a href="{{url ('/explore') }}" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Explore</a>
+        <a href="{{ url('/leaderboard') }}"
+          class="{{ Request::is('leaderboard') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
+          Leaderboard
+        </a>
 
-          <a href="{{url ('/order-history') }}" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">History</a>
-      </div>
-
-
+        <a href="{{ url('/order-history') }}"
+          class="{{ Request::is('order-history') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
+          History
+        </a>
+    </div>
       <!-- User Dropdown - Profile Penjual -->
       <div class="relative">
         <button type="button" class="flex items-center space-x-2 text-sm bg-gray-100 rounded-full p-1 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown">

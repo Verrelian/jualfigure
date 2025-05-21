@@ -14,7 +14,9 @@
     <div class="grid grid-cols-3 gap-4 mb-10">
         <!-- Nendoroid Category -->
         <div class="relative rounded-lg overflow-hidden shadow-md bg-gray-800">
-            <img src="{{ asset('images/p6.jpg') }}" alt="Nendoroid" class="w-full h-40 object-cover">
+            <div class="aspect-[4/3] w-full">
+                <img src="{{ asset('images/p6.jpg') }}" alt="Nendoroid" class="w-full h-80 object-cover">
+            </div>
             <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2">
                 <h3 class="font-bold text-sm">Nendoroid</h3>
                 <div class="flex items-center">
@@ -26,7 +28,7 @@
 
         <!-- Pop Up Parade Category -->
         <div class="relative rounded-lg overflow-hidden shadow-md bg-gray-800">
-            <img src="{{ asset('images/p3.png') }}" alt="Pop Up Parade" class="w-full h-40 object-cover">
+            <img src="{{ asset('images/p3.png') }}" alt="Pop Up Parade" class="w-full h-80 object-cover">
             <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2">
                 <h3 class="font-bold text-sm">Pop Up Parade</h3>
                 <div class="flex items-center">
@@ -37,7 +39,7 @@
 
         <!-- Hot Toys Category -->
         <div class="relative rounded-lg overflow-hidden shadow-md bg-gray-800">
-            <img src="{{ asset('images/figure4.jpg') }}" alt="Hot Toys" class="w-full h-40 object-cover">
+            <img src="{{ asset('images/figure4.jpg') }}" alt="Hot Toys" class="w-full h-80 object-cover">
             <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2">
                 <h3 class="font-bold text-sm">Hot Toys</h3>
                 <div class="flex items-center">
