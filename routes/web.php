@@ -123,3 +123,14 @@ Route::get('/explore', function () {
 Route::get('/leaderboard', function () {
     return view('pages.leaderboard');
 });
+
+// Route untuk halaman postingan pengguna
+Route::get('/user/posts', function () {
+    return view('user-posts');
+})->name('user.posts');
+
+// Route untuk halaman mainan yang dibeli pengguna
+Route::get('/user/toys', function () {
+    return view('user-toys');
+})->name('user.toys');
+
