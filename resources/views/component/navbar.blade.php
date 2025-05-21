@@ -43,7 +43,7 @@
       <div class="relative">
         <button type="button" class="flex items-center space-x-2 text-sm bg-gray-100 rounded-full p-1 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown">
           <span class="sr-only">Open user menu</span>
-          <img class="w-8 h-8 rounded-full" src="/images/icon.png" alt="user photo">
+          <img class="w-8 h-8 rounded-full" src="{{ asset('images/muka.jpg') }}" alt="User Image">
           <span class="hidden md:block text-gray-700 pe-2">Profile</span>
           <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -53,8 +53,8 @@
         <!-- Dropdown menu -->
         <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-lg" id="user-dropdown">
           <div class="px-4 py-3 bg-gray-50 rounded-t-lg">
-            <span class="block text-sm font-medium text-gray-900">Adnan</span>
-            <span class="block text-sm text-gray-500 truncate">email@and.com</span>
+            <span class="block text-sm font-medium text-gray-900">Stephen Hawking</span>
+            <span class="block text-sm text-gray-500 truncate">loyalhunter@gmail.com</span>
           </div>
           <ul class="py-2" aria-labelledby="user-menu-button">
             <li>
