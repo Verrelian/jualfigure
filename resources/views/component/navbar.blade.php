@@ -27,7 +27,7 @@
     <div class="flex items-center">
       <!-- Main Navigation -->
       <div class="hidden md:flex md:space-x-6 me-6">
-          <a href="{{ url('/dashboard') }}" class="{{ Request::is('/dashboard') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">Beranda</a>
+          <a href="{{ url('/dashboard') }}" class="{{ Request::is('/dashboard') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">Home</a>
 
           <a href="{{ url('/wishlist') }}" class="{{ Request::is('seller/crud') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">Whislist</a>
 
@@ -35,7 +35,11 @@
 
           <a href="{{url ('/explore') }}" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Explore</a>
 
-          <a href="{{url ('/order-history') }}" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">History</a>
+          <a href="{{url ('/order-history') }}" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Order History</a>
+
+          <a href="{{url ('/post') }}" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Add Post</a>
+
+          <a href="{{url ('/feed') }}" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Feed</a>
       </div>
 
 

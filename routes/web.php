@@ -8,14 +8,37 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CrudController;
 use App\Http\Controllers\OrderController;
 
-Route::get('seller/crud', [CrudController::class, 'index'])->name('crud.index');
+// ----------------------------
+// Auth & Static Pages
+// ----------------------------
+
 Route::get('/login', function () {
     return view('pages.login');
 });
 
+Route::get('/register', function () {
+    return view('register');
+});
+
+Route::get('/forgot_password', function () {
+    return view('forgot_password');
+});
+
+Route::get('/webs', function () {
+    return view('welcome');
+});
+
+// ----------------------------
+// Dashboard & Seller Routes
+// ----------------------------
+
 Route::get('/dashboard', function () {
     return view('pages.dashboard');
 })->name('dashboard');
+
+Route::get('/home', function () {
+    return view('pages.dashboard');
+});
 
 Route::get('seller/dashboardp', function () {
     return view('pages.seller.dashboardp');
@@ -33,32 +56,35 @@ Route::get('seller/laporan', function () {
     return view('pages.seller.laporan');
 })->name('laporan');
 
+Route::get('seller/crud', [CrudController::class, 'index'])->name('crud.index');
 
-Route::get('/home', function () {
-    return view('pages.dashboard');
+Route::get('/seller/crud', function () {
+    return view('pages.seller.crud');
 });
 
-Route::get('/register', function () {
-    return view('register');
-});
+// ----------------------------
+// Product & Wishlist
+// ----------------------------
 
-Route::get('forgot_password', function () {
-    return view('forgot_password');
-});
-
-// Halaman tambahan jika diperlukan
-Route::get('/webs', function () {
-    return view('welcome'); // atau halaman dashboard
+Route::get('/products', function () {
+    return view('pages.products');
 });
 
 Route::get('/product-detail', function () {
     return view('pages.product-detail');
 });
 
-Route::get('/products', function () {
-    return view('pages.products');
-});
+Route::get('/wishlist', function () {
+    return view('pages.wishlist');
+})->name('wishlist');
 
+Route::get('/product-detail', [ProductController::class, 'index'])->name('home');
+
+Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
+
+// ----------------------------
+// Orders
+// ----------------------------
 
 Route::get('/detail', function () {
     return view('pages.order-detail');
@@ -68,34 +94,40 @@ Route::get('/order-detail', function () {
     return view('pages.order-detail');
 });
 
-Route::get('/product-detail', [ProductController::class, 'index'])->name('home');
-Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
-
-
-Route::get('/wishlist', function () {
-    return view('pages.wishlist');
-})->name('wishlist');
-
-Route::get('/seller/crud', function () {
-    return view('pages.seller.crud');
-});
-
 Route::get('/order-status/{id?}', [OrderController::class, 'status'])->name('order.status');
-Route::get('/order-history/{id?}', [OrderController::class, 'status'])->name('order.history');
 
-Route::get('/explore', function () {
-    return view('pages.explore');
-});
+Route::get('/order-history/{id?}', [OrderController::class, 'history'])->name('order.history');
 
-Route::get('/leaderboard', function () {
-    return view('pages.leaderboard');
-});
+// ----------------------------
+// Profile
+// ----------------------------
 
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
 Route::get('profile', function () {
     return view('profile');
 });
 
-Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
-Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+// ----------------------------
+// Extra Pages
+// ----------------------------
+
+Route::get('/explore', function () {
+    return view('pages.explore');
+})->name('explore');
+
+Route::get('/leaderboard', function () {
+    return view('pages.leaderboard');
+});
+
+Route::get('/post', function () {
+    return view('pages.post');
+});
+
+Route::get('/feed', function () {
+    return view('pages.feed');
+});
