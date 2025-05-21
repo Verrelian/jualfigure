@@ -1,178 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile - Toys</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>User Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-200">
-    <div class="max-w-lg mx-auto my-4">
-        <!-- Profile Card -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <!-- Header with Menu -->
-            <!-- Header with Dropdown Menu -->
-<div class="bg-black text-white p-3 relative">
-    <div class="flex justify-start items-center">
-        <!-- Menu Button -->
-        <button id="menu-button" class="focus:outline-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-        </button>
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+    <!-- Top Bar -->
+    <div class="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
+        <h1 class="text-xl font-bold">MOLE</h1>
+        <div class="flex items-center gap-4">
+            <span class="text-sm text-gray-600">58k followers · 28k following</span>
+            <button id="back-btn" class="text-sm bg-gray-200 px-4 py-1 rounded">Back</button>
+        </div>
     </div>
 
-    <!-- Dropdown Menu -->
-    <div id="dropdown-menu"
-        class="absolute top-12 left-3 bg-white text-black rounded-lg shadow-lg w-40 hidden z-50">
-        <a href="{{ url('/dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">Home</a>
-        <a href="{{url ('/login') }}" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
-    </div>
-</div>
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto mt-6 px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
 
-            <!-- Profile Content -->
-            <div class="flex">
-                <!-- Left side (Profile info & toys) -->
-                <div class="w-2/3 p-4">
-                    <div class="flex items-center mb-3">
-                        <h2 class="text-xl font-bold">Stephen Hawking</h2>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-                        </svg>
-                    </div>
+        <!-- Sidebar -->
+        <div class="md:col-span-1">
+            <div class="bg-white rounded-lg p-6 shadow-sm flex flex-col items-center">
+                <div class="w-40 h-40 rounded-full overflow-hidden mb-4 border-4 border-gray-200">
+                    <img src="{{ asset('images/muka.jpg') }}" alt="Profile" class="w-full h-full object-cover rounded-full">
+                </div>
+                <h2 class="text-lg font-bold">Loyal Hunter</h2>
+                <p class="text-gray-600 text-sm mb-4">Stephen Hawking</p>
 
-                    <!-- Tabs -->
-                    <div class="flex space-x-4 mb-4">
-                        <button id="posts-tab" class="px-4 py-1 bg-gray-200 rounded-md text-sm font-medium">Posts</button>
-                        <button id="toys-tab" class="px-4 py-1 bg-gray-200 rounded-md text-sm font-medium text-blue-500 border-b-2 border-blue-500">Toys</button>
-                    </div>
-
-                    <!-- Toys Collection -->
-                    <div class="grid grid-cols-5 gap-3 mb-6">
-                        <!-- Toy 1 -->
-                        <div class="flex flex-col items-center">
-                            <div class="bg-yellow-100 rounded-md p-2 w-full flex justify-center mb-1">
-                                <div class="w-8 h-10 bg-yellow-600"></div>
-                            </div>
-                            <span class="text-xs text-gray-500">Golden Toy</span>
-                        </div>
-
-                        <!-- Toy 2 -->
-                        <div class="flex flex-col items-center">
-                            <div class="bg-green-100 rounded-md p-2 w-full flex justify-center mb-1">
-                                <div class="w-8 h-10 bg-green-600"></div>
-                            </div>
-                            <span class="text-xs text-gray-500">Emerald</span>
-                        </div>
-
-                        <!-- Toy 3 -->
-                        <div class="flex flex-col items-center">
-                            <div class="bg-purple-100 rounded-md p-2 w-full flex justify-center mb-1">
-                                <div class="w-8 h-10 bg-purple-600"></div>
-                            </div>
-                            <span class="text-xs text-gray-500">Wizard</span>
-                        </div>
-
-                        <!-- Toy 4 -->
-                        <div class="flex flex-col items-center">
-                            <div class="bg-pink-100 rounded-md p-2 w-full flex justify-center mb-1">
-                                <div class="w-8 h-10 bg-pink-600"></div>
-                            </div>
-                            <span class="text-xs text-gray-500">Princess</span>
-                        </div>
-
-                        <!-- Toy 5 -->
-                        <div class="flex flex-col items-center">
-                            <div class="bg-teal-100 rounded-md p-2 w-full flex justify-center mb-1">
-                                <div class="w-8 h-10 bg-teal-600"></div>
-                            </div>
-                            <span class="text-xs text-gray-500">Emerald</span>
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="flex space-x-2">
-                        <button id="view-post-btn" class="bg-black text-white rounded-full px-6 py-2 text-sm font-medium">View Post</button>
-                        <button id="view-toys-btn" class="bg-gray-200 text-black rounded-full px-6 py-2 text-sm font-medium">View Toys</button>
-                    </div>
+                <!-- Informasi Tambahan -->
+                <div class="w-full text-sm text-gray-600 space-y-1 text-left mt-2">
+                    <p><strong>Tanggal Lahir:</strong> 14 Januari 1980</p>
+                    <p><strong>Telepon:</strong> +62 812-3456-7890</p>
+                    <p><strong>Email:</strong> loyalhunter@email.com</p>
+                    <p><strong>Alamat:</strong> Jl. Mawar No. 123, Jakarta</p>
                 </div>
 
-                <!-- Right side (User info) -->
-                <div class="w-1/3 p-4 bg-gray-50">
-                    <div class="flex flex-col items-center">
-                        <!-- Profile Image -->
-                        <div class="w-16 h-16 rounded-full overflow-hidden mb-2">
-                            <img src="image/muka.jpg" alt="Profile" class="w-full h-full object-cover">
-                        </div>
+                <button id="edit-profile-btn" class="bg-black text-white mt-4 w-full py-2 text-sm rounded-md">Edit Profile</button>
+            </div>
+        </div>
 
-                        <!-- User Info -->
-                        <div class="text-center">
-                            <h3 class="font-bold">Loyal Hunter</h3>
-                            <p class="text-sm text-gray-600">Stephen Hawking</p>
+        <!-- Main Section -->
+        <div class="md:col-span-2 space-y-6">
+            
+            <!-- Toys Collection -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h3 class="text-xl font-semibold mb-4">Toys Collection</h3>
 
-                            <!-- Counts -->
-                            <div class="flex justify-center space-x-6 my-2 text-xs">
-                                <div>
-                                    <p class="text-gray-500">Followers</p>
-                                    <p class="font-bold">58k</p>
-                                </div>
-                                <div>
-                                    <p class="text-gray-500">Following</p>
-                                    <p class="font-bold">28k</p>
-                                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    @foreach ([
+                        'Golden Toy' => 'bg-yellow-500',
+                        'Emerald' => 'bg-green-500',
+                        'Wizard' => 'bg-purple-500',
+                        'Princess' => 'bg-pink-500',
+                        'Ninja' => 'bg-teal-500'
+                    ] as $name => $color)
+                        <div class="flex flex-col items-center">
+                            <div class="rounded-md p-3 w-full flex justify-center mb-1 bg-opacity-20 {{ $color }}">
+                                <div class="w-10 h-12 rounded {{ $color }}"></div>
                             </div>
-
-                            <!-- Edit Profile Button -->
-                            <button id="edit-profile-btn" class="bg-black text-white rounded-lg w-full py-1 text-sm mt-2">Edit Profile</button>
+                            <span class="text-xs text-gray-600">{{ $name }}</span>
                         </div>
-                    </div>
+                    @endforeach
+                </div>
+
+                <div class="mt-6 flex gap-3">
+                    <button id="view-post-btn" class="bg-black text-white rounded-full px-6 py-2 text-sm font-medium">View Post</button>
+                    <button id="view-toys-btn" class="bg-gray-200 text-black rounded-full px-6 py-2 text-sm font-medium">View Toys</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Script -->
     <script>
-        // Button functionality
-        document.getElementById('posts-tab').addEventListener('click', function() {
-            // Switch to posts tab
-            this.classList.add('text-blue-500', 'border-b-2', 'border-blue-500');
-            document.getElementById('toys-tab').classList.remove('text-blue-500', 'border-b-2', 'border-blue-500');
-            // Additional logic to show posts content
-        });
-
-        document.getElementById('toys-tab').addEventListener('click', function() {
-            // Switch to toys tab
-            this.classList.add('text-blue-500', 'border-b-2', 'border-blue-500');
-            document.getElementById('posts-tab').classList.remove('text-blue-500', 'border-b-2', 'border-blue-500');
-            // Additional logic to show toys content
-        });
-
-        document.getElementById('view-post-btn').addEventListener('click', function() {
-            // Navigate to posts view
-            document.getElementById('posts-tab').click();
-        });
-
         document.getElementById('edit-profile-btn').addEventListener('click', function () {
-    window.location.href = "{{ route('profile.edit') }}";
-});
+            window.location.href = "{{ route('profile.edit') }}";
+        });
 
+        document.getElementById('back-btn').addEventListener('click', function () {
+            window.location.href = "{{ route('dashboard') }}";
+        });
 
-        // Toggle Dropdown Menu
-    const menuButton = document.getElementById('menu-button');
-    const dropdownMenu = document.getElementById('dropdown-menu');
+        document.getElementById('view-post-btn').addEventListener('click', function () {
+            window.location.href = "{{ route('user.posts') }}";
+        });
 
-    menuButton.addEventListener('click', () => {
-        dropdownMenu.classList.toggle('hidden');
-    });
-
-    // Optional: klik di luar dropdown untuk menutup
-    window.addEventListener('click', function (e) {
-        if (!menuButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
-            dropdownMenu.classList.add('hidden');
-        }
-    });
+        document.getElementById('view-toys-btn').addEventListener('click', function () {
+            window.location.href = "{{ route('user.toys') }}";
+        });
     </script>
+
 </body>
 </html>
