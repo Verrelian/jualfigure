@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ListProdukController;
 
 Route::get('/listproduk', [ListProdukController::class, 'show']);
+
 Route::get('/login', function () {
     return view('pages.login');
 });
