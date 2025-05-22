@@ -7,6 +7,9 @@ use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CrudController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ListProdukController;
+
+Route::get('/listproduk', [ListProdukController::class, 'show']);
 
 // ----------------------------
 // Auth & Static Pages
