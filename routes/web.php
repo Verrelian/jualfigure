@@ -10,11 +10,6 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ListProdukController;
 
 Route::get('/listproduk', [ListProdukController::class, 'show']);
-
-// ----------------------------
-// Auth & Static Pages
-// ----------------------------
-
 Route::get('/login', function () {
     return view('pages.login');
 });
@@ -146,4 +141,17 @@ Route::get('/user/posts', function () {
 Route::get('/user/toys', function () {
     return view('user-toys');
 })->name('user.toys');
+
+// Untuk menampilkan daftar post
+Route::get('/feed', [PostController::class, 'index'])->name('posts.index');
+
+// Untuk menampilkan form create
+Route::get('/posts', [PostController::class, 'create'])->name('posts.create');
+
+// Untuk menyimpan post baru
+Route::post('/feed', [PostController::class, 'store'])->name('posts.store');
+
+Route::post('/feed/{post}/like', [PostController::class, 'like'])->name('posts.like');
+
+Route::post('/feed/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
 
