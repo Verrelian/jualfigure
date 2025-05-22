@@ -52,7 +52,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
                                 </svg>
                             </button>
-                            <input type="number" id="quantity" name="quantity" min="1" value="1" 
+                            <input type="number" id="quantity" name="quantity" min="1" value="1"
                                 class="w-16 text-center py-1 border-gray-300 focus:ring-blue-500 focus:border-blue-500 block shadow-sm border-y">
                             <button id="incrementQuantity" class="px-3 py-1 bg-gray-200 rounded-r-md hover:bg-gray-300">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -181,7 +181,6 @@
         </div>
     </div>
 </div>
-<!-- Modal Bukti Pembayaran -->
 <!-- Modal Bukti Pembayaran -->
 <div id="buktiModal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden">
     <div class="bg-gray-800 text-white rounded-lg p-6 w-full max-w-md">
@@ -347,7 +346,7 @@
         </div>
     </div>
 <script>
-   document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     // Fungsi untuk mendapatkan tanggal dan waktu saat ini dalam format yang diinginkan
     function getCurrentDateTime() {
         const now = new Date();
@@ -363,77 +362,6 @@
         const seconds = String(now.getSeconds()).padStart(2, '0');
 
         return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-    }
-
-    // Elements for quantity selector
-    const quantityInput = document.getElementById('quantity');
-    const decrementBtn = document.getElementById('decrementQuantity');
-    const incrementBtn = document.getElementById('incrementQuantity');
-
-    // Set up quantity increment/decrement
-    if (decrementBtn && incrementBtn && quantityInput) {
-        decrementBtn.addEventListener('click', function() {
-            let value = parseInt(quantityInput.value);
-            if (value > 1) {
-                quantityInput.value = value - 1;
-                updatePrices();
-            }
-        });
-
-        incrementBtn.addEventListener('click', function() {
-            let value = parseInt(quantityInput.value);
-            if (value < 99) {
-                quantityInput.value = value + 1;
-                updatePrices();
-            }
-        });
-
-        // Also update when manually entered
-        quantityInput.addEventListener('change', function() {
-            let value = parseInt(this.value);
-            if (isNaN(value) || value < 1) {
-                this.value = 1;
-            } else if (value > 99) {
-                this.value = 99;
-            }
-            updatePrices();
-        });
-    }
-
-    // Function to update all prices based on quantity
-    function updatePrices() {
-        // Get base price value (remove IDR and commas, then parse as float)
-        const basePriceElement = document.getElementById('basePrice');
-        if (!basePriceElement) return;
-        
-        const basePriceText = basePriceElement.textContent;
-        const basePrice = parseFloat(basePriceText.replace('IDR ', '').replace(/,/g, ''));
-        
-        const quantity = parseInt(quantityInput.value);
-        
-        // Update quantity in modal
-        document.getElementById('modalQuantity').textContent = quantity;
-        document.getElementById('summaryQuantity').textContent = quantity;
-        
-        // Update subtotal
-        const subtotal = basePrice * quantity;
-        document.getElementById('subtotalPrice').textContent = 'IDR ' + formatNumber(subtotal);
-        
-        // Update tax (5%)
-        const tax = subtotal * 0.05;
-        document.getElementById('taxPrice').textContent = 'IDR ' + formatNumber(tax);
-        
-        // Shipping stays the same at 8,000
-        const shipping = 8000;
-        
-        // Update total
-        const total = subtotal + tax + shipping;
-        document.getElementById('totalPrice').textContent = 'IDR ' + formatNumber(total);
-    }
-
-    // Format number with thousand separators
-    function formatNumber(num) {
-        return num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
     }
 
     // Elements for payment modal
@@ -456,269 +384,282 @@
     const orderNumber = document.getElementById('orderNumber')?.textContent || 'ORD-' + Math.floor(100000 + Math.random() * 900000);
 
     // Function to close bukti modal
-    window.closeBuktiModal = function() {
+    function closeBuktiModal() {
         buktiModal.classList.add('hidden');
-    };
+        document.body.style.overflow = 'auto';
+    }
 
-    // Set up event listeners for payment flow
-    if (buyNowBtn && paymentModal) {
-        // Set current date in payment modal
-        const orderDateElement = document.getElementById('orderDate');
-        if (orderDateElement) {
-            orderDateElement.textContent = 'Order Date: ' + getCurrentDateTime();
-        }
-
-        // Show payment modal when Buy Now is clicked
+    // Open payment modal when Buy Now button is clicked
+    if (buyNowBtn) {
         buyNowBtn.addEventListener('click', function() {
+            // Update order date with current date and time when Buy Now is clicked
+            const orderDateElement = document.getElementById('orderDate');
+            if (orderDateElement) {
+                orderDateElement.textContent = getCurrentDateTime();
+            }
+
             paymentModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
         });
     }
 
-    // Close payment modal
-    if (closeModal && paymentModal) {
+    // Close payment modal when close button is clicked
+    if (closeModal) {
         closeModal.addEventListener('click', function() {
             paymentModal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Enable scrolling
+        });
+    }
+
+    // Close payment modal when clicking outside the modal content
+    if (paymentModal) {
+        paymentModal.addEventListener('click', function(e) {
+            if (e.target === paymentModal) {
+                paymentModal.classList.add('hidden');
+                document.body.style.overflow = 'auto'; // Enable scrolling
+            }
         });
     }
 
     // Handle payment confirmation
-    if (confirmPayment && receiptModal && paymentModal) {
+    if (confirmPayment) {
         confirmPayment.addEventListener('click', function() {
             if (paymentMethod.value === '') {
-                alert('Please select a payment method first');
+                alert('Please select a payment method');
                 return;
             }
 
-            // Hide payment modal and show receipt modal
+            // Close payment modal
             paymentModal.classList.add('hidden');
-            
-            // Fill receipt data
-            fillReceiptData();
-            
-            // Show receipt modal
-            receiptModal.classList.remove('hidden');
+
+            // Show bukti pembayaran modal
+            buktiModal.classList.remove('hidden');
         });
     }
 
-    // Fill receipt data
-    function fillReceiptData() {
-        const currentDateTime = getCurrentDateTime();
-        const quantity = parseInt(quantityInput.value);
-        
-        // Order numbers
-        const receiptOrderNumberElements = document.querySelectorAll('#receiptOrderNumber, #receiptOrderNumber2');
-        receiptOrderNumberElements.forEach(elem => {
-            if (elem) elem.textContent = orderNumber;
-        });
-        
-        // Dates
-        const receiptDateElements = document.querySelectorAll('#receiptDate, #receiptDate2');
-        receiptDateElements.forEach(elem => {
-            if (elem) elem.textContent = currentDateTime;
-        });
-        
-        // Payment method
-        const receiptPaymentMethodElement = document.getElementById('receiptPaymentMethod');
-        if (receiptPaymentMethodElement) {
-            const selectedMethod = paymentMethod.options[paymentMethod.selectedIndex].text;
-            receiptPaymentMethodElement.textContent = selectedMethod;
+    // Show receipt after bukti pembayaran is submitted
+    if (buktiModal) {
+        const buktiForm = buktiModal.querySelector('form');
+        if (buktiForm) {
+            buktiForm.addEventListener('submit', function(e) {
+                e.preventDefault(); // Prevent actual form submission
+
+                // Close bukti modal
+                closeBuktiModal();
+
+                // Prepare receipt data
+                document.getElementById('receiptOrderNumber').textContent = orderNumber;
+                document.getElementById('receiptDate').textContent = document.getElementById('orderDate').textContent;
+                document.getElementById('receiptPaymentMethod').textContent = paymentMethod.options[paymentMethod.selectedIndex].text;
+
+                // Generate random virtual account number based on selected bank
+                let bankPrefix = '';
+                switch(paymentMethod.value) {
+                    case 'bca': bankPrefix = '014'; break;
+                    case 'bni': bankPrefix = '009'; break;
+                    case 'mandiri': bankPrefix = '008'; break;
+                    case 'bri': bankPrefix = '002'; break;
+                    default: bankPrefix = '123';
+                }
+                const virtualAccount = bankPrefix + Math.floor(10000000000 + Math.random() * 90000000000);
+                document.getElementById('virtualAccountNumber').textContent = virtualAccount;
+
+                // Set price details
+                document.getElementById('receiptSubtotal').textContent = document.getElementById('subtotalPrice').textContent;
+                document.getElementById('receiptShipping').textContent = document.getElementById('shippingPrice').textContent;
+                document.getElementById('receiptTax').textContent = document.getElementById('taxPrice').textContent;
+                document.getElementById('receiptTotal').textContent = document.getElementById('totalPrice').textContent;
+
+                // Show receipt modal
+                receiptModal.classList.remove('hidden');
+            });
         }
-        
-        // Virtual account number (random 16-digit number)
-        const virtualAccountElement = document.getElementById('virtualAccountNumber');
-        if (virtualAccountElement) {
-            const randomAccNumber = Math.floor(1000000000000000 + Math.random() * 9000000000000000);
-            virtualAccountElement.textContent = randomAccNumber.toString().replace(/(\d{4})/g, '$1 ').trim();
-        }
-        
-        // Quantity
-        const receiptQuantityElement = document.getElementById('receiptQuantity');
-        if (receiptQuantityElement) {
-            receiptQuantityElement.textContent = quantity;
-        }
-        
-        // Price details from payment modal
-        const subtotalElement = document.getElementById('subtotalPrice');
-        const shippingElement = document.getElementById('shippingPrice');
-        const taxElement = document.getElementById('taxPrice');
-        const totalElement = document.getElementById('totalPrice');
-        
-        // Copy values to receipt
-        if (subtotalElement) document.getElementById('receiptSubtotal').textContent = subtotalElement.textContent;
-        if (shippingElement) document.getElementById('receiptShipping').textContent = shippingElement.textContent;
-        if (taxElement) document.getElementById('receiptTax').textContent = taxElement.textContent;
-        if (totalElement) document.getElementById('receiptTotal').textContent = totalElement.textContent;
     }
 
-    // Close receipt modal functions
-    if (closeReceiptModal && receiptModal) {
+    // Close receipt modal buttons
+    if (closeReceiptModal) {
         closeReceiptModal.addEventListener('click', function() {
             receiptModal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Enable scrolling
         });
     }
 
-    if (closeReceiptBtn && receiptModal) {
+    if (closeReceiptBtn) {
         closeReceiptBtn.addEventListener('click', function() {
             receiptModal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Enable scrolling
+        });
+    }
+
+    // Close receipt modal when clicking outside the modal content
+    if (receiptModal) {
+        receiptModal.addEventListener('click', function(e) {
+            if (e.target === receiptModal) {
+                receiptModal.classList.add('hidden');
+                document.body.style.overflow = 'auto'; // Enable scrolling
+            }
         });
     }
 
     // Download receipt functionality
     if (downloadReceipt) {
         downloadReceipt.addEventListener('click', function() {
-            // Alert for now since we can't generate a real PDF in this example
-            alert('Receipt download functionality would be implemented here. In a real application, this would generate a PDF of the receipt.');
+            alert('Receipt download functionality would be implemented here. In a real application, this would generate a PDF or print version of the receipt.');
+        });
+    }
+
+    // Update bank account information in the bukti modal when payment method changes
+    if (paymentMethod) {
+        paymentMethod.addEventListener('change', function() {
+            const bank = this.value;
+            let accountNumber = '';
+            let accountName = 'PT MOLE Store';
+
+            switch(bank) {
+                case 'bca':
+                    accountNumber = '1234567890';
+                    break;
+                case 'bni':
+                    accountNumber = '0987654321';
+                    break;
+                case 'mandiri':
+                    accountNumber = '2468135790';
+                    break;
+                case 'bri':
+                    accountNumber = '1357924680';
+                    break;
+                default:
+                    accountNumber = '1234567890';
+            }
+
+            // Update the bank account information in the bukti modal
+            const bankNameElement = document.querySelector('#buktiModal strong:nth-of-type(1)');
+            const accountNumberElement = document.querySelector('#buktiModal strong:nth-of-type(2)');
+            const accountNameElement = document.querySelector('#buktiModal strong:nth-of-type(3)');
+
+            if (bankNameElement && bankNameElement.nextSibling) {
+                bankNameElement.nextSibling.textContent = ': ' + bank.toUpperCase();
+            }
+            if (accountNumberElement && accountNumberElement.nextSibling) {
+                accountNumberElement.nextSibling.textContent = ': ' + accountNumber;
+            }
+            if (accountNameElement && accountNameElement.nextSibling) {
+                accountNameElement.nextSibling.textContent = ': ' + accountName;
+            }
         });
     }
 
     // Wishlist functionality
     const wishlistBtn = document.getElementById('wishlistBtn');
     const heartIcon = document.getElementById('heartIcon');
-    
-    // Get product ID from the page (you might need to adjust this based on how your data is structured)
-    const productId = getProductIdFromPage();
-    
-    // Check if product is in wishlist on page load
+
     if (wishlistBtn && heartIcon) {
-        // Check if this product is already in wishlist
-        checkWishlistStatus(productId).then(isInWishlist => {
-            updateWishlistButton(isInWishlist);
-        });
-        
-        wishlistBtn.addEventListener('click', function() {
-            // Get current wishlist status
-            const isCurrentlyInWishlist = heartIcon.getAttribute('fill') !== 'none';
-            
-            if (!isCurrentlyInWishlist) {
-                // Add to wishlist
-                addToWishlist(productId).then(success => {
-                    if (success) {
-                        updateWishlistButton(true);
-                        showToast('Added to wishlist!');
-                    } else {
-                        showToast('Failed to add to wishlist. Please try again.');
-                    }
-                });
-            } else {
-                // Remove from wishlist
-                removeFromWishlist(productId).then(success => {
-                    if (success) {
-                        updateWishlistButton(false);
-                        showToast('Removed from wishlist');
-                    } else {
-                        showToast('Failed to remove from wishlist. Please try again.');
-                    }
-                });
-            }
-        });
-    }
-    
-    // Function to update wishlist button appearance
-    function updateWishlistButton(isInWishlist) {
-        if (isInWishlist) {
-            heartIcon.setAttribute('fill', 'currentColor');
-            heartIcon.setAttribute('stroke', 'none');
-            wishlistBtn.classList.add('text-red-500');
-        } else {
-            heartIcon.setAttribute('fill', 'none');
-            heartIcon.setAttribute('stroke', 'currentColor');
-            wishlistBtn.classList.remove('text-red-500');
-        }
-    }
-    
-    // Function to get product ID from the page
-    function getProductIdFromPage() {
-        // You might need to adjust this based on your actual HTML structure
-        // This assumes you have a hidden input or data attribute with the product ID
-        const productIdElement = document.querySelector('[data-product-id]');
-        return productIdElement ? productIdElement.dataset.productId : window.location.pathname.split('/').pop();
-    }
-    
-    // Function to check if a product is in the wishlist
-    async function checkWishlistStatus(productId) {
         try {
-            const response = await fetch(`/api/wishlist/check/${productId}`, {
-                method: 'GET',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
+            const productId = productId || null; // This would be set by your template
+            const productTitle = productTitle || "Product";
+            const productImage = productImage || "";
+            const productPrice = productPrice || "";
+            const productType = productType || "";
+            const productManufacturer = productManufacturer || "";
+
+            // Function to display notification
+            function showNotification(message, isSuccess = true) {
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 px-4 py-2 rounded-md shadow-lg z-50 transition-opacity duration-300 ${isSuccess ? 'bg-gray-800 text-white' : 'bg-red-500 text-white'}`;
+                notification.innerText = message;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+
+            // Function to check if product is in wishlist
+            function isInWishlist(productId) {
+                const wishlist = getWishlist();
+                return wishlist.some(item => item.id === productId);
+            }
+
+            // Function to get wishlist from localStorage
+            function getWishlist() {
+                const wishlistData = localStorage.getItem('wishlist');
+                return wishlistData ? JSON.parse(wishlistData) : [];
+            }
+
+            // Function to save wishlist to localStorage
+            function saveWishlist(wishlist) {
+                localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                updateWishlistCount();
+            }
+
+            // Function to update wishlist count
+            function updateWishlistCount() {
+                const wishlist = getWishlist();
+                const wishlistCountElement = document.getElementById('wishlistCount');
+                if (wishlistCountElement) {
+                    wishlistCountElement.textContent = wishlist.length;
                 }
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                return data.inWishlist;
             }
-            return false;
-        } catch (error) {
-            console.error('Error checking wishlist status:', error);
-            return false;
-        }
-    }
-    
-    // Function to add product to wishlist
-    async function addToWishlist(productId) {
-        try {
-            const response = await fetch('/api/wishlist/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ product_id: productId })
-            });
-            
-            return response.ok;
-        } catch (error) {
-            console.error('Error adding to wishlist:', error);
-            return false;
-        }
-    }
-    
-    // Function to remove product from wishlist
-    async function removeFromWishlist(productId) {
-        try {
-            const response = await fetch('/api/wishlist/remove', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ product_id: productId })
-            });
-            
-            return response.ok;
-        } catch (error) {
-            console.error('Error removing from wishlist:', error);
-            return false;
-        }
-    }
 
-    // Toast notification function
-    function showToast(message) {
-        // Create toast element if it doesn't exist
-        let toast = document.getElementById('toast-notification');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'toast-notification';
-            toast.className = 'fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-y-20 opacity-0';
-            document.body.appendChild(toast);
-        }
-        
-        // Set message and show toast
-        toast.textContent = message;
-        toast.classList.remove('translate-y-20', 'opacity-0');
-        
-        // Hide toast after 3 seconds
-        setTimeout(function() {
-            toast.classList.add('translate-y-20', 'opacity-0');
-        }, 3000);
-    }
+            // Function to toggle wishlist
+            function toggleWishlist() {
+                const wishlist = getWishlist();
+                const productInWishlist = isInWishlist(productId);
 
-    // Initialize prices
-    updatePrices();
+                if (productInWishlist) {
+                    // Remove from wishlist
+                    const updatedWishlist = wishlist.filter(item => item.id !== productId);
+                    saveWishlist(updatedWishlist);
+                    updateHeartIcon(false);
+                    showNotification(`${productTitle} removed from wishlist`);
+                } else {
+                    // Add to wishlist
+                    const product = {
+                        id: productId,
+                        title: productTitle,
+                        price: productPrice,
+                        image: productImage,
+                        type: productType,
+                        isWishlisted: true,
+                        specifications: {
+                            Manufacturer: productManufacturer
+                        }
+                    };
+                    wishlist.push(product);
+                    saveWishlist(wishlist);
+                    updateHeartIcon(true);
+                    showNotification(`${productTitle} added to wishlist`);
+                }
+            }
+
+            // Function to update heart icon appearance
+            function updateHeartIcon(isWishlisted) {
+                if (isWishlisted) {
+                    heartIcon.setAttribute('fill', 'currentColor');
+                    heartIcon.style.color = '#e53e3e'; // Red color
+                } else {
+                    heartIcon.setAttribute('fill', 'none');
+                    heartIcon.style.color = ''; // Default color
+                }
+            }
+
+            // Initialize heart icon state
+            if (productId) {
+                updateHeartIcon(isInWishlist(productId));
+            }
+
+            // Initialize wishlist count
+            updateWishlistCount();
+
+            // Event listener for wishlist button
+            wishlistBtn.addEventListener('click', toggleWishlist);
+        } catch (error) {
+            console.error("Error initializing wishlist:", error);
+        }
+    }
 });
 </script>
 @endsection

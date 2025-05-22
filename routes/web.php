@@ -15,6 +15,10 @@ Route::get('/listproduk', [ListProdukController::class, 'show'] );
 // Auth & Static Pages
 // ----------------------------
 
+// ----------------------------
+// Auth & Static Pages
+// ----------------------------
+
 Route::get('/login', function () {
     return view('pages.login');
 });
@@ -80,6 +84,16 @@ Route::get('/product-detail', function () {
 Route::get('/wishlist', function () {
     return view('pages.wishlist');
 })->name('wishlist');
+
+Route::get('/contact-us', function () {
+    return view('pages.contact-us');
+})->name('contact-us');
+
+Route::post('/contact-submit', [ContactController::class, 'submit'])->name('contact.submit');
+
+Route::get('/ambabot', function () {
+    return view('pages.ambabot');
+})->name('ambabot');
 
 Route::get('/product-detail', [ProductController::class, 'index'])->name('home');
 

@@ -18,6 +18,9 @@
    <!-- navbar -->
     @include('component.navbar')
 
+    <main class="w-full">
+        @yield('banner')
+    </main>
 
     <!-- Main Content -->
     <main class="container mx-auto p-4">
@@ -38,7 +41,7 @@
             const wishlist = localStorage.getItem('wishlist');
             const wishlistItems = wishlist ? JSON.parse(wishlist) : [];
             wishlistCountElement.textContent = wishlistItems.length;
-            
+
             // Show/hide count based on whether there are items
             if (wishlistItems.length > 0) {
                 wishlistCountElement.classList.remove('hidden');
@@ -47,10 +50,10 @@
             }
         }
     }
-    
+
     // Initialize the wishlist count
     updateWishlistCount();
-    
+
     // Listen for storage changes to update count when wishlist is modified from other pages
     window.addEventListener('storage', function(e) {
         if (e.key === 'wishlist') {

@@ -6,21 +6,14 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    // Method yang sudah ada
-    public function show($id)
-    {
-        // Kode show() yang sudah ada...
-    }
-
-    // Method baru untuk halaman status pesanan
+    // Method untuk menampilkan detail atau daftar status pesanan
     public function status($id = null)
     {
-        // Contoh data pesanan dummy (gunakan data yang sama dengan method show)
         $orders = [
             '3321345' => [
                 'id' => '3321345',
                 'title' => 'Pop Up Parade SP Figure Belle / Rin',
-                'status' => 'Packing', // opsi: processing, shipping, delivered, done
+                'status' => 'Packing',
                 'date' => '15 Apr 2025',
                 'recipient' => 'Wahyudi (Verel)',
                 'phone' => '62+ 82119223180',
@@ -76,22 +69,47 @@ class OrderController extends Controller
                 'subtotal' => '$90.00',
                 'shipping_fee' => '$7.00',
                 'total' => '$97.00',
-            ], 
+            ],
         ];
 
-        
-
-        // Jika ID disediakan, tampilkan detail pesanan tersebut
+        // Jika ID disediakan dan valid, tampilkan detail status pesanan
         if ($id && isset($orders[$id])) {
             $order = $orders[$id];
-            
-            // Jika halaman ini diakses dari tombol Done, update status menjadi 'done'
-            $order['status'] = 'done';
-            
+            $order['status'] = 'done'; // Ubah status jadi done jika dibuka
             return view('pages.order-status', ['order' => $order]);
         }
-        
-        // Jika tidak ada ID atau ID tidak valid, tampilkan semua pesanan
+
+        // Jika tidak ada ID, tampilkan daftar semua status pesanan
         return view('pages.order-status', ['orders' => $orders]);
+    }
+
+    // Method baru untuk halaman riwayat pesanan
+    public function history()
+    {
+        $orders = [
+            '3321345' => [
+                'id' => '3321345',
+                'title' => 'Pop Up Parade SP Figure Belle / Rin',
+                'status' => 'done',
+                'date' => '15 Apr 2025',
+                'total' => '$87.99',
+            ],
+            '3321346' => [
+                'id' => '3321346',
+                'title' => 'Pop Up Parade Gawr Gura - Hololive (17,7cm)',
+                'status' => 'done',
+                'date' => '20 Apr 2025',
+                'total' => '$97.00',
+            ],
+            '3321347' => [
+                'id' => '3321347',
+                'title' => 'Pop Up Parade Frieren - Sousou no Frieren',
+                'status' => 'done',
+                'date' => '20 Apr 2025',
+                'total' => '$97.00',
+            ],
+        ];
+
+        return view('pages.order-history', ['orders' => $orders]);
     }
 }
