@@ -163,3 +163,4 @@ Route::post('/feed', [PostController::class, 'store'])->name('posts.store');
 Route::post('/feed/{post}/like', [PostController::class, 'like'])->name('posts.like');
 
 Route::post('/feed/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
+
