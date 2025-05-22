@@ -1,0 +1,31 @@
+CREATE TABLE `posts` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE `post_likes` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `post_id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE `post_comments` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `post_id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `comment` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+);
