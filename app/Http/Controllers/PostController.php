@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\PostLike;
+use App\Models\PostComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -84,7 +86,7 @@ class PostController extends Controller
 
         // Jika belum login
         if (!auth()->check()) {
-            return redirect()->route('/login')->with('error', 'Silakan login dulu');
+            return redirect()->route('login')->with('error', 'Silakan login dulu');
         }
 
         $post->comments()->create([

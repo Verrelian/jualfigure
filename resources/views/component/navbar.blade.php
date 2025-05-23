@@ -54,10 +54,10 @@
 
         <a href="{{url('/order-history') }}"
           class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">History</a>
-          
-          a href="{{url('/posts') }}" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600
+
+          <a href="{{url('/posts') }}" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600
           py-2">Add Post</a>
-          
+
           <a href="{{url('/feed') }}"
           class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Feed</a>
           <!-- User Dropdown - Profile Penjual -->
@@ -128,4 +128,3 @@
       </button>
     </div>
   </div>
-  

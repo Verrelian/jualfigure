@@ -13,7 +13,7 @@ Route::get('/listproduk', [ListProdukController::class, 'show']);
 
 Route::get('/login', function () {
     return view('pages.login');
-});
+})->name('login');
 
 Route::get('/register', function () {
     return view('register');
