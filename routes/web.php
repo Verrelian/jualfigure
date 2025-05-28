@@ -9,7 +9,14 @@ use App\Http\Controllers\CrudController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ListProdukController;
 
-Route::get('/listproduk', [ListProdukController::class, 'show']);
+// Product Management Routes for Seller
+Route::prefix('seller')->group(function () {
+    Route::get('/product', [ListProdukController::class, 'show'])->name('seller.product');
+    Route::post('/product', [ListProdukController::class, 'store'])->name('product.store');
+    Route::put('/product/{id}', [ListProdukController::class, 'update'])->name('product.update');
+    Route::delete('/product/{id}', [ListProdukController::class, 'destroy'])->name('product.destroy');
+    Route::get('/product/{id}/specification', [ListProdukController::class, 'getSpecification'])->name('product.specification');
+});
 
 Route::get('/login', function () {
     return view('pages.login');
@@ -42,10 +49,6 @@ Route::get('/home', function () {
 Route::get('seller/dashboardp', function () {
     return view('pages.seller.dashboardp');
 })->name('dashboardp');
-
-Route::get('seller/product', function () {
-    return view('pages.seller.product');
-})->name('product');
 
 Route::get('seller/order', function () {
     return view('pages.seller.order');
@@ -155,4 +158,3 @@ Route::post('/feed', [PostController::class, 'store'])->name('posts.store');
 Route::post('/feed/{post}/like', [PostController::class, 'like'])->name('posts.like');
 
 Route::post('/feed/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
-

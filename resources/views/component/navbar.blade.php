@@ -28,52 +28,58 @@
       </form>
     </div>
 
-    <!-- Navigation and User Menu -->
-    <div class="flex items-center">
-      <!-- Main Navigation -->
-      <div class="hidden md:flex md:space-x-6 me-6">
-        <a href="{{ url('/dashboard') }}"
-          class="{{ Request::is('dashboard') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
-          Beranda
-        </a>
+    <!-- Navigation and User Menu (Baris 1) -->
+    <div class="flex items-center space-x-6 me-6 hidden md:flex">
+      <a href="{{ url('/dashboard') }}"
+        class="{{ Request::is('dashboard') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
+        Beranda
+      </a>
 
-        <a href="{{ url('/explore') }}"
-          class="{{ Request::is('explore') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
-          Explore
-        </a>
+      <a href="{{ url('/wishlist') }}"
+        class="{{ Request::is('wishlist') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
+        Wishlist
+      </a>
 
-        <a href="{{ url('/wishlist') }}"
-          class="{{ Request::is('wishlist') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
-          Wishlist
-        </a>
+      <a href="{{url('/order-history') }}"
+        class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">History</a>
 
-        <a href="{{ url('/leaderboard') }}"
-          class="{{ Request::is('leaderboard') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
-          Leaderboard
-        </a>
+      <a href="{{url('/posts') }}"
+        class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Add Post</a>
 
-        <a href="{{url('/order-history') }}"
-          class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">History</a>
+      <a href="{{url('/leaderboard') }}"
+        class="{{ Request::is('leaderboard') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
+        Leaderboard
+      </a>
+    </div>
 
-          <a href="{{url('/posts') }}" class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600
-          py-2">Add Post</a>
+    <!-- User Dropdown - Profile Penjual -->
+    <div class="relative">
+      <button type="button"
+        class="flex items-center space-x-2 text-sm bg-gray-100 rounded-full p-1 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300"
+        id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown">
+        <span class="sr-only">Open user menu</span>
+        <img class="w-8 h-8 rounded-full" src="{{ asset('images/muka.jpg') }}" alt="User Image">
+        <span class="hidden md:block text-gray-700 pe-2">Profile</span>
+        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
 
-          <a href="{{url('/feed') }}"
-          class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Feed</a>
-          <!-- User Dropdown - Profile Penjual -->
-        </div>
-          <div class="relative">
-        <button type="button"
-          class="flex items-center space-x-2 text-sm bg-gray-100 rounded-full p-1 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300"
-          id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown">
-          <span class="sr-only">Open user menu</span>
-          <img class="w-8 h-8 rounded-full" src="{{ asset('images/muka.jpg') }}" alt="User Image">
-          <span class="hidden md:block text-gray-700 pe-2">Profile</span>
-          <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-          </svg>
-        </button>
+  <!-- Baris 2: Feed & Explore centered -->
+  <div class="max-w-screen-xl mx-auto py-2 border-t border-gray-200 flex justify-center space-x-6">
+    <a href="{{ url('/feed') }}"
+      class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2 font-semibold">
+      Feed
+    </a>
+    <a href="{{ url('/explore') }}"
+      class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2 font-semibold">
+      Explore
+    </a>
+  </div>
+</nav>
 
         <!-- Dropdown menu -->
         <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-lg"

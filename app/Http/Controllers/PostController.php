@@ -58,7 +58,7 @@ class PostController extends Controller
     {
         // Jika belum login, redirect ke halaman login
         if (!auth()->check()) {
-            return redirect()->route('/login')->with('error', 'Silakan login dulu');
+            return redirect()->route('login')->with('error', 'Silakan login dulu');
         }
 
         $existingLike = PostLike::where('post_id', $post->id)

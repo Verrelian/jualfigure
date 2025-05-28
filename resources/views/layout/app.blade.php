@@ -8,6 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/crud.js"></script>
+
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -23,7 +25,7 @@
     </main>
 
     <!-- Main Content -->
-    <main class="container mx-auto p-4">
+    <main class="w-full">
         @yield('content')
     </main>
 
