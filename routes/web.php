@@ -7,14 +7,13 @@ use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CrudController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ListProdukController;
 
-// ----------------------------
-// Auth & Static Pages
-// ----------------------------
+Route::get('/listproduk', [ListProdukController::class, 'show']);
 
 Route::get('/login', function () {
     return view('pages.login');
-});
+})->name('login');
 
 Route::get('/register', function () {
     return view('register');
@@ -78,6 +77,16 @@ Route::get('/wishlist', function () {
     return view('pages.wishlist');
 })->name('wishlist');
 
+Route::get('/contact-us', function () {
+    return view('pages.contact-us');
+})->name('contact-us');
+
+Route::post('/contact-submit', [ContactController::class, 'submit'])->name('contact.submit');
+
+Route::get('/ambabot', function () {
+    return view('pages.ambabot');
+})->name('ambabot');
+
 Route::get('/product-detail', [ProductController::class, 'index'])->name('home');
 
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
@@ -133,4 +142,17 @@ Route::get('/user/posts', function () {
 Route::get('/user/toys', function () {
     return view('user-toys');
 })->name('user.toys');
+
+// Untuk menampilkan daftar post
+Route::get('/feed', [PostController::class, 'index'])->name('posts.index');
+
+// Untuk menampilkan form create
+Route::get('/posts', [PostController::class, 'create'])->name('posts.create');
+
+// Untuk menyimpan post baru
+Route::post('/feed', [PostController::class, 'store'])->name('posts.store');
+
+Route::post('/feed/{post}/like', [PostController::class, 'like'])->name('posts.like');
+
+Route::post('/feed/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
 
