@@ -72,7 +72,7 @@
                     <h3 class="text-sm font-semibold tracking-wider uppercase">Bantuan</h3>
                     <ul role="list" class="mt-4 space-y-4">
                         <li>
-                            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                            <a href="ambabot" class="text-gray-400 hover:text-blue-400 transition-colors">
                                 Pusat Bantuan
                             </a>
                         </li>
