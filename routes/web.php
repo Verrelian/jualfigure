@@ -72,6 +72,8 @@ Route::get('/products', function () {
     return view('pages.products');
 });
 
+Route::get('/products/by-category', [ProductController::class, 'getProductsByCategory'])->name('products.by-category');
+
 Route::get('/product-detail', function () {
     return view('pages.product-detail');
 });
@@ -127,9 +129,7 @@ Route::get('profile', function () {
 // ----------------------------
 // Extra Pages
 // ---------------------------
-Route::get('/explore', function () {
-    return view('pages.explore');
-})->name('explore');
+Route::get('/explore', [ProductController::class, 'explore'])->name('explore');
 
 Route::get('/leaderboard', function () {
     return view('pages.leaderboard');
