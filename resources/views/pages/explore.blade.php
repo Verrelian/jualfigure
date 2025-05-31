@@ -9,24 +9,24 @@
             <div class="flex-1 max-w-md">
                 <div class="relative">
                     <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    <input type="text" placeholder="Search figures, characters, series..."
+                    <input type="text" id="search-input" placeholder="Search figures, characters, series..."
                            class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
             </div>
             <div class="flex gap-3">
-                <select class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option>All Categories</option>
-                    <option>Nendoroid</option>
-                    <option>Pop Up Parade</option>
-                    <option>Hot Toys</option>
+                <select id="category-filter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <option value="">All Categories</option>
+                    <option value="nendoroid" {{ $initialCategory == 'nendoroid' ? 'selected' : '' }}>Nendoroid</option>
+                    <option value="popup" {{ $initialCategory == 'popup' ? 'selected' : '' }}>Pop Up Parade</option>
+                    <option value="hottoys" {{ $initialCategory == 'hottoys' ? 'selected' : '' }}>Hot Toys</option>
                 </select>
-                <select class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option>Price: All</option>
-                    <option>Under $30</option>
-                    <option>$30 - $60</option>
-                    <option>$60+</option>
+                <select id="price-filter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <option value="">Price: All</option>
+                    <option value="0-30">Under $30</option>
+                    <option value="30-60">$30 - $60</option>
+                    <option value="60-999">$60+</option>
                 </select>
-                <button class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                <button id="apply-filters" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                     <i class="fas fa-filter mr-2"></i>Filter
                 </button>
             </div>
@@ -37,7 +37,7 @@
     <nav class="flex mb-6" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-3">
             <li class="inline-flex items-center">
-                <a href="#" class="text-gray-700 hover:text-blue-600">Home</a>
+                <a href="{{ route('home') }}" class="text-gray-700 hover:text-blue-600">Home</a>
             </li>
             <li>
                 <div class="flex items-center">
@@ -55,7 +55,7 @@
             <p class="text-gray-600">Discover amazing figures from your favorite series</p>
         </div>
         <div class="text-right">
-            <p class="text-sm text-gray-500">Showing 1,250+ figures</p>
+            <p class="text-sm text-gray-500">Showing <span id="product-count">{{ count($products) }}</span>+ figures</p>
             <p class="text-sm text-gray-500">across 15+ categories</p>
         </div>
     </div>
@@ -74,7 +74,7 @@
         </div>
     </div>
 
-    <!-- Category Cards with Enhanced Info -->
+    <!-- Category Cards -->
     <div class="mb-12">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold">Browse by Category</h2>
@@ -82,7 +82,8 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Nendoroid Category -->
-            <div class="relative rounded-lg overflow-hidden shadow-lg bg-gray-800 group cursor-pointer transform hover:scale-105 transition-transform">
+            <div class="category-card relative rounded-lg overflow-hidden shadow-lg bg-gray-800 group cursor-pointer transform hover:scale-105 transition-transform {{ $initialCategory == 'nendoroid' ? 'ring-4 ring-blue-500' : '' }}"
+                 data-category="nendoroid">
                 <div class="aspect-[4/3] w-full">
                     <img src="{{ asset('images/p6.jpg') }}" alt="Nendoroid" class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300">
                 </div>
@@ -100,7 +101,8 @@
             </div>
 
             <!-- Pop Up Parade Category -->
-            <div class="relative rounded-lg overflow-hidden shadow-lg bg-gray-800 group cursor-pointer transform hover:scale-105 transition-transform">
+            <div class="category-card relative rounded-lg overflow-hidden shadow-lg bg-gray-800 group cursor-pointer transform hover:scale-105 transition-transform {{ $initialCategory == 'popup' ? 'ring-4 ring-blue-500' : '' }}"
+                 data-category="popup">
                 <img src="{{ asset('images/p3.png') }}" alt="Pop Up Parade" class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300">
                 <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/60 to-transparent text-white p-4">
                     <h3 class="font-bold text-lg mb-1">Pop Up Parade</h3>
@@ -112,19 +114,12 @@
                         <span class="text-sm bg-blue-500 px-2 py-1 rounded-full">80+ items</span>
                     </div>
                     <p class="text-xs mt-2 opacity-80">Affordable premium figures</p>
-        <!-- Pop Up Parade Category -->
-        <div class="category-card relative rounded-lg overflow-hidden shadow-md bg-gray-800 cursor-pointer transition-transform duration-300 hover:scale-105 {{ $initialCategory == 'popup' ? 'ring-4 ring-blue-500' : '' }}"
-             data-category="popup">
-            <img src="{{ asset('images/p3.png') }}" alt="Pop Up Parade" class="w-full h-80 object-cover">
-            <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2">
-                <h3 class="font-bold text-sm">Pop Up Parade</h3>
-                <div class="flex items-center">
-                    <span class="text-xs">Trending</span>
                 </div>
             </div>
 
             <!-- Hot Toys Category -->
-            <div class="relative rounded-lg overflow-hidden shadow-lg bg-gray-800 group cursor-pointer transform hover:scale-105 transition-transform">
+            <div class="category-card relative rounded-lg overflow-hidden shadow-lg bg-gray-800 group cursor-pointer transform hover:scale-105 transition-transform {{ $initialCategory == 'hottoys' ? 'ring-4 ring-blue-500' : '' }}"
+                 data-category="hottoys">
                 <img src="{{ asset('images/figure4.jpg') }}" alt="Hot Toys" class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300">
                 <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/60 to-transparent text-white p-4">
                     <h3 class="font-bold text-lg mb-1">Hot Toys</h3>
@@ -136,16 +131,39 @@
                         <span class="text-sm bg-purple-500 px-2 py-1 rounded-full">45+ items</span>
                     </div>
                     <p class="text-xs mt-2 opacity-80">Ultra-detailed collectibles</p>
-        <!-- Hot Toys Category -->
-        <div class="category-card relative rounded-lg overflow-hidden shadow-md bg-gray-800 cursor-pointer transition-transform duration-300 hover:scale-105 {{ $initialCategory == 'hottoys' ? 'ring-4 ring-blue-500' : '' }}"
-             data-category="hottoys">
-            <img src="{{ asset('images/figure4.jpg') }}" alt="Hot Toys" class="w-full h-80 object-cover">
-            <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2">
-                <h3 class="font-bold text-sm">Hot Toys</h3>
-                <div class="flex items-center">
-                    <span class="text-xs">Premium</span>
                 </div>
             </div>
+        </div>
+    </div>
+        <!-- Loading Indicator -->
+    <div id="loading-indicator" class="hidden text-center py-8">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        <p class="mt-2 text-gray-600">Loading products...</p>
+    </div>
+
+    <!-- Products Section -->
+    <div class="bg-gray-200 p-4 rounded-md mb-7">
+        <h2 class="text-lg font-bold mb-3" id="products-title">
+            {{ $categories[$initialCategory] ?? 'All Products' }}
+        </h2>
+        <div id="products-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            @foreach($products as $product)
+                @include('component.product-card', [
+                    'id' => $product->id,
+                    'image' => $product->gambar_url,
+                    'type' => $product->type,
+                    'title' => $product->nama,
+                    'price' => $product->formatted_harga ?? '$' . number_format($product->harga, 2)
+                ])
+            @endforeach
+        </div>
+
+        <!-- No Products Message -->
+        <div id="no-products" class="hidden text-center py-8">
+            <p class="text-gray-600">No products found matching your criteria.</p>
+            <button id="clear-filters" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                Clear Filters
+            </button>
         </div>
     </div>
 
@@ -176,7 +194,7 @@
         </div>
     </div>
 
-    <!-- Popular Collections Enhanced -->
+    <!-- Popular Collections -->
     <div class="bg-white p-6 rounded-lg shadow-md mb-10">
         <div class="flex justify-between items-center mb-6">
             <div>
@@ -219,7 +237,7 @@
             <i class="fas fa-dollar-sign text-3xl text-green-600 mb-3"></i>
             <h3 class="font-bold text-lg mb-2">Budget Friendly</h3>
             <p class="text-green-700 mb-4">Under $30</p>
-            <button class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+            <button class="price-range-btn bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors" data-range="0-30">
                 Shop Now
             </button>
         </div>
@@ -227,7 +245,7 @@
             <i class="fas fa-star text-3xl text-blue-600 mb-3"></i>
             <h3 class="font-bold text-lg mb-2">Premium Quality</h3>
             <p class="text-blue-700 mb-4">$30 - $80</p>
-            <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+            <button class="price-range-btn bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors" data-range="30-80">
                 Explore
             </button>
         </div>
@@ -235,13 +253,13 @@
             <i class="fas fa-crown text-3xl text-purple-600 mb-3"></i>
             <h3 class="font-bold text-lg mb-2">Luxury Collection</h3>
             <p class="text-purple-700 mb-4">$80+</p>
-            <button class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+            <button class="price-range-btn bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors" data-range="80-999">
                 View All
             </button>
         </div>
     </div>
 
-    <!-- New Releases Enhanced -->
+    <!-- New Releases -->
     <div class="bg-white p-6 rounded-lg shadow-md mb-10">
         <div class="flex justify-between items-center mb-6">
             <div>
@@ -297,7 +315,7 @@
     </div>
 
     <!-- Quick Links -->
-    <div class="bg-gray-50 p-6 rounded-lg">
+    <div class="bg-gray-50 p-6 rounded-lg mb-10">
         <h3 class="text-lg font-bold mb-4 text-center">Quick Navigation</h3>
         <div class="grid grid-cols-2 md:grid-cols-6 gap-3">
             <a href="#" class="text-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors">
@@ -326,34 +344,8 @@
             </a>
         </div>
     </div>
-    <!-- Loading Indicator -->
-    <div id="loading-indicator" class="hidden text-center py-8">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-        <p class="mt-2 text-gray-600">Loading products...</p>
-    </div>
 
-    <!-- Products Section -->
-    <div class="bg-gray-200 p-4 rounded-md mt-7 mb-7">
-        <h2 class="text-lg font-bold mb-3" id="products-title">
-            {{ $categories[$initialCategory] ?? 'Products' }}
-        </h2>
-        <div id="products-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            @foreach($products as $product)
-                @include('component.product-card', [
-                    'id' => $product->id,
-                    'image' => $product->gambar_url,
-                    'type' => $product->type,
-                    'title' => $product->nama,
-                    'price' => $product->formatted_harga
-                ])
-            @endforeach
-        </div>
 
-        <!-- No Products Message -->
-        <div id="no-products" class="hidden text-center py-8">
-            <p class="text-gray-600">No products found in this category.</p>
-        </div>
-    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -362,37 +354,116 @@
             const loadingIndicator = document.getElementById('loading-indicator');
             const noProductsMessage = document.getElementById('no-products');
             const productsTitle = document.getElementById('products-title');
+            const productCount = document.getElementById('product-count');
+            const categoryFilter = document.getElementById('category-filter');
+            const priceFilter = document.getElementById('price-filter');
+            const searchInput = document.getElementById('search-input');
+            const applyFiltersBtn = document.getElementById('apply-filters');
+            const clearFiltersBtn = document.getElementById('clear-filters');
+            const priceRangeBtns = document.querySelectorAll('.price-range-btn');
 
             // Category name mapping
             const categoryNames = {
                 'nendoroid': 'Nendoroid',
                 'popup': 'Pop Up Parade',
-                'hottoys': 'Hot Toys'
+                'hottoys': 'Hot Toys',
+                '': 'All Products'
             };
 
+            // Category card click handler
             categoryCards.forEach(card => {
                 card.addEventListener('click', function() {
                     const category = this.dataset.category;
-
-                    // Update active state
-                    categoryCards.forEach(c => c.classList.remove('ring-4', 'ring-blue-500'));
-                    this.classList.add('ring-4', 'ring-blue-500');
-
-                    // Update URL without page reload
-                    const url = new URL(window.location);
-                    url.searchParams.set('category', category);
-                    window.history.pushState({}, '', url);
-
-                    // Update products title
-                    productsTitle.textContent = categoryNames[category] || 'Products';
-
-                    // Show loading
-                    showLoading();
-
-                    // Fetch products via AJAX
-                    fetchProducts(category);
+                    updateCategory(category);
                 });
             });
+
+            // Filter button click handler
+            applyFiltersBtn.addEventListener('click', function() {
+                applyFilters();
+            });
+
+            // Clear filters button
+            clearFiltersBtn.addEventListener('click', function() {
+                clearAllFilters();
+            });
+
+            // Price range buttons
+            priceRangeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const range = this.dataset.range;
+                    priceFilter.value = range;
+                    applyFilters();
+                });
+            });
+
+            // Search input with debounce
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(applyFilters, 500);
+            });
+
+            // Dropdown change handlers
+            categoryFilter.addEventListener('change', applyFilters);
+            priceFilter.addEventListener('change', applyFilters);
+
+            function updateCategory(category) {
+                // Update active state for category cards
+                categoryCards.forEach(c => c.classList.remove('ring-4', 'ring-blue-500'));
+                const activeCard = document.querySelector(`[data-category="${category}"]`);
+                if (activeCard) {
+                    activeCard.classList.add('ring-4', 'ring-blue-500');
+                }
+
+                // Update dropdown
+                categoryFilter.value = category;
+
+                // Apply filters
+                applyFilters();
+            }
+
+            function applyFilters() {
+                const filters = {
+                    category: categoryFilter.value,
+                    price_range: priceFilter.value,
+                    search: searchInput.value.trim()
+                };
+
+                // Update URL
+                const url = new URL(window.location);
+                Object.keys(filters).forEach(key => {
+                    if (filters[key]) {
+                        url.searchParams.set(key, filters[key]);
+                    } else {
+                        url.searchParams.delete(key);
+                    }
+                });
+                window.history.pushState({}, '', url);
+
+                // Update title
+                productsTitle.textContent = categoryNames[filters.category] || 'All Products';
+
+                // Show loading
+                showLoading();
+
+                // Fetch products
+                fetchProducts(filters);
+            }
+
+            function clearAllFilters() {
+                categoryFilter.value = '';
+                priceFilter.value = '';
+                searchInput.value = '';
+                categoryCards.forEach(c => c.classList.remove('ring-4', 'ring-blue-500'));
+
+                // Clear URL parameters
+                const url = new URL(window.location);
+                url.search = '';
+                window.history.pushState({}, '', url);
+
+                applyFilters();
+            }
 
             function showLoading() {
                 productsContainer.style.display = 'none';
@@ -405,30 +476,40 @@
                 productsContainer.style.display = 'grid';
             }
 
-            function fetchProducts(category) {
-                fetch(`{{ route('products.by-category') }}?category=${category}`, {
+            function fetchProducts(filters) {
+                const params = new URLSearchParams(filters);
+
+                fetch(`{{ route('products.by-category') }}?${params}`, {
                     method: 'GET',
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
                         'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                     }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     hideLoading();
 
-                    if (data.success && data.products.length > 0) {
+                    if (data.success && data.products && data.products.length > 0) {
                         renderProducts(data.products);
+                        productCount.textContent = data.products.length;
                         noProductsMessage.classList.add('hidden');
                     } else {
                         productsContainer.innerHTML = '';
+                        productCount.textContent = '0';
                         noProductsMessage.classList.remove('hidden');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     hideLoading();
-                    productsContainer.innerHTML = '<div class="col-span-full text-center text-red-500">Error loading products. Please try again.</div>';
+                    productsContainer.innerHTML = '<div class="col-span-full text-center text-red-500 p-4">Error loading products. Please try again.</div>';
                 });
             }
 
@@ -437,15 +518,15 @@
                     <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                         <a href="/product/${product.id}" class="block">
                             <div class="aspect-square w-full">
-                                <img src="${product.gambar_url}" alt="${product.nama}" class="w-full h-full object-cover">
+                                <img src="${product.gambar_url}" alt="${product.nama}" class="w-full h-full object-cover" loading="lazy">
                             </div>
                             <div class="p-3">
-                                <p class="text-xs text-gray-500 mb-1">${product.type}</p>
-                                <h3 class="font-semibold text-sm mb-2 line-clamp-2">${product.nama}</h3>
-                                <p class="text-lg font-bold text-blue-600">${product.harga}</p>
+                                <p class="text-xs text-gray-500 mb-1">${product.type || 'Figure'}</p>
+                                <h3 class="font-semibold text-sm mb-2 line-clamp-2" title="${product.nama}">${product.nama}</h3>
+                                <p class="text-lg font-bold text-blue-600">${product.formatted_harga || '$' + parseFloat(product.harga).toFixed(2)}</p>
                                 <div class="mt-2">
-                                    <span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
-                                        Stock: ${product.stok}
+                                    <span class="text-xs px-2 py-1 ${product.stok > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} rounded-full">
+                                        ${product.stok > 0 ? 'Stock: ' + product.stok : 'Out of Stock'}
                                     </span>
                                 </div>
                             </div>
@@ -457,19 +538,33 @@
             // Handle browser back/forward buttons
             window.addEventListener('popstate', function(event) {
                 const urlParams = new URLSearchParams(window.location.search);
-                const category = urlParams.get('category') || 'nendoroid';
 
-                // Update active card
+                // Update form inputs
+                categoryFilter.value = urlParams.get('category') || '';
+                priceFilter.value = urlParams.get('price_range') || '';
+                searchInput.value = urlParams.get('search') || '';
+
+                // Update category cards
+                const category = urlParams.get('category') || '';
                 categoryCards.forEach(c => c.classList.remove('ring-4', 'ring-blue-500'));
-                const activeCard = document.querySelector(`[data-category="${category}"]`);
-                if (activeCard) {
-                    activeCard.classList.add('ring-4', 'ring-blue-500');
+                if (category) {
+                    const activeCard = document.querySelector(`[data-category="${category}"]`);
+                    if (activeCard) {
+                        activeCard.classList.add('ring-4', 'ring-blue-500');
+                    }
                 }
 
                 // Update title and fetch products
-                productsTitle.textContent = categoryNames[category] || 'Products';
+                productsTitle.textContent = categoryNames[category] || 'All Products';
                 showLoading();
-                fetchProducts(category);
+
+                const filters = {
+                    category: category,
+                    price_range: urlParams.get('price_range') || '',
+                    search: urlParams.get('search') || ''
+                };
+
+                fetchProducts(filters);
             });
         });
     </script>
