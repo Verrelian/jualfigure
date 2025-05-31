@@ -14,49 +14,34 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css" rel="stylesheet" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-<body class="min-h-screen" style="background: linear-gradient(to bottom, #C5C4C0, #777284);">
-   <!-- navbar -->
+<body class="min-h-screen flex flex-col bg-[#FFFAFA] text-gray-800">
     @include('component.seller.navbar')
-    <!-- Main Content -->
-    <main class="w-full h-screen p-0">
 
+    <main class="flex-grow">
         @yield('content')
     </main>
 
-    <!-- Footer -->
     @include('component.footer')
 
-    <!-- Flowbite JS -->
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-    // Update wishlist count in the navigation
-    function updateWishlistCount() {
-        const wishlistCountElement = document.getElementById('wishlistCount');
-        if (wishlistCountElement) {
-            const wishlist = localStorage.getItem('wishlist');
-            const wishlistItems = wishlist ? JSON.parse(wishlist) : [];
-            wishlistCountElement.textContent = wishlistItems.length;
-
-            // Show/hide count based on whether there are items
-            if (wishlistItems.length > 0) {
-                wishlistCountElement.classList.remove('hidden');
-            } else {
-                wishlistCountElement.classList.add('hidden');
+            function updateWishlistCount() {
+                const wishlistCountElement = document.getElementById('wishlistCount');
+                if (wishlistCountElement) {
+                    const wishlist = localStorage.getItem('wishlist');
+                    const wishlistItems = wishlist ? JSON.parse(wishlist) : [];
+                    wishlistCountElement.textContent = wishlistItems.length;
+                    wishlistCountElement.classList.toggle('hidden', wishlistItems.length === 0);
+                }
             }
-        }
-    }
-
-    // Initialize the wishlist count
-    updateWishlistCount();
-
-    // Listen for storage changes to update count when wishlist is modified from other pages
-    window.addEventListener('storage', function(e) {
-        if (e.key === 'wishlist') {
             updateWishlistCount();
-        }
-    });
-});
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'wishlist') updateWishlistCount();
+            });
+        });
     </script>
 </body>
+
 </html>

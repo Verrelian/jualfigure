@@ -15,7 +15,7 @@
 @section('content')
     <!-- Product Ranking -->
     <div class="bg-gray-200 p-4 rounded-md mt-7 mb-7">
-        <h2 class="text-lg font-bold mb-3">Product Ranking</h2>
+        <h2 class="text-lg font-bold mb-3">Trending</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             @include('component.product-ranking', [
                 'id' => 1,
@@ -103,27 +103,6 @@
                 'title' => 'Rare Figure',
                 'price' => '$69.99'
             ])
-        </div>
-    </div>
-
-    <!-- Posts -->
-    <div class="mt-7 mb-7">
-        <h2 class="text-lg font-bold mb-3">Post</h2>
-        <div class="bg-gray-200 p-4 rounded-md">
-            <div class="flex flex-col md:flex-row">
-                <div class="md:w-2/3 pr-4">
-                    <h3 class="font-bold text-sm">Eco-friendliness in Designer Toys:</h3>
-                    <p class="text-xs mt-1">How manufacturers are moving toward sustainable practices...</p>
-                    <p class="text-xs mt-2">From materials to packaging, eco-friendly initiatives are changing the industry while still providing high-quality collectibles.</p>
-                </div>
-                <div class="md:w-1/3 mt-4 md:mt-0">
-                    <div class="bg-green-500 rounded-md p-4 text-white font-bold text-center">
-                        <p class="text-sm">ECO</p>
-                        <p class="text-xl">FRIENDLINESS</p>
-                        <p class="text-xs">IN THE WORLD OF DESIGNER TOYS</p>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 @endsection

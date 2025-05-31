@@ -9,10 +9,16 @@ class Specification extends Model
 {
     use HasFactory;
 
-    protected $table = 'specification'; // ganti sesuai nama tabel spesifikasimu
+    protected $table = 'specification';
+
+    protected $primaryKey = 'spec_id';      // 👈 penting
+    public $incrementing = true;
+    protected $keyType = 'int';
+
+    public $timestamps = false;
 
     protected $fillable = [
-        'product_id',    // FK ke produk
+        'product_id',
         'scale',
         'material',
         'manufacture',
@@ -20,10 +26,8 @@ class Specification extends Model
         'series',
     ];
 
-    // Relasi kebalikannya ke Produk (banyak Spesifikasi milik satu Produk)
     public function produk()
     {
         return $this->belongsTo(Produk::class, 'product_id', 'id');
     }
-    public $timestamps = false;
 }

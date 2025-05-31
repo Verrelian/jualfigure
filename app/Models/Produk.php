@@ -42,7 +42,7 @@ class Produk extends Model
     // Accessor untuk gambar URL
     public function getGambarUrlAttribute()
     {
-        return $this->gambar ? asset('storage/' . $this->gambar) : null;
+        return $this->gambar ? asset('images/' . $this->gambar) : null;
     }
 
     // Scope untuk produk yang masih ada stok

@@ -3,13 +3,11 @@
 <div class="flex min-h-screen overflow-hidden">
   @include('component.seller.sidebar')
   <main class="flex-1 bg-gray-100 p-6 overflow-auto">
-    <h1 class="text-2xl font-semibold mb-4">Kelola Produk</h1>
-
+  <h1 class="text-2xl font-semibold mb-4">Kelola Produk</h1>
     <div class="mb-4">
       <button id="btnAddProduct" class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700">Tambah Produk</button>
     </div>
-
-    <div class="bg-white rounded-lg shadow overflow-hidden">
+  <div class="bg-white rounded-lg shadow overflow-hidden">
       <div class="overflow-x-auto max-w-full">
         <table class="w-full table-auto divide-y divide-gray-200">
           <thead class="bg-gray-50">
@@ -30,7 +28,7 @@
               <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
               <td class="px-3 py-4 whitespace-nowrap">
                 @if($item->gambar)
-                  <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->nama }}" class="w-10 h-10 object-cover rounded-lg">
+                  <img src="{{ asset('images/' . $item->gambar) }}" alt="{{ $item->nama }}" class="w-20 h-20 object-cover rounded-lg">
                 @else
                   <div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,26 +61,38 @@
                 </span>
               </td>
               <td class="px-3 py-4 whitespace-nowrap text-sm font-medium">
-              <button onclick="showSpecModal({{ $item->id }})"
-                      class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition">
-                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Lihat specification
-              </button>
-                <div class="flex space-x-1">
-                  <button onclick="openEditModal({{ json_encode($item) }})"
-                          class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-colors">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                <div class="flex flex-col space-y-2">
+                  <!-- Tombol Lihat Spesifikasi -->
+                  <button onclick="showSpecModal({{ $item->id }})"
+                          class="inline-flex items-center justify-center px-3 py-1 text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition">
+                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
+                    Lihat Spesifikasi
                   </button>
-                  <button onclick="openDeleteModal({{ $item->id }}, '{{ $item->nama }}')"
-                          class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                  </button>
+
+                  <!-- Tombol Edit & Hapus -->
+                  <div class="flex space-x-2 justify-center">
+                    <!-- Edit -->
+                    <button onclick="openEditModal({{ json_encode($item) }})"
+                            class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md text-white bg-yellow-500 hover:bg-yellow-600 transition">
+                      <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      Edit
+                    </button>
+
+                    <!-- Hapus -->
+                    <button onclick="openDeleteModal({{ $item->id }}, '{{ $item->nama }}')"
+                            class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md text-white bg-red-500 hover:bg-red-600 transition">
+                      <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Hapus
+                    </button>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -146,10 +156,15 @@
                 </div>
 
                 <div>
-                  <label for="productType" class="block text-sm font-medium text-gray-700 mb-2">Type</label>
-                  <input type="text" id="productType" name="type"
-                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                         placeholder="Masukkan type produk" required>
+                         <label for="productType" class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                            <select id="productType" name="type"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    required>
+                                <option value="">Pilih Type Produk</option>
+                                <option value="Pop Up Parade">Pop Up Parade</option>
+                                <option value="Hot Toys">Hot Toys</option>
+                                <option value="Nendoroid">Nendoroid</option>
+                            </select>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
@@ -310,38 +325,55 @@
   <span id="toastMessage">Produk berhasil disimpan!</span>
 </div>
 <script>
-// Global variables
-let isEditMode = false;
-let currentEditId = null;
+  // Global variables
+  let isEditMode = false;
+  let currentEditId = null;
 
-function openAddModal() {
-  resetModalState();
-  document.getElementById('modalTitle').textContent = 'Tambah Produk Baru';
-  document.getElementById('saveButtonText').textContent = 'Simpan';
-  document.getElementById('productForm').action = '{{ route("product.store") }}';
-  document.getElementById('formMethod').value = 'POST';
-  showModal('productModal');
-}
+  function openAddModal() {
+    resetModalState();
+    document.getElementById('modalTitle').textContent = 'Tambah Produk Baru';
+    document.getElementById('saveButtonText').textContent = 'Simpan';
+    document.getElementById('productForm').action = '{{ route("product.store") }}';
+    document.getElementById('formMethod').value = 'POST';
+    showModal('productModal');
+  }
 
-function openEditModal(product) {
-  resetModalState();
-  isEditMode = true;
-  currentEditId = product.id;
+  function openEditModal(product) {
+    resetModalState();
+    isEditMode = true;
+    currentEditId = product.id;
 
-  document.getElementById('modalTitle').textContent = 'Edit Produk';
-  document.getElementById('saveButtonText').textContent = 'Update';
-  document.getElementById('productId').value = product.id;
-  document.getElementById('productName').value = product.nama;
-  document.getElementById('productDescription').value = product.deskripsi;
-  document.getElementById('productType').value = product.type;
-  document.getElementById('productPrice').value = product.harga;
-  document.getElementById('productStock').value = product.stok;
+    document.getElementById('modalTitle').textContent = 'Edit Produk';
+    document.getElementById('saveButtonText').textContent = 'Update';
+    document.getElementById('productId').value = product.id;
+    document.getElementById('productName').value = product.nama;
+    document.getElementById('productDescription').value = product.deskripsi;
+    document.getElementById('productType').value = product.type;
+    document.getElementById('productPrice').value = product.harga;
+    document.getElementById('productStock').value = product.stok;
 
-  // PERBAIKAN: Set form action dan method dengan benar
-  document.getElementById('productForm').action = '{{ route("product.update", ":id") }}'.replace(':id', product.id);
-  document.getElementById('formMethod').value = 'PUT';
+    // Set form action dan method dengan benar
+    document.getElementById('productForm').action = '{{ route("product.update", ":id") }}'.replace(':id', product.id);
+    document.getElementById('formMethod').value = 'PUT';
 
-  showModal('productModal');
+    // Reset semua field spesifikasi terlebih dahulu
+    document.getElementById('scale').value = '';
+    document.getElementById('material').value = '';
+    document.getElementById('manufacture').value = '';
+    document.getElementById('release_date').value = '';
+    document.getElementById('series').value = '';
+
+    // Isi field spesifikasi jika ada (karena sudah di-load dengan specification)
+    if (product.specification) {
+      const spec = product.specification;
+      if (spec.scale) document.getElementById('scale').value = spec.scale;
+      if (spec.material) document.getElementById('material').value = spec.material;
+      if (spec.manufacture) document.getElementById('manufacture').value = spec.manufacture;
+      if (spec.release_date) document.getElementById('release_date').value = spec.release_date;
+      if (spec.series) document.getElementById('series').value = spec.series;
+    }
+
+    showModal('productModal');
   }
   function showSpecModal(productId) {
       fetch(`{{ url('seller/product') }}/${productId}/specification`)
@@ -374,62 +406,70 @@ function openEditModal(product) {
     document.getElementById('specModal').classList.add('hidden');
   }
 
-function openDeleteModal(productId, productName) {
-  document.getElementById('deleteProductName').textContent = productName;
-  document.getElementById('deleteForm').action = '{{ route("product.destroy", ":id") }}'.replace(':id', productId);
-  showModal('deleteModal');
-}
+  function openDeleteModal(productId, productName) {
+    document.getElementById('deleteProductName').textContent = productName;
+    document.getElementById('deleteForm').action = '{{ route("product.destroy", ":id") }}'.replace(':id', productId);
+    showModal('deleteModal');
+  }
 
-function resetModalState() {
-  isEditMode = false;
-  currentEditId = null;
-  document.getElementById('productForm').reset();
-  document.getElementById('productId').value = '';
-}
+  // Perbaikan fungsi resetModalState
+  function resetModalState() {
+    isEditMode = false;
+    currentEditId = null;
+    document.getElementById('productForm').reset();
+    document.getElementById('productId').value = '';
 
-function showModal(modalId) {
-  const modal = document.getElementById(modalId);
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
-  document.body.style.overflow = 'hidden';
-}
+    // Reset spesifikasi fields
+    document.getElementById('scale').value = '';
+    document.getElementById('material').value = '';
+    document.getElementById('manufacture').value = '';
+    document.getElementById('release_date').value = '';
+    document.getElementById('series').value = '';
+  }
 
-function hideModal(modalId) {
-  const modal = document.getElementById(modalId);
-  modal.classList.remove('flex');
-  modal.classList.add('hidden');
-  document.body.style.overflow = 'auto';
-}
+  function showModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
 
-function closeProductModal() {
-  hideModal('productModal');
-  resetModalState();
-}
+  function hideModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.remove('flex');
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+  }
 
-function closeDeleteModal() {
-  hideModal('deleteModal');
-}
+  function closeProductModal() {
+    hideModal('productModal');
+    resetModalState();
+  }
 
-function showToast(message, type = 'success') {
-  const toast = document.getElementById('toast');
-  const toastMessage = document.getElementById('toastMessage');
+  function closeDeleteModal() {
+    hideModal('deleteModal');
+  }
 
-  toastMessage.textContent = message;
-  toast.className = `fixed top-4 right-4 px-6 py-3 rounded shadow-lg transform transition-transform duration-300 z-50 ${
-    type === 'success' ? 'bg-green-500' : 'bg-red-500'
-  } text-white`;
+  function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
 
-  // Show toast
-  toast.classList.remove('translate-x-full');
+    toastMessage.textContent = message;
+    toast.className = `fixed top-4 right-4 px-6 py-3 rounded shadow-lg transform transition-transform duration-300 z-50 ${
+      type === 'success' ? 'bg-green-500' : 'bg-red-500'
+    } text-white`;
 
-  // Hide toast after 3 seconds
-  setTimeout(() => {
-    toast.classList.add('translate-x-full');
-  }, 3000);
-}
+    // Show toast
+    toast.classList.remove('translate-x-full');
 
-// Event listeners
-document.addEventListener('DOMContentLoaded', function() {
+    // Hide toast after 3 seconds
+    setTimeout(() => {
+      toast.classList.add('translate-x-full');
+    }, 3000);
+  }
+
+  // Event listeners
+  document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('btnAddProduct').addEventListener('click', openAddModal);
   document.getElementById('btnCancelModal').addEventListener('click', closeProductModal);
   document.getElementById('btnCancelDelete').addEventListener('click', closeDeleteModal);
@@ -447,7 +487,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Handle form submission
+  // Perbaikan di bagian form submission handling
   document.getElementById('productForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -455,35 +495,45 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitButton = document.getElementById('btnSaveProduct');
     const originalText = document.getElementById('saveButtonText').textContent;
 
-    // Disable button and show loading
+    // Disable button dan show loading
     submitButton.disabled = true;
     document.getElementById('saveButtonText').textContent = 'Menyimpan...';
 
-    // DENGAN INI:
     fetch(this.action, {
-      method: 'POST', // Selalu gunakan POST
+      method: 'POST',
       body: formData,
       headers: {
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         'Accept': 'application/json'
       }
     })
-    .then(response => response.json())
-    .then(data => {
+    .then(response => {
+      // Parse JSON response
+      return response.json().then(data => {
+        return { status: response.status, data: data };
+      });
+    })
+    .then(({ status, data }) => {
       if (data.success) {
         showToast(data.message || (isEditMode ? 'Produk berhasil diupdate!' : 'Produk berhasil ditambahkan!'));
         closeProductModal();
-        // Reload page to show updated data
+        // Reload page untuk show updated data
         setTimeout(() => {
           window.location.reload();
         }, 1000);
       } else {
+        // Show specific error message
         showToast(data.message || 'Terjadi kesalahan!', 'error');
+
+        // Jika ada errors detail, tampilkan di console untuk debugging
+        if (data.errors) {
+          console.error('Validation errors:', data.errors);
+        }
       }
     })
     .catch(error => {
       console.error('Error:', error);
-      showToast('Terjadi kesalahan saat menyimpan data!', 'error');
+      showToast('Terjadi kesalahan koneksi!', 'error');
     })
     .finally(() => {
       // Re-enable button
@@ -492,6 +542,45 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
+  // Perbaikan fungsi showToast untuk menampilkan pesan lebih lama jika error
+  function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+
+    toastMessage.textContent = message;
+
+    // Tentukan warna berdasarkan tipe
+    let bgColor = 'bg-green-500';
+    let duration = 3000; // 3 detik untuk success
+
+    switch(type) {
+      case 'error':
+        bgColor = 'bg-red-500';
+        duration = 5000; // 5 detik untuk error
+        break;
+      case 'warning':
+        bgColor = 'bg-yellow-500';
+        duration = 4000; // 4 detik untuk warning
+        break;
+      case 'info':
+        bgColor = 'bg-blue-500';
+        duration = 3000;
+        break;
+      default:
+        bgColor = 'bg-green-500';
+        duration = 3000;
+    }
+
+    toast.className = `fixed top-4 right-4 px-6 py-3 rounded shadow-lg transform transition-transform duration-300 z-50 ${bgColor} text-white`;
+
+    // Show toast
+    toast.classList.remove('translate-x-full');
+
+    // Hide toast after specified duration
+    setTimeout(() => {
+      toast.classList.add('translate-x-full');
+    }, duration);
+  }
   // Handle delete form submission
   document.getElementById('deleteForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -529,19 +618,19 @@ document.addEventListener('DOMContentLoaded', function() {
       submitButton.textContent = originalText;
     });
   });
-});
+  });
 
-// Handle escape key to close modals
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    if (!document.getElementById('productModal').classList.contains('hidden')) {
-      closeProductModal();
+  // Handle escape key to close modals
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      if (!document.getElementById('productModal').classList.contains('hidden')) {
+        closeProductModal();
+      }
+      if (!document.getElementById('deleteModal').classList.contains('hidden')) {
+        closeDeleteModal();
+      }
     }
-    if (!document.getElementById('deleteModal').classList.contains('hidden')) {
-      closeDeleteModal();
-    }
-  }
-});
+  });
 </script>
 
 @if(session('success'))

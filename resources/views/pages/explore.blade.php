@@ -117,49 +117,4 @@
             ])
         </div>
     </div>
-
-    <!-- Browse by Series -->
-    <div class="bg-gray-200 p-4 rounded-md mt-7 mb-7">
-        <h2 class="text-lg font-bold mb-3">Browse by Series</h2>
-        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            <div class="bg-white p-3 rounded-md text-center shadow-sm hover:shadow-md transition-shadow">
-                <p class="font-medium">Genshin Impact</p>
-                <p class="text-xs text-gray-500">2 items</p>
-            </div>
-            <div class="bg-white p-3 rounded-md text-center shadow-sm hover:shadow-md transition-shadow">
-                <p class="font-medium">Zenless</p>
-                <p class="text-xs text-gray-500">1 items</p>
-            </div>
-            <div class="bg-white p-3 rounded-md text-center shadow-sm hover:shadow-md transition-shadow">
-                <p class="font-medium">Yugi Oh</p>
-                <p class="text-xs text-gray-500">2 items</p>
-            </div>
-
-            <div class="bg-white p-3 rounded-md text-center shadow-sm hover:shadow-md transition-shadow">
-                <p class="font-medium">All</p>
-                <p class="text-xs text-gray-500">10+ series</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Collector's Guide -->
-    <div class="mt-7 mb-10">
-        <h2 class="text-lg font-bold mb-3">Feed Post</h2>
-        <div class="bg-gray-200 p-4 rounded-md">
-            <div class="flex flex-col md:flex-row">
-                <div class="md:w-2/3 pr-4">
-                    <h3 class="font-bold text-sm">Getting Started with Figure Collecting:</h3>
-                    <p class="text-xs mt-1">Everything you need to know about starting your figure collection journey...</p>
-                    <p class="text-xs mt-2">Learn about different figure types, proper display techniques, and how to identify authentic products.</p>
-                </div>
-                <div class="md:w-1/3 mt-4 md:mt-0">
-                    <div class="bg-blue-500 rounded-md p-4 text-white font-bold text-center">
-                        <p class="text-sm">COLLECTOR'S</p>
-                        <p class="text-xl">GUIDE</p>
-                        <p class="text-xs">TIPS & TRICKS FOR BEGINNERS</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection

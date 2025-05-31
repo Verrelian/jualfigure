@@ -126,8 +126,7 @@ Route::get('profile', function () {
 
 // ----------------------------
 // Extra Pages
-// ----------------------------
-
+// ---------------------------
 Route::get('/explore', function () {
     return view('pages.explore');
 })->name('explore');
