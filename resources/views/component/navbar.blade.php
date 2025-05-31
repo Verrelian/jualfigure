@@ -1,4 +1,4 @@
-<nav class="bg-white border-b border-gray-200 shadow-sm">
+<nav class="bg-white">
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3">
     <!-- Logo dan Brand -->
     <a href="{{ url('/dashboard') }}" class="flex items-center space-x-3">
@@ -41,10 +41,8 @@
       </a>
 
       <a href="{{url('/order-history') }}"
-        class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">History</a>
-
-      <a href="{{url('/posts') }}"
-        class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">Add Post</a>
+        class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">
+        History</a>
 
       <a href="{{url('/leaderboard') }}"
         class="{{ Request::is('leaderboard') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
@@ -69,7 +67,7 @@
   </div>
 
   <!-- Baris 2: Feed & Explore centered -->
-  <div class="max-w-screen-xl mx-auto py-2 border-t border-gray-200 flex justify-center space-x-6">
+  <div class="max-w-screen-xl mx-auto py-2 flex justify-center space-x-6">
     <a href="{{ url('/feed') }}"
       class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2 font-semibold">
       Feed

@@ -110,7 +110,7 @@
                             <span class="font-semibold">Item</span>
                         </div>
                         <p class="text-sm mb-1">Product: {{ $product['title'] }}</p>
-                        <p class="text-sm mb-1">Company: {{ $product['specifications']['Manufacturer'] }}</p>
+                        <p class="text-sm mb-1">Company: {{ $product['specifications']['Manufacture'] }}</p>
                         <p class="text-sm mb-1">Condition: Opened Box (Near Mint)</p>
                         <p class="text-sm">Quantity: <span id="modalQuantity">1</span>x</p>
 
@@ -560,7 +560,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const productImage = productImage || "";
             const productPrice = productPrice || "";
             const productType = productType || "";
-            const productManufacturer = productManufacturer || "";
+            const productManufacture = productManufacture || "";
 
             // Function to display notification
             function showNotification(message, isSuccess = true) {
@@ -625,7 +625,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         type: productType,
                         isWishlisted: true,
                         specifications: {
-                            Manufacturer: productManufacturer
+                            Manufacture: productManufacture
                         }
                     };
                     wishlist.push(product);

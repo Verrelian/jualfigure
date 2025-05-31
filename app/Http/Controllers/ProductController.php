@@ -15,7 +15,7 @@ class ProductController extends Controller
     {
         // Eager load the specification relationship
         $product = Produk::with('specification')->findOrFail($id);
-        
+
         // Get related products (3 random products of the same type, excluding current product)
         $relatedProducts = Produk::where('id', '!=', $id)
             ->byType($product->type) // Using the scope from the model
@@ -32,9 +32,9 @@ class ProductController extends Controller
                     'price' => $relatedProduct->formatted_harga, // Using the accessor
                     'description' => $relatedProduct->deskripsi,
                     'specifications' => $relatedProduct->specification ? [
-                        'Height' => $relatedProduct->specification->height ?? 'N/A',
+                        'Scale' => $relatedProduct->specification->scale ?? 'N/A',
                         'Material' => $relatedProduct->specification->material ?? 'N/A',
-                        'Manufacturer' => $relatedProduct->specification->manufacturer ?? 'N/A',
+                        'Manufacture' => $relatedProduct->specification->manufacture ?? 'N/A',
                         'Release Date' => $relatedProduct->specification->release_date ?? 'N/A',
                         'Series' => $relatedProduct->specification->series ?? 'N/A'
                     ] : []
@@ -51,9 +51,9 @@ class ProductController extends Controller
                 'price' => $product->formatted_harga, // Using the accessor
                 'description' => $product->deskripsi,
                 'specifications' => $product->specification ? [
-                    'Height' => $product->specification->height ?? 'N/A',
+                    'Scale' => $product->specification->scale ?? 'N/A',
                     'Material' => $product->specification->material ?? 'N/A',
-                    'Manufacturer' => $product->specification->manufacturer ?? 'N/A',
+                    'Manufacture' => $product->specification->manufacture ?? 'N/A',
                     'Release Date' => $product->specification->release_date ?? 'N/A',
                     'Series' => $product->specification->series ?? 'N/A'
                 ] : []
