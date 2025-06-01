@@ -17,13 +17,13 @@ class PostController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('pages.feed', compact('posts'));
+        return view('pages.posts.feed', compact('posts'));
     }
 
     // Menampilkan form create
     public function create()
     {
-        return view('pages.posts');
+        return view('pages.posts.create');
     }
 
     // Menyimpan post baru
@@ -58,7 +58,7 @@ class PostController extends Controller
     {
         // Jika belum login, redirect ke halaman login
         if (!auth()->check()) {
-            return redirect()->route('/login')->with('error', 'Silakan login dulu');
+            return redirect()->route('login')->with('error', 'Silakan login dulu');
         }
 
         $existingLike = PostLike::where('post_id', $post->id)
