@@ -12,7 +12,7 @@
     <div class="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
         <h1 class="text-xl font-bold">MOLE</h1>
         <div class="flex items-center gap-4">
-            <span class="text-sm text-gray-600">58k followers · 28k following</span>
+            <span class="text-sm text-gray-600"> Profile User</span>
             <button id="back-btn" class="text-sm bg-gray-200 px-4 py-1 rounded">Back</button>
         </div>
     </div>
@@ -24,17 +24,17 @@
         <div class="md:col-span-1">
             <div class="bg-white rounded-lg p-6 shadow-sm flex flex-col items-center">
                 <div class="w-40 h-40 rounded-full overflow-hidden mb-4 border-4 border-gray-200">
-                    <img src="{{ asset('images/muka.jpg') }}" alt="Profile" class="w-full h-full object-cover rounded-full">
+                    <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('images/muka.jpg') }}" alt="Profile" class="w-full h-full object-cover rounded-full">
                 </div>
-                <h2 class="text-lg font-bold">Loyal Hunter</h2>
-                <p class="text-gray-600 text-sm mb-4">Stephen Hawking</p>
+                    <h2 class="text-lg font-bold">{{ $user->name }}</h2>
+                    <p class="text-gray-600 text-sm mb-4">{{ $user->username }}</p>
 
                 <!-- Informasi Tambahan -->
                 <div class="w-full text-sm text-gray-600 space-y-1 text-left mt-2">
-                    <p><strong>Tanggal Lahir:</strong> 14 Januari 1980</p>
-                    <p><strong>Telepon:</strong> +62 812-3456-7890</p>
-                    <p><strong>Email:</strong> loyalhunter@email.com</p>
-                    <p><strong>Alamat:</strong> Jl. Mawar No. 123, Jakarta</p>
+                    <p><strong>Tanggal Lahir:</strong> {{ $user->birthdate ?? '-' }}</p>
+                    <p><strong>Telepon:</strong> {{ $user->phone ?? '-' }}</p>
+                    <p><strong>Email:</strong> {{ $user->email }}</p>
+                    <p><strong>Alamat:</strong> {{ $user->address ?? '-' }}</p>
                 </div>
 
                 <button id="edit-profile-btn" class="bg-black text-white mt-4 w-full py-2 text-sm rounded-md">Edit Profile</button>

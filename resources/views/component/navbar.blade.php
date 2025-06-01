@@ -67,7 +67,10 @@
           class="flex items-center space-x-2 text-sm bg-gray-100 rounded-full p-1 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300"
           id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown">
           <span class="sr-only">Open user menu</span>
-          <img class="w-8 h-8 rounded-full" src="{{ asset('images/muka.jpg') }}" alt="User Image">
+          <img class="w-8 h-8 rounded-full" 
+     src="{{ $user->avatar ? asset('storage/' . $user->avatar) : 'https://via.placeholder.com/150/FF5733/FFFFFF?text=U' }}" 
+     alt="User Image">
+
           <span class="hidden md:block text-gray-700 pe-2">Profile</span>
           <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg">
@@ -79,8 +82,9 @@
         <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-lg"
           id="user-dropdown">
           <div class="px-4 py-3 bg-gray-50 rounded-t-lg">
-            <span class="block text-sm font-medium text-gray-900">Stephen Hawking</span>
-            <span class="block text-sm text-gray-500 truncate">loyalhunter@gmail.com</span>
+<span class="block text-sm font-medium text-gray-900">{{ $user->name }}</span>
+<span class="block text-sm text-gray-500 truncate">{{ $user->email }}</span>
+
           </div>
           <ul class="py-2" aria-labelledby="user-menu-button">
             <li>

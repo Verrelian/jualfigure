@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login MOLE</title>
   <link rel="icon" href="{{ asset('images/favicon.jpg') }}" type="image/jpg">
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
@@ -83,15 +84,74 @@
       <button id="login-tab" class="tab-button active px-6 py-2 bg-black text-white rounded-l-lg shadow">Login</button>
       <button id="register-tab" class="tab-button px-6 py-2 bg-white text-black rounded-r-lg shadow">Register</button>
     </div>
+{{-- Success Toast --}}
+@if (session('success'))
+    <div 
+        x-data="{ show: true }" 
+        x-show="show"
+        x-transition 
+        class="fixed top-5 right-5 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-lg z-50"
+        role="alert"
+    >
+        <div class="flex items-start justify-between space-x-2">
+            <div class="text-sm">{{ session('success') }}</div>
+            <button @click="show = false" class="text-green-700 hover:text-green-900">
+                &times;
+            </button>
+        </div>
+    </div>
+@endif
+
+{{-- Error Toast --}}
+@if (session('error'))
+    <div 
+        x-data="{ show: true }" 
+        x-show="show"
+        x-transition 
+        class="fixed top-5 right-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg z-50"
+        role="alert"
+    >
+        <div class="flex items-start justify-between space-x-2">
+            <div class="text-sm">{{ session('error') }}</div>
+            <button @click="show = false" class="text-red-700 hover:text-red-900">
+                &times;
+            </button>
+        </div>
+    </div>
+@endif
+
+{{-- Validation Errors --}}
+@if ($errors->any())
+    <div 
+        x-data="{ show: true }" 
+        x-show="show"
+        x-transition 
+        class="fixed top-5 right-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg z-50 w-80"
+        role="alert"
+    >
+        <div class="flex items-start justify-between space-x-2">
+            <ul class="text-sm list-disc list-inside">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button @click="show = false" class="text-red-700 hover:text-red-900 font-bold text-lg">
+                &times;
+            </button>
+        </div>
+    </div>
+@endif
+
 
     <!-- Forms Container -->
     <div class="form-container">
       <!-- Login Form -->
       <div id="login-form" class="form-section active">
-        <form id="login-form-element">
+        <form method="POST" action="{{ route('auth.login') }}">
+    @csrf
           <div class="mb-4">
-            <label for="login-username" class="block text-sm font-semibold text-gray-700">Username</label>
-            <input type="text" id="login-username" name="username" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" placeholder="Enter your username" required>
+            <label for="username" class="block text-sm font-semibold text-gray-700">Username</label>
+            <input type="text" id="username" name="username" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" placeholder="Enter your username" required>
           </div>
 
           <div class="mb-4">
@@ -100,8 +160,8 @@
           </div>
 
           <div class="mb-4">
-            <label for="user-role" class="block text-sm font-semibold text-gray-700">Login sebagai</label>
-            <select id="user-role" name="role" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" required>
+            <label for="role" class="block text-sm font-semibold text-gray-700">Login sebagai</label>
+            <select id="role" name="role" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" required>
               <option value="pembeli">Pembeli</option>
               <option value="penjual">Penjual</option>
             </select>
@@ -125,7 +185,8 @@
 
       <!-- Register Form -->
       <div id="register-form" class="form-section">
-        <form id="register-form-element">
+        <form id="register-form-element" method="POST" action="{{ route('auth.register') }}">
+    @csrf
           <div class="mb-4">
             <label for="register-username" class="block text-sm font-semibold text-gray-700">Username</label>
             <input type="text" id="register-username" name="username" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" placeholder="Choose a username" required>
@@ -250,55 +311,6 @@
         // Find currently active form and switch to login form
         var activeForm = $('.form-section.active');
         switchForm(activeForm, '#login-form');
-      });
-
-      // Login Form Handler
-      $('#login-form-element').submit(function(e) {
-        e.preventDefault();
-
-        var username = $('#login-username').val();
-        var password = $('#login-password').val();
-        var role = $('#user-role').val();
-
-        // Simple validation for demo purposes
-        if (username.trim() === '' || password.trim() === '') {
-          alert('Please enter both username and password');
-          return;
-        }
-
-        // Frontend role-based redirect (normally handled by backend)
-        if (role === 'pembeli') {
-          // Redirect to pembeli dashboard
-          window.location.href = '/mole/dashboard';
-        } else if (role === 'penjual') {
-          // Redirect to penjual dashboard
-          window.location.href = '/mole/seller/crud';
-        }
-      });
-
-      // Register Form Handler
-      $('#register-form-element').submit(function(e) {
-        e.preventDefault();
-
-        var username = $('#register-username').val();
-        var email = $('#register-email').val();
-        var password = $('#register-password').val();
-        var confirmPassword = $('#confirm-password').val();
-
-        // Simple validation
-        if (password !== confirmPassword) {
-          alert('Passwords do not match!');
-          return;
-        }
-
-        // For demo purposes, just show success message and switch to login
-        alert('Registration successful! Please login with your new account.');
-
-        // Clear the form
-        $(this)[0].reset();
-
-        // Switch to login tab
-        $('#login-tab').click();
       });
 
       // Forgot Password Form Handler
