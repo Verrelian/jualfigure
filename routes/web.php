@@ -44,10 +44,6 @@ Route::get('/dashboard', function () {
     return view('pages.general.dashboard');
 })->name('dashboard');
 
-Route::get('/home', function () {
-    return view('pages.dashboard');
-});
-
 Route::get('seller/dashboardp', function () {
     return view('pages.seller.dashboardp');
 })->name('dashboardp');
@@ -180,3 +176,11 @@ Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login')
 Route::post('/auth/register', [AuthController::class, 'register'])->name('auth.register');
 Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
+<<<<<<< HEAD
+=======
+// Profile Routes
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+>>>>>>> 367026e3847fcc234c0c0b933a6c2df238659d7a
