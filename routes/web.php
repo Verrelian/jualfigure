@@ -43,10 +43,6 @@ Route::get('/dashboard', function () {
     return view('pages.general.dashboard');
 })->name('dashboard');
 
-Route::get('/home', function () {
-    return view('pages.dashboard');
-});
-
 Route::get('seller/dashboardp', function () {
     return view('pages.seller.dashboardp');
 })->name('dashboardp');
@@ -160,7 +156,7 @@ Route::post('/feed/{post}/like', [PostController::class, 'like'])->name('posts.l
 Route::post('/feed/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
 
 Route::get('/login', function () {
-    return view('pages.login');
+    return view('pages.general.login');
 })->name('login');
 
 Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
