@@ -45,8 +45,8 @@
                 <div>
                     <h3 class="text-sm font-semibold uppercase">Bantuan</h3>
                     <ul class="mt-4 space-y-4">
-                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Pusat Bantuan</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Hubungi Kami</a></li>
+                        <li><a href="/mole/ambabot" class="text-gray-400 hover:text-blue-400">Pusat Bantuan</a></li>
+                        <li><a href="/mole/contact-us" class="text-gray-400 hover:text-blue-400">Hubungi Kami</a></li>
                     </ul>
                 </div>
                 <div>
@@ -74,7 +74,7 @@
         <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
             <div class="flex space-x-6 md:order-2">
                 <a href="#" class="text-sm text-gray-400 hover:text-blue-400">Sitemap</a>
-                <a href="#" class="text-sm text-gray-400 hover:text-blue-400">FAQ</a>
+                <a href="/mole/ambabot" class="text-sm text-gray-400 hover:text-blue-400">FAQ</a>
             </div>
             <p class="mt-4 md:mt-0 text-sm text-gray-400 md:order-1">
                 &copy; <span id="year"></span> Brand Name. All rights reserved.

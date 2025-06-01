@@ -32,7 +32,7 @@ class ProfileController extends Controller
     {
         // Jika user sudah login, ambil data user dari sesi
         $user = Auth::user();
-        
+
         // Jika user belum login, tampilkan data user contoh
         if (!$user) {
             $user = (object) [
@@ -42,7 +42,7 @@ class ProfileController extends Controller
             ];
         }
 
-        return view('edit_profile', compact('user'));
+        return view('pages.user.edit_profile', compact('user'));
     }
 
     // Memperbarui data profil pengguna
@@ -68,6 +68,6 @@ class ProfileController extends Controller
         ]);
 
         // Redirect ke halaman profil dengan pesan sukses
-        return redirect()->route('profile')->with('success', 'Profile updated successfully');
+        return redirect()->route('pages.user.profile')->with('success', 'Profile updated successfully');
     }
 }

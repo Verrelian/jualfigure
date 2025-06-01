@@ -18,7 +18,7 @@
             @endforeach
         </div>
 
-        <a href="/mole/profile">
+        <a href="/mole/user/profile">
             <button class="mt-6 bg-black text-white px-4 py-2 rounded text-sm">← Kembali ke Profil</button>
         </a>
     </div>

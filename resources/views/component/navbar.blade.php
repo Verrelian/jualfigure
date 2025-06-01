@@ -88,7 +88,7 @@
           </div>
           <ul class="py-2" aria-labelledby="user-menu-button">
             <li>
-              <a href="/mole/profile" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              <a href="/mole/user/profile" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                 <svg class="w-4 h-4 me-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

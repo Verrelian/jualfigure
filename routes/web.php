@@ -19,7 +19,7 @@ Route::prefix('seller')->group(function () {
 });
 
 Route::get('/login', function () {
-    return view('pages.login');
+    return view('pages.general.login');
 })->name('login');
 
 Route::get('/register', function () {
@@ -39,7 +39,7 @@ Route::get('/webs', function () {
 // ----------------------------
 
 Route::get('/dashboard', function () {
-    return view('pages.dashboard');
+    return view('pages.general.dashboard');
 })->name('dashboard');
 
 Route::get('/home', function () {
@@ -58,10 +58,10 @@ Route::get('seller/laporan', function () {
     return view('pages.seller.laporan');
 })->name('laporan');
 
-Route::get('seller/crud', [CrudController::class, 'index'])->name('crud.index');
+Route::get('seller/dashboard', [CrudController::class, 'index'])->name('crud.index');
 
-Route::get('/seller/crud', function () {
-    return view('pages.seller.crud');
+Route::get('/seller/dashboard', function () {
+    return view('pages.seller.dashboard');
 });
 
 // ----------------------------
@@ -79,17 +79,17 @@ Route::get('/product-detail', function () {
 });
 
 Route::get('/wishlist', function () {
-    return view('pages.wishlist');
+    return view('pages.product.wishlist');
 })->name('wishlist');
 
 Route::get('/contact-us', function () {
-    return view('pages.contact-us');
+    return view('pages.general.contact-us');
 })->name('contact-us');
 
 Route::post('/contact-submit', [ContactController::class, 'submit'])->name('contact.submit');
 
 Route::get('/ambabot', function () {
-    return view('pages.ambabot');
+    return view('pages.general.ambabot');
 })->name('ambabot');
 
 Route::get('/product-detail', [ProductController::class, 'index'])->name('home');
@@ -116,14 +116,14 @@ Route::get('/order-history/{id?}', [OrderController::class, 'history'])->name('o
 // Profile
 // ----------------------------
 
-Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+Route::get('/user/profile', [ProfileController::class, 'show'])->name('user.profile');
 
-Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::get('/user/profile/edit', [ProfileController::class, 'edit'])->name('user.profile.edit');
 
-Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+Route::post('/user/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
-Route::get('profile', function () {
-    return view('profile');
+Route::get('/user/profile', function () {
+    return view('pages.user.profile');
 });
 
 // ----------------------------
@@ -132,17 +132,17 @@ Route::get('profile', function () {
 Route::get('/explore', [ProductController::class, 'explore'])->name('explore');
 
 Route::get('/leaderboard', function () {
-    return view('pages.leaderboard');
+    return view('pages.general.leaderboard');
 });
 
 // Route untuk halaman postingan pengguna
 Route::get('/user/posts', function () {
-    return view('user-posts');
+    return view('pages.user.user_posts');
 })->name('user.posts');
 
 // Route untuk halaman mainan yang dibeli pengguna
 Route::get('/user/toys', function () {
-    return view('user-toys');
+    return view('pages.user.user_toys');
 })->name('user.toys');
 
 // Untuk menampilkan daftar post

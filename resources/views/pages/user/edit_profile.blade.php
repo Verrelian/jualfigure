@@ -14,7 +14,7 @@
       <div class="bg-black text-white p-4 flex items-center justify-between">
         <img src="{{ asset('images/icon.png') }}" alt="Mole Logo" class="w-10">
         <div class="hidden md:flex space-x-4">
-          <a href="{{ url('/profile') }}" class="hover:underline">Back</a>
+          <a href="{{ url('/user/profile') }}" class="hover:underline">Back</a>
         </div>
         <button id="hamburger-btn" class="md:hidden">
           <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">

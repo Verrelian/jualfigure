@@ -2,13 +2,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Produk; 
+use App\Models\Produk;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        return view('pages.product-detail');
+        return view('pages.product.product-detail');
     }
 
     public function show($id)
@@ -42,7 +42,7 @@ class ProductController extends Controller
             })
             ->toArray();
 
-        return view('pages.product-detail', [
+        return view('pages.product.product-detail', [
             'product' => [
                 'id' => $product->id,
                 'image' => $product->gambar_url, // Using the accessor
@@ -88,7 +88,7 @@ class ProductController extends Controller
                          ->orderBy('created_at', 'desc')
                          ->get();
 
-        return view('pages.explore', [
+        return view('pages.general.explore', [
             'categories' => $categorySlugs,
             'initialCategory' => $initialCategory,
             'products' => $products
@@ -103,7 +103,7 @@ class ProductController extends Controller
             'popup' => 'Pop Up Parade',
             'hottoys' => 'Hot Toys'
         ];
-        
+
         $categorySlug = $request->query('category', 'nendoroid');
         $type = $categoryMap[$categorySlug] ?? 'Nendoroid';
 
