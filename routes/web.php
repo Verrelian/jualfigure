@@ -9,6 +9,7 @@ use App\Http\Controllers\CrudController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ListProdukController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SellerProfileController;
 
 // Product Management Routes for Seller
 Route::prefix('seller')->group(function () {
@@ -65,6 +66,19 @@ Route::get('/seller/dashboard', function () {
     return view('pages.seller.dashboard');
 });
 
+Route::get('seller/dashboardp', function () {
+    return view('pages.seller.dashboardp');
+})->name('dashboardp');
+
+Route::get('/mole/seller/profile', function () {
+    return view('pages.seller.profile');
+})->name('seller.profile');
+
+Route::get('/seller/edit_profile', [SellerProfileController::class, 'edit'])->name('seller.edit_profile');
+Route::post('/seller/profile/update', [SellerProfileController::class, 'updateProfile'])->name('seller.profile.update');
+Route::get('/seller/posts', [SellerProfileController::class, 'posts'])->name('seller.posts');
+Route::get('/seller/toys', [SellerProfileController::class, 'toys'])->name('seller.toys');
+
 // ----------------------------
 // Product & Wishlist
 // ----------------------------
@@ -97,6 +111,9 @@ Route::get('/product-detail', [ProductController::class, 'index'])->name('home')
 
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
 
+Route::get('/seller/dashboard', [DashboardController::class, 'index'])->name('seller.dashboard');
+
+
 // ----------------------------
 // Orders
 // ----------------------------
@@ -122,10 +139,6 @@ Route::get('/user/profile', [ProfileController::class, 'show'])->name('user.prof
 Route::get('/user/profile/edit', [ProfileController::class, 'edit'])->name('user.profile.edit');
 
 Route::post('/user/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-
-Route::get('/user/profile', function () {
-    return view('pages.user.profile');
-});
 
 // ----------------------------
 // Extra Pages
@@ -157,22 +170,13 @@ Route::post('/feed', [PostController::class, 'store'])->name('posts.store');
 
 Route::post('/feed/{post}/like', [PostController::class, 'like'])->name('posts.like');
 
-<<<<<<< HEAD
 Route::post('/feed/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
 
 Route::get('/login', function () {
-    return view('pages.login');
+    return view('pages.general.login');
 })->name('login');
 
 Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/auth/register', [AuthController::class, 'register'])->name('auth.register');
 Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
-// Profile Routes
-Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
-Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-=======
-Route::post('/feed/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
->>>>>>> 3717c2b6068b1c4bcec4b725aacde1c16b6bd018

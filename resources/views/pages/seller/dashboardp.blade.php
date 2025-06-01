@@ -8,7 +8,7 @@
   <aside class="w-64 bg-gray-800 text-white p-4 space-y-4">
     <h2 class="text-xl font-bold mb-6">MOLE Seller</h2>
     <nav class="space-y-2">
-      <a href="/mole/seller/crud" class="block py-2 px-3 rounded hover:bg-gray-700">Dashboard</a>
+      <a href="/mole/seller/dashboard" class="block py-2 px-3 rounded hover:bg-gray-700">Dashboard</a>
       <a href="/products" class="block py-2 px-3 rounded hover:bg-gray-700">Produk</a>
       <a href="/orders" class="block py-2 px-3 rounded hover:bg-gray-700">Pesanan</a>
       <a href="/sales-report" class="block py-2 px-3 rounded bg-gray-700">Laporan Penjualan</a>

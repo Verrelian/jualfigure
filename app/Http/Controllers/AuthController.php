@@ -26,7 +26,7 @@ class AuthController extends Controller
 
         // Tidak cek role di Auth::attempt, cek manual
         if ($user->role === 'penjual') {
-            return redirect('/seller/crud');
+            return redirect('/seller/dashboardp');
         }
         return redirect('/dashboard');
     }

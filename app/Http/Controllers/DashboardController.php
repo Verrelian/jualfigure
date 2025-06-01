@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index()
-    {
-        $user = Auth::user(); // ambil data user yang sedang login
-        return view('pages.dashboard', compact('user'));
-    }
+    public function show()
+{
+    $user = Auth::user(); // 
+    return view('pages.user.profile', compact('user'));
+}
 }

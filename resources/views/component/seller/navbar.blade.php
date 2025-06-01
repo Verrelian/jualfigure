@@ -2,15 +2,17 @@
   <div class="max-w-screen-xl mx-auto px-6 py-4 flex items-center justify-between">
 
     <!-- Logo & Brand -->
-    <a href="{{ url('/seller/crud') }}" class="flex items-center space-x-3">
-      <img src="{{ asset('images/icon.png') }}" class="h-12 w-15" alt="M.O.L.E Logo" />
+    <a href="{{ url('/seller/dashboard') }}" class="flex items-center space-x-3">
+      <img src="{{ asset('images/icon.png') }}" class="h-12 w-12" alt="M.O.L.E Logo" />
       <span class="text-xl font-semibold text-gray-800">M.O.L.E</span>
     </a>
 
     <!-- Right-side User Dropdown -->
     <div class="relative">
-      <button type="button" class="flex items-center space-x-2 bg-white text-sm rounded-full px-3 py-1.5 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown">
-        <img class="w-8 h-8 rounded-full" src="{{ asset('images/icon.png') }}" alt="User Avatar">
+      <button type="button" class="flex items-center space-x-2 bg-white text-sm rounded-full px-3 py-1.5 hover:bg-gray-100 focus:ring-2 focus:ring-gray-300" id="user-menu-button" data-dropdown-toggle="user-dropdown">
+        <img class="w-8 h-8 rounded-full"
+          src="{{ Auth::check() && Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('images/icon.png') }}"
+          alt="User Avatar">
         <span class="hidden md:block text-gray-700">Profile</span>
         <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -20,32 +22,42 @@
       <!-- Dropdown Menu -->
       <div class="z-50 hidden mt-2 w-48 bg-white divide-y divide-gray-100 rounded-lg shadow-lg absolute right-0" id="user-dropdown">
         <div class="px-4 py-3 bg-gray-50 rounded-t-lg">
-          <span class="block text-sm font-medium text-gray-900">Adnan</span>
-          <span class="block text-sm text-gray-500 truncate">email@and.com</span>
+          @if(Auth::check())
+            <span class="block text-sm font-medium text-gray-900">{{ Auth::user()->name }}</span>
+            <span class="block text-sm text-gray-500 truncate">{{ Auth::user()->email }}</span>
+          @else
+            <span class="block text-sm text-gray-500">Guest</span>
+          @endif
         </div>
         <ul class="py-1">
           <li>
-            <a href="/mole/profile" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              Profil
-            </a>
-          </li>
+  <a href="{{ route('seller.profile') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+    </svg>
+    Profil
+  </a>
+</li>
+
           <li>
-            <a href="#" onclick="logout()" class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-100">
-              <svg class="w-4 h-4 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              Keluar
-            </a>
+            <form method="GET" action="{{ route('auth.logout') }}">
+  <button type="submit" class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left">
+    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+    </svg>
+    Keluar
+  </button>
+</form>
+
           </li>
         </ul>
       </div>
     </div>
 
-    <!-- Mobile menu button (optional functionality) -->
-    <button type="button" class="md:hidden inline-flex items-center p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
+    <!-- Mobile menu button -->
+    <button type="button" class="md:hidden inline-flex items-center p-2 rounded-md hover:bg-gray-100 focus:ring-2 focus:ring-gray-200">
       <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
       </svg>
@@ -55,7 +67,8 @@
     <script>
       function logout() {
         localStorage.removeItem('currentUser');
-        window.location.href = '/mole/login';
+        window.location.href = '/seller/login';
+
       }
     </script>
   </div>
