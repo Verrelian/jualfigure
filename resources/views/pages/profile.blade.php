@@ -43,7 +43,7 @@
 
         <!-- Main Section -->
         <div class="md:col-span-2 space-y-6">
-
+            
             <!-- Toys Collection -->
             <div class="bg-white rounded-lg shadow-sm p-6">
                 <h3 class="text-xl font-semibold mb-4">Toys Collection</h3>
@@ -76,7 +76,7 @@
     <!-- Script -->
     <script>
         document.getElementById('edit-profile-btn').addEventListener('click', function () {
-            window.location.href = "{{ route('user.profile.edit') }}";
+            window.location.href = "{{ route('profile.edit') }}";
         });
 
         document.getElementById('back-btn').addEventListener('click', function () {

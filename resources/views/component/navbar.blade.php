@@ -66,37 +66,37 @@
     </div>
   </div>
 
-  <!-- Baris 2: Feed & Explore centered -->
-  <div class="max-w-screen-xl mx-auto py-2 flex justify-center space-x-6">
-    <a href="{{ url('/feed') }}"
-      class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2 font-semibold">
-      Feed
-    </a>
-    <a href="{{ url('/explore') }}"
-      class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2 font-semibold">
-      Explore
-    </a>
-  </div>
-</nav>
+        <!-- Baris 2: Feed & Explore centered -->
+        <div class="max-w-screen-xl mx-auto py-2 flex justify-center space-x-6">
+          <a href="{{ url('/feed') }}"
+            class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2 font-semibold">
+            Feed
+          </a>
+          <a href="{{ url('/explore') }}"
+            class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2 font-semibold">
+            Explore
+          </a>
+        </div>
+      </nav>
+          <!-- User Dropdown - Profile Penjual -->
+        </div>
+          <div class="relative">
+        <button type="button"
+          class="flex items-center space-x-2 text-sm bg-gray-100 rounded-full p-1 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300"
+          id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown">
+          <span class="sr-only">Open user menu</span>
+          <img class="w-8 h-8 rounded-full"
+     src="{{ $user->avatar ? asset('storage/' . $user->avatar) : 'https://via.placeholder.com/150/FF5733/FFFFFF?text=U' }}"
+     alt="User Image">
 
-        <!-- Dropdown menu -->
-        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-lg"
-          id="user-dropdown">
-          <div class="px-4 py-3 bg-gray-50 rounded-t-lg">
-            <span class="block text-sm font-medium text-gray-900">Stephen Hawking</span>
-            <span class="block text-sm text-gray-500 truncate">loyalhunter@gmail.com</span>
-          </div>
-          <ul class="py-2" aria-labelledby="user-menu-button">
-            <li>
-              <a href="/mole/user/profile" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                <svg class="w-4 h-4 me-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
-                Profil
-              </a>
-            </li>
+          <span class="hidden md:block text-gray-700 pe-2">Profile</span>
+          <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+
+
             <!-- Tombol Logout -->
             <a href="#" onclick="logout()" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
               <svg class="w-4 h-4 me-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -3,11 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CrudController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ListProdukController;
+use App\Http\Controllers\AuthController;
 
 // Product Management Routes for Seller
 Route::prefix('seller')->group(function () {
@@ -157,3 +158,17 @@ Route::post('/feed', [PostController::class, 'store'])->name('posts.store');
 Route::post('/feed/{post}/like', [PostController::class, 'like'])->name('posts.like');
 
 Route::post('/feed/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
+
+Route::get('/login', function () {
+    return view('pages.login');
+})->name('login');
+
+Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
+Route::post('/auth/register', [AuthController::class, 'register'])->name('auth.register');
+Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+
+// Profile Routes
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
