@@ -182,13 +182,6 @@
                 <div class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full z-10">
                     #{{ $i }}
                 </div>
-                @include('component.product-card', [
-                    'id' => $i,
-                    'image' => 'images/p' . $i . '.jpg',
-                    'type' => 'Trending',
-                    'title' => 'Popular Figure ' . $i,
-                    'price' => '$' . (30 + $i * 5) . '.99'
-                ])
             </div>
             @endfor
         </div>
@@ -204,30 +197,6 @@
             <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">Browse All Series</a>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            @include('component.collection-card', [
-                'image' => 'images/p1.jpg',
-                'title' => 'Zenless Zone Zero',
-                'count' => '12 figures',
-                'badge' => 'New'
-            ])
-            @include('component.collection-card', [
-                'image' => 'images/p2.jpg',
-                'title' => 'Hololive',
-                'count' => '25 figures',
-                'badge' => 'Hot'
-            ])
-            @include('component.collection-card', [
-                'image' => 'images/p4.png',
-                'title' => 'Jujutsu Kaisen',
-                'count' => '18 figures',
-                'badge' => 'Popular'
-            ])
-            @include('component.collection-card', [
-                'image' => 'images/p5.jpg',
-                'title' => 'Yu-Gi-Oh!',
-                'count' => '8 figures',
-                'badge' => 'Classic'
-            ])
         </div>
     </div>
 
@@ -276,41 +245,6 @@
             </div>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-            @include('component.product-card', [
-                'id' => 9,
-                'image' => 'images/figure3.jpg',
-                'type' => 'New Release',
-                'title' => 'PVC Figure Himura Kenshin - Rurouni Kenshin (18cm)',
-                'price' => '$59.99'
-            ])
-            @include('component.product-card', [
-                'id' => 3,
-                'image' => 'images/p3.png',
-                'type' => 'New Release',
-                'title' => 'Pop Up Parade Frieren - Sousou no Frieren (17cm)',
-                'price' => '$49.99'
-            ])
-            @include('component.product-card', [
-                'id' => 6,
-                'image' => 'images/p6.jpg',
-                'type' => 'New Release',
-                'title' => 'Nendroid Aventurine - Honkai Star Rail (10cm)',
-                'price' => '$39.99'
-            ])
-            @include('component.product-card', [
-                'id' => 2,
-                'image' => 'images/p2.jpg',
-                'type' => 'New Release',
-                'title' => 'Pop Up Parade Gawr Gura - Hololive Special Edition',
-                'price' => '$54.99'
-            ])
-            @include('component.product-card', [
-                'id' => 10,
-                'image' => 'images/p4.png',
-                'type' => 'New Release',
-                'title' => 'Pop Up Parade Satoru Gojo - Jujutsu Kaisen',
-                'price' => '$49.99'
-            ])
         </div>
     </div>
 
@@ -516,7 +450,7 @@
             function renderProducts(products) {
                 productsContainer.innerHTML = products.map(product => `
                     <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                        <a href="/product/${product.id}" class="block">
+                        <a href="product/${product.id}" class="block">
                             <div class="aspect-square w-full">
                                 <img src="${product.gambar_url}" alt="${product.nama}" class="w-full h-full object-cover" loading="lazy">
                             </div>

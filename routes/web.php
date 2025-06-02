@@ -1,186 +1,115 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CrudController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\ListProdukController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\SellerProfileController;
+use App\Http\Controllers\{
+    AuthController,
+    ProfileController,
+    PostController,
+    DashboardController,
+    ProductController,
+    CrudController,
+    OrderController,
+    ListProdukController,
+    SellerProfileController,
+    ContactController
+};
 
-// Product Management Routes for Seller
-Route::prefix('seller')->group(function () {
-    Route::get('/product', [ListProdukController::class, 'show'])->name('seller.product');
-    Route::post('/product', [ListProdukController::class, 'store'])->name('product.store');
-    Route::put('/product/{id}', [ListProdukController::class, 'update'])->name('product.update');
-    Route::delete('/product/{id}', [ListProdukController::class, 'destroy'])->name('product.destroy');
-    Route::get('/product/{id}/specification', [ListProdukController::class, 'getSpecification'])->name('product.specification');
-});
-
-Route::get('/login', function () {
-    return view('pages.general.login');
-})->name('login');
-
-Route::get('/register', function () {
-    return view('register');
-});
-
-Route::get('/forgot_password', function () {
-    return view('forgot_password');
-});
-
-Route::get('/webs', function () {
-    return view('welcome');
-});
-
-// ----------------------------
-// Dashboard & Seller Routes
-// ----------------------------
-
-Route::get('/dashboard', function () {
-    return view('pages.general.dashboard');
-})->name('dashboard');
-
-Route::get('seller/dashboardp', function () {
-    return view('pages.seller.dashboardp');
-})->name('dashboardp');
-
-Route::get('seller/order', function () {
-    return view('pages.seller.order');
-})->name('order');
-
-Route::get('seller/laporan', function () {
-    return view('pages.seller.laporan');
-})->name('laporan');
-
-Route::get('seller/dashboard', [CrudController::class, 'index'])->name('crud.index');
-
-Route::get('/seller/dashboard', function () {
-    return view('pages.seller.dashboard');
-});
-
-Route::get('seller/dashboardp', function () {
-    return view('pages.seller.dashboardp');
-})->name('dashboardp');
-
-Route::get('/mole/seller/profile', function () {
-    return view('pages.seller.profile');
-})->name('seller.profile');
-
-Route::get('/seller/edit_profile', [SellerProfileController::class, 'edit'])->name('seller.edit_profile');
-Route::post('/seller/profile/update', [SellerProfileController::class, 'updateProfile'])->name('seller.profile.update');
-Route::get('/seller/posts', [SellerProfileController::class, 'posts'])->name('seller.posts');
-Route::get('/seller/toys', [SellerProfileController::class, 'toys'])->name('seller.toys');
-
-// ----------------------------
-// Product & Wishlist
-// ----------------------------
-
-Route::get('/products', function () {
-    return view('pages.products');
-});
-
-Route::get('/products/by-category', [ProductController::class, 'getProductsByCategory'])->name('products.by-category');
-
-Route::get('/product-detail', function () {
-    return view('pages.product-detail');
-});
-
-Route::get('/wishlist', function () {
-    return view('pages.product.wishlist');
-})->name('wishlist');
-
-Route::get('/contact-us', function () {
-    return view('pages.general.contact-us');
-})->name('contact-us');
-
-Route::post('/contact-submit', [ContactController::class, 'submit'])->name('contact.submit');
-
-Route::get('/ambabot', function () {
-    return view('pages.general.ambabot');
-})->name('ambabot');
-
-Route::get('/product-detail', [ProductController::class, 'index'])->name('home');
-
-Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
-
-Route::get('/seller/dashboard', [DashboardController::class, 'index'])->name('seller.dashboard');
-
-
-// ----------------------------
-// Orders
-// ----------------------------
-
-Route::get('/detail', function () {
-    return view('pages.order-detail');
-});
-
-Route::get('/order-detail', function () {
-    return view('pages.order-detail');
-});
-
-Route::get('/order-status/{id?}', [OrderController::class, 'status'])->name('order.status');
-
-Route::get('/order-history/{id?}', [OrderController::class, 'history'])->name('order.history');
-
-// ----------------------------
-// Profile
-// ----------------------------
-
-Route::get('/user/profile', [ProfileController::class, 'show'])->name('user.profile');
-
-Route::get('/user/profile/edit', [ProfileController::class, 'edit'])->name('user.profile.edit');
-
-Route::post('/user/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-
-// ----------------------------
-// Extra Pages
-// ---------------------------
-Route::get('/explore', [ProductController::class, 'explore'])->name('explore');
-
-Route::get('/leaderboard', function () {
-    return view('pages.general.leaderboard');
-});
-
-// Route untuk halaman postingan pengguna
-Route::get('/user/posts', function () {
-    return view('pages.user.user_posts');
-})->name('user.posts');
-
-// Route untuk halaman mainan yang dibeli pengguna
-Route::get('/user/toys', function () {
-    return view('pages.user.user_toys');
-})->name('user.toys');
-
-// Untuk menampilkan daftar post
-Route::get('/feed', [PostController::class, 'index'])->name('posts.index');
-
-// Untuk menampilkan form create
-Route::get('/posts', [PostController::class, 'create'])->name('posts.create');
-
-// Untuk menyimpan post baru
-Route::post('/feed', [PostController::class, 'store'])->name('posts.store');
-
-Route::post('/feed/{post}/like', [PostController::class, 'like'])->name('posts.like');
-
-Route::post('/feed/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
-
-Route::get('/login', function () {
-    return view('pages.general.login');
-})->name('login');
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::get('/register', fn() => view('register'))->name('register');
+Route::get('/forgot_password', fn() => view('forgot_password'))->name('forgot_password');
 
 Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/auth/register', [AuthController::class, 'register'])->name('auth.register');
 Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
-<<<<<<< HEAD
-=======
-// Profile Routes
-Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
-Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
->>>>>>> 367026e3847fcc234c0c0b933a6c2df238659d7a
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
+Route::view('/', 'welcome')->name('home');
+Route::view('/webs', 'welcome')->name('webs');
+Route::view('/contact-us', 'pages.general.contact-us')->name('contact-us');
+Route::view('/ambabot', 'pages.general.ambabot')->name('ambabot');
+Route::view('/leaderboard', 'pages.general.leaderboard')->name('leaderboard');
+
+Route::post('/contact-submit', [ContactController::class, 'submit'])->name('contact.submit');
+
+/*
+|--------------------------------------------------------------------------
+| Product Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/products', fn() => view('pages.products'))->name('products');
+Route::get('/products/by-category', [ProductController::class, 'getProductsByCategory'])->name('products.by-category');
+Route::get('/product-detail', [ProductController::class, 'index'])->name('product-detail');
+Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
+Route::get('/explore', [ProductController::class, 'explore'])->name('explore');
+
+/*
+|--------------------------------------------------------------------------
+| Protected Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])->group(function () {
+
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // User Profile
+    Route::prefix('user')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'show'])->name('user.profile');
+        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('user.profile.edit');
+        Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::view('/posts', 'pages.user.user_posts')->name('user.posts');
+        Route::view('/toys', 'pages.user.user_toys')->name('user.toys');
+    });
+
+    // Wishlist
+    Route::view('/wishlist', 'pages.product.wishlist')->name('wishlist');
+
+    // Order
+    Route::prefix('order')->group(function () {
+        Route::view('/detail', 'pages.order-detail')->name('order.detail');
+        Route::get('/status/{id?}', [OrderController::class, 'status'])->name('order.status');
+        Route::get('/history/{id?}', [OrderController::class, 'history'])->name('order.history');
+    });
+
+    // Feed/Post
+    Route::prefix('feed')->group(function () {
+        Route::get('/', [PostController::class, 'index'])->name('posts.index');
+        Route::post('/', [PostController::class, 'store'])->name('posts.store');
+        Route::post('/{post}/like', [PostController::class, 'like'])->name('posts.like');
+        Route::post('/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
+    });
+    Route::get('/posts', [PostController::class, 'create'])->name('posts.create');
+
+    // Seller
+    Route::prefix('seller')->middleware(['seller'])->group(function () {
+
+        Route::get('/dashboard', [CrudController::class, 'index'])->name('seller.dashboard');
+        Route::view('/dashboardp', 'pages.seller.dashboardp')->name('seller.dashboardp');
+
+        Route::view('/profile', 'pages.seller.profile')->name('seller.profile');
+        Route::get('/edit_profile', [SellerProfileController::class, 'edit'])->name('seller.edit_profile');
+        Route::post('/profile/update', [SellerProfileController::class, 'updateProfile'])->name('update');
+        Route::get('/posts', [SellerProfileController::class, 'posts'])->name('seller.posts');
+        Route::get('/toys', [SellerProfileController::class, 'toys'])->name('seller.toys');
+
+        Route::prefix('product')->group(function () {
+            Route::get('/', [ListProdukController::class, 'show'])->name('seller.product');
+            Route::post('/', [ListProdukController::class, 'store'])->name('seller.product.store');
+            Route::put('/{id}', [ListProdukController::class, 'update'])->name('seller.product.update');
+            Route::delete('/{id}', [ListProdukController::class, 'destroy'])->name('seller.product.destroy');
+            Route::get('/{id}/specification', [ListProdukController::class, 'getSpecification'])->name('seller.product.specification');
+        });
+
+        Route::view('/order', 'pages.seller.order')->name('seller.order');
+        Route::view('/laporan', 'pages.seller.laporan')->name('seller.laporan');
+    });
+});

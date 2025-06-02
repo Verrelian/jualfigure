@@ -10,29 +10,34 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     public function login(Request $request)
-{
-    $request->validate([
-        'username' => 'required',
-        'password' => 'required',
-    ]);
+    {
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
 
-    $credentials = [
-        'name' => $request->username,
-        'password' => $request->password,
-    ];
+        $credentials = [
+            'name' => $request->username,
+            'password' => $request->password,
+        ];
 
-    if (Auth::attempt($credentials)) {
-        $user = Auth::user();
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
 
-        // Tidak cek role di Auth::attempt, cek manual
-        if ($user->role === 'penjual') {
-            return redirect('/seller/dashboardp');
+            // Tidak cek role di Auth::attempt, cek manual
+            if ($user->role === 'penjual') {
+                return redirect('/seller/dashboardp');
+            }
+            return redirect('/dashboard');
         }
-        return redirect('/dashboard');
+
+        return back()->with('error', 'Username atau password salah.');
+    }
+    public function showLoginForm()
+    {
+        return view('pages.general.login');
     }
 
-    return back()->with('error', 'Username atau password salah.');
-}
 
 
 
@@ -52,7 +57,7 @@ class AuthController extends Controller
             'username' => $request->username,
         ]);
 
-        return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login.');
+    return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login.');
     }
 
     public function logout()

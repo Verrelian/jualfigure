@@ -1,5 +1,5 @@
 <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-    <a href="mole/product/{{ $id }}" class="block">
+    <a href="product/{{ $id }}" class="block">
         <div class="aspect-square w-full">
             <img src="{{ $image }}" alt="{{ $title }}" class="w-full h-full object-cover">
         </div>

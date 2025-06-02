@@ -8,67 +8,13 @@
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Poppins', sans-serif; }
-
-    .form-container {
-      position: relative;
-      overflow: hidden;
-      transition: height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-
-    .form-section {
-      opacity: 0;
-      position: absolute;
-      width: 100%;
-      pointer-events: none;
-      transform: translateY(20px);
-      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-
-    .form-section.active {
-      opacity: 1;
-      position: relative;
-      pointer-events: all;
-      transform: translateY(0);
-    }
-
-    .tab-button {
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      position: relative;
-    }
-
-    .tab-button:hover {
-      transform: translateY(-2px);
-    }
-
-    .tab-button.active:after {
-      content: '';
-      position: absolute;
-      bottom: -3px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 30%;
-      height: 3px;
-      background-color: currentColor;
-      border-radius: 3px;
-    }
-
-    input {
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-
-    input:focus {
-      border-bottom-width: 2px;
-    }
-
-    button {
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 <body class="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-300 to-gray-100">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-3 max-w-sm w-full"></div>
 
   <div class="w-full max-w-md bg-white bg-opacity-70 backdrop-blur-lg rounded-xl shadow-xl p-8">
     <!-- Logo -->
@@ -84,254 +30,84 @@
       <button id="login-tab" class="tab-button active px-6 py-2 bg-black text-white rounded-l-lg shadow">Login</button>
       <button id="register-tab" class="tab-button px-6 py-2 bg-white text-black rounded-r-lg shadow">Register</button>
     </div>
-{{-- Success Toast --}}
-@if (session('success'))
-    <div 
-        x-data="{ show: true }" 
-        x-show="show"
-        x-transition 
-        class="fixed top-5 right-5 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-lg z-50"
-        role="alert"
-    >
-        <div class="flex items-start justify-between space-x-2">
-            <div class="text-sm">{{ session('success') }}</div>
-            <button @click="show = false" class="text-green-700 hover:text-green-900">
-                &times;
-            </button>
+
+    <!-- Global Error Alert (for server-side validation errors) -->
+    <div id="global-error-alert" class="hidden mb-4 p-4 bg-red-50 border border-red-200 rounded-lg alert-slide-down">
+      <div class="flex items-start">
+        <div class="flex-shrink-0">
+          <svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+          </svg>
         </div>
-    </div>
-@endif
-
-{{-- Error Toast --}}
-@if (session('error'))
-    <div 
-        x-data="{ show: true }" 
-        x-show="show"
-        x-transition 
-        class="fixed top-5 right-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg z-50"
-        role="alert"
-    >
-        <div class="flex items-start justify-between space-x-2">
-            <div class="text-sm">{{ session('error') }}</div>
-            <button @click="show = false" class="text-red-700 hover:text-red-900">
-                &times;
-            </button>
+        <div class="ml-3 flex-1">
+          <h3 class="text-sm font-medium text-red-800">Please correct the following errors:</h3>
+          <div id="error-list" class="mt-2 text-sm text-red-700 max-h-32 overflow-y-auto custom-scrollbar">
+            <!-- Error messages will be populated here -->
+          </div>
         </div>
-    </div>
-@endif
-
-{{-- Validation Errors --}}
-@if ($errors->any())
-    <div 
-        x-data="{ show: true }" 
-        x-show="show"
-        x-transition 
-        class="fixed top-5 right-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg z-50 w-80"
-        role="alert"
-    >
-        <div class="flex items-start justify-between space-x-2">
-            <ul class="text-sm list-disc list-inside">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-            <button @click="show = false" class="text-red-700 hover:text-red-900 font-bold text-lg">
-                &times;
-            </button>
+        <div class="ml-auto pl-3">
+          <button id="close-error-alert" class="inline-flex text-red-400 hover:text-red-600 focus:outline-none">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+          </button>
         </div>
+      </div>
     </div>
-@endif
 
-
-    <!-- Forms Container -->
     <div class="form-container">
-      <!-- Login Form -->
-      <div id="login-form" class="form-section active">
-        <form method="POST" action="{{ route('auth.login') }}">
-    @csrf
-          <div class="mb-4">
-            <label for="username" class="block text-sm font-semibold text-gray-700">Username</label>
-            <input type="text" id="username" name="username" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" placeholder="Enter your username" required>
-          </div>
-
-          <div class="mb-4">
-            <label for="login-password" class="block text-sm font-semibold text-gray-700">Password</label>
-            <input type="password" id="login-password" name="password" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" placeholder="Enter your password" required>
-          </div>
-
-          <div class="mb-4">
-            <label for="role" class="block text-sm font-semibold text-gray-700">Login sebagai</label>
-            <select id="role" name="role" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" required>
-              <option value="pembeli">Pembeli</option>
-              <option value="penjual">Penjual</option>
-            </select>
-          </div>
-
-          <div class="flex items-center justify-between mb-6">
-            <div>
-              <input id="remember" name="remember" type="checkbox" class="mr-2 text-purple-600">
-              <label for="remember" class="text-sm text-gray-700">Remember me</label>
-            </div>
-            <div>
-              <a href="#" id="forgot-password-link" class="text-sm text-blue-600 hover:text-blue-800 transition-colors duration-300">Forgot Password?</a>
-            </div>
-          </div>
-
-          <button type="submit" id="login-button" class="w-full bg-blue-100 hover:bg-blue-200 text-black font-semibold py-2 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
-            Login
-          </button>
-        </form>
-      </div>
-
-      <!-- Register Form -->
-      <div id="register-form" class="form-section">
-        <form id="register-form-element" method="POST" action="{{ route('auth.register') }}">
-    @csrf
-          <div class="mb-4">
-            <label for="register-username" class="block text-sm font-semibold text-gray-700">Username</label>
-            <input type="text" id="register-username" name="username" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" placeholder="Choose a username" required>
-          </div>
-
-          <div class="mb-4">
-            <label for="register-email" class="block text-sm font-semibold text-gray-700">Email</label>
-            <input type="email" id="register-email" name="email" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" placeholder="Enter your email" required>
-          </div>
-
-          <div class="mb-4">
-            <label for="register-password" class="block text-sm font-semibold text-gray-700">Password</label>
-            <input type="password" id="register-password" name="password" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" placeholder="Create a password" required>
-          </div>
-
-          <div class="mb-4">
-            <label for="confirm-password" class="block text-sm font-semibold text-gray-700">Confirm Password</label>
-            <input type="password" id="confirm-password" name="password_confirmation" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" placeholder="Confirm your password" required>
-          </div>
-
-          <button type="submit" id="register-button" class="w-full bg-blue-100 hover:bg-blue-200 text-black font-semibold py-2 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
-            Register
-          </button>
-        </form>
-      </div>
-
-      <!-- Forgot Password Form -->
-      <div id="forgot-password-form" class="form-section">
-        <form id="forgot-password-form-element">
-          <div class="mb-4">
-            <p class="text-sm text-gray-600 mb-4">Enter your email address and we'll send you a link to reset your password.</p>
-
-            <label for="reset-email" class="block text-sm font-semibold text-gray-700">Email</label>
-            <input type="email" id="reset-email" name="email" class="mt-1 w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-black px-1 py-1" placeholder="Enter your email" required>
-          </div>
-
-          <button type="submit" class="w-full bg-blue-100 hover:bg-blue-200 text-black font-semibold py-2 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg mb-4">
-            Reset Password
-          </button>
-
-          <div class="text-center">
-            <a href="#" id="back-to-login" class="text-sm text-blue-600 hover:text-blue-800 transition-colors duration-300">Back to Login</a>
-          </div>
-        </form>
-      </div>
+      @include('component.forms.login')
+      @include('component.forms.register')
+      @include('component.forms.forgot-password')
     </div>
+
   </div>
 
+  <!-- Load External auth.js -->
+  <script src="{{ asset('js/auth.js') }}"></script>
+
+  <!-- Handle Server-side Messages -->
   <script>
-    $(document).ready(function() {
-      // Function to switch forms
-      function switchForm(hideForm, showForm) {
-        // First hide currently active form
-        $(hideForm).removeClass('active');
-
-        // After a small delay, show the new form
-        setTimeout(function() {
-          $(showForm).addClass('active');
-        }, 300);
-      }
-
-      // Handle login tab click
-      $('#login-tab').click(function(e) {
-        e.preventDefault();
-        if ($(this).hasClass('active')) return;
-
-        // Update tab styles
-        $(this).addClass('bg-black text-white active').removeClass('bg-white text-black');
-        $('#register-tab').addClass('bg-white text-black').removeClass('bg-black text-white active');
-
-        // Update title
-        $('#title-text').text('Login');
-
-        // Find currently active form and switch to login form
-        var activeForm = $('.form-section.active');
-        switchForm(activeForm, '#login-form');
-      });
-
-      // Handle register tab click
-      $('#register-tab').click(function(e) {
-        e.preventDefault();
-        if ($(this).hasClass('active')) return;
-
-        // Update tab styles
-        $(this).addClass('bg-black text-white active').removeClass('bg-white text-black');
-        $('#login-tab').addClass('bg-white text-black').removeClass('bg-black text-white active');
-
-        // Update title
-        $('#title-text').text('Register');
-
-        // Find currently active form and switch to register form
-        var activeForm = $('.form-section.active');
-        switchForm(activeForm, '#register-form');
-      });
-
-      // Handle forgot password link click
-      $('#forgot-password-link').click(function(e) {
-        e.preventDefault();
-
-        // Remove active state from tabs
-        $('.tab-button').removeClass('active bg-black text-white').addClass('bg-white text-black');
-
-        // Update title
-        $('#title-text').text('Forgot Password');
-
-        // Find currently active form and switch to forgot password form
-        var activeForm = $('.form-section.active');
-        switchForm(activeForm, '#forgot-password-form');
-      });
-
-      // Handle back to login link click
-      $('#back-to-login').click(function(e) {
-        e.preventDefault();
-
-        // Update tab styles
-        $('#login-tab').addClass('bg-black text-white active').removeClass('bg-white text-black');
-        $('#register-tab').addClass('bg-white text-black').removeClass('bg-black text-white active');
-
-        // Update title
-        $('#title-text').text('Login');
-
-        // Find currently active form and switch to login form
-        var activeForm = $('.form-section.active');
-        switchForm(activeForm, '#login-form');
-      });
-
-      // Forgot Password Form Handler
-      $('#forgot-password-form-element').submit(function(e) {
-        e.preventDefault();
-
-        var email = $('#reset-email').val();
-
-        // Simple validation
-        if (email.trim() === '') {
-          alert('Please enter your email');
-          return;
+    document.addEventListener('DOMContentLoaded', function() {
+      // Tunggu sampai authFormManager tersedia
+      const checkAuthManager = () => {
+        if (window.authFormManager) {
+          handleServerMessages();
+        } else {
+          // Retry setelah 50ms jika belum tersedia
+          setTimeout(checkAuthManager, 50);
         }
+      };
 
-        // For demo purposes, just show success message
-        alert('Password reset instructions sent to your email!');
-
-        // Switch back to login
-        $('#back-to-login').click();
-      });
+      checkAuthManager();
     });
+
+    function handleServerMessages() {
+      // Handle success messages
+      @if (session('success'))
+        window.authFormManager.showSuccessMessage("{{ session('success') }}");
+      @endif
+
+      // Handle error messages
+      @if (session('error'))
+        window.authFormManager.showErrorMessage("{{ session('error') }}");
+      @endif
+
+      // Handle validation errors
+      @if ($errors->any())
+        const errors = [
+          @foreach ($errors->all() as $error)
+            "{{ addslashes($error) }}",
+          @endforeach
+        ];
+        window.authFormManager.showErrorAlert(errors);
+
+        // Switch to register tab if there are validation errors and old email exists
+        @if (old('email'))
+          window.authFormManager.switchToRegisterTab();
+        @endif
+      @endif
+    }
   </script>
 </body>
 </html>

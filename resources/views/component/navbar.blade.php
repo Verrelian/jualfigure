@@ -7,7 +7,6 @@
         <span class="text-xl font-semibold text-gray-800">M.O.L.E</span>
       </a>
 
-<<<<<<< HEAD
       <!-- Search Bar -->
       <div class="flex-1 max-w-xl mx-6 hidden md:block">
         <form>
@@ -47,14 +46,6 @@
           class="{{ Request::is('leaderboard') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
           Leaderboard
         </a>
-        <a href="{{ url('/posts') }}"
-          class="{{ Request::is('posts') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
-          Add Post
-        </a>
-        <a href="{{ url('/feed') }}"
-          class="{{ Request::is('feed') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
-          Feed
-        </a>
       </div>
 
       <!-- Profile Dropdown -->
@@ -63,7 +54,7 @@
           class="flex items-center space-x-2 text-sm bg-gray-100 rounded-full p-1 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300"
           id="user-menu-button" data-dropdown-toggle="user-dropdown">
           <img class="w-8 h-8 rounded-full"
-            src="{{ Auth::check() && Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : 'https://via.placeholder.com/150/FF5733/FFFFFF?text=U' }}"
+            src="{{ Auth::check() && Auth::user()->avatar ? asset('images/' . Auth::user()->avatar) : 'https://via.placeholder.com/150/FF5733/FFFFFF?text=U' }}"
             alt="User Image">
           <span class="hidden md:block text-gray-700 pr-2">Profile</span>
           <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,8 +62,8 @@
           </svg>
         </button>
 
-        <!-- Dropdown -->
-        <div class="hidden absolute right-0 mt-2 w-56 bg-white divide-y divide-gray-100 rounded-lg shadow-lg z-50"
+        <!-- Dropdown menu -->
+        <div class="z-50 hidden absolute right-0 mt-2 w-56 bg-white divide-y divide-gray-100 rounded-lg shadow-lg"
           id="user-dropdown">
           <div class="px-4 py-3 bg-gray-50 rounded-t-lg">
             @if(Auth::check())
@@ -81,57 +72,6 @@
             @else
               <span class="block text-sm text-gray-500">Guest</span>
             @endif
-=======
-      <a href="{{ url('/wishlist') }}"
-        class="{{ Request::is('wishlist') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
-        Wishlist
-      </a>
-
-      <a href="{{url('/order-history') }}"
-        class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2">
-        History</a>
-
-      <a href="{{url('/leaderboard') }}"
-        class="{{ Request::is('leaderboard') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
-        Leaderboard
-      </a>
-    </div>
-
-    <!-- User Dropdown - Profile Penjual -->
-    <div class="relative">
-      <button type="button"
-        class="flex items-center space-x-2 text-sm bg-gray-100 rounded-full p-1 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300"
-        id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown">
-        <span class="sr-only">Open user menu</span>
-        <img class="w-8 h-8 rounded-full" src="{{ asset('images/muka.jpg') }}" alt="User Image">
-        <span class="hidden md:block text-gray-700 pe-2">Profile</span>
-        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
-      </button>
-    </div>
-  </div>
-        <!-- Baris 2: Feed & Explore centered -->
-        <div class="max-w-screen-xl mx-auto py-2 flex justify-center space-x-6">
-          <a href="{{ url('/feed') }}"
-            class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2 font-semibold">
-            Feed
-          </a>
-          <a href="{{ url('/explore') }}"
-            class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2 font-semibold">
-            Explore
-          </a>
-        </div>
-      </nav>
-        <!-- Dropdown menu -->
-        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-lg"
-          id="user-dropdown">
-          <div class="px-4 py-3 bg-gray-50 rounded-t-lg">
-            <span class="block text-sm font-medium text-gray-900">{{ $user->name }}</span>
-            <span class="block text-sm text-gray-500 truncate">{{ $user->email }}</span>
-
->>>>>>> 367026e3847fcc234c0c0b933a6c2df238659d7a
           </div>
           <ul class="py-2" aria-labelledby="user-menu-button">
             <li>
@@ -145,16 +85,15 @@
               </a>
             </li>
             <li>
-              <<form method="GET" action="{{ route('auth.logout') }}">
-  <button type="submit" class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-100 text-left">
-    <svg class="w-4 h-4 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-    </svg>
-    Keluar
-  </button>
-</form>
-
+              <form method="GET" action="{{ route('auth.logout') }}">
+                <button type="submit" class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-100 text-left">
+                  <svg class="w-4 h-4 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  Keluar
+                </button>
+              </form>
             </li>
           </ul>
         </div>
@@ -169,6 +108,18 @@
             d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
+    </div>
+
+    <!-- Baris 2: Feed & Explore centered -->
+    <div class="py-2 flex justify-center space-x-6">
+      <a href="{{ url('/feed') }}"
+        class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2 font-semibold">
+        Feed
+      </a>
+      <a href="{{ url('/explore') }}"
+        class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2 font-semibold">
+        Explore
+      </a>
     </div>
   </div>
 </nav>
