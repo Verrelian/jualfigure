@@ -14,7 +14,7 @@ class ListProdukController extends Controller
     {
         // Load dengan spesifikasi untuk data edit
         $produk = Produk::with('specification')->orderBy('harga', 'desc')->get();
-        return view('pages.seller.product', compact('produk'));
+        return view('pages.seller.crud', compact('produk'));
     }
 
     public function getSpecification($id)

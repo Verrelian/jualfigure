@@ -76,11 +76,11 @@ class OrderController extends Controller
         if ($id && isset($orders[$id])) {
             $order = $orders[$id];
             $order['status'] = 'done'; // Ubah status jadi done jika dibuka
-            return view('pages.order-status', ['order' => $order]);
+            return view('pages.product.order-status', ['order' => $order]);
         }
 
         // Jika tidak ada ID, tampilkan daftar semua status pesanan
-        return view('pages.order-status', ['orders' => $orders]);
+        return view('pages.product.order-status', ['orders' => $orders]);
     }
 
     // Method baru untuk halaman riwayat pesanan
@@ -110,6 +110,6 @@ class OrderController extends Controller
             ],
         ];
 
-        return view('pages.order-history', ['orders' => $orders]);
+        return view('pages.product.order-history', ['orders' => $orders]);
     }
 }
