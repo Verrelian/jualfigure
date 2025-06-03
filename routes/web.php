@@ -8,6 +8,10 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CrudController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ListProdukController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\PaymentController;
+
 
 // Product Management Routes for Seller
 Route::prefix('seller')->group(function () {
@@ -91,7 +95,7 @@ Route::get('/ambabot', function () {
 })->name('ambabot');
 
 Route::get('/product-detail', [ProductController::class, 'index'])->name('home');
-
+Route::get('/dashboard', [ProductController::class, 'dashboard'])->name('dashboard');
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
 
 // ----------------------------
@@ -109,6 +113,11 @@ Route::get('/order-detail', function () {
 Route::get('/order-status/{id?}', [OrderController::class, 'status'])->name('order.status');
 
 Route::get('/order-history/{id?}', [OrderController::class, 'history'])->name('order.history');
+
+Route::get('/checkout/{product_id}', [CheckoutController::class, 'showForm'])->name('checkout.form');
+Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+Route::get('/payment-receipt/{payment_id}', [PaymentController::class, 'showReceipt'])->name('payment.receipt');
+Route::get('/payment-receipt/{payment_id}/download', [PaymentController::class, 'downloadReceipt'])->name('payment.receipt.download');
 
 // ----------------------------
 // Profile
