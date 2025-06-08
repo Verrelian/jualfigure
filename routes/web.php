@@ -56,7 +56,6 @@ Route::get('/explore', [ProductController::class, 'explore'])->name('explore');
 | Protected Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -90,7 +89,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/posts', [PostController::class, 'create'])->name('posts.create');
 
     // Seller
-    Route::prefix('seller')->middleware(['seller'])->group(function () {
+    Route::prefix('seller')->group(function () {
 
         Route::get('/dashboard', [CrudController::class, 'index'])->name('seller.dashboard');
         Route::view('/dashboardp', 'pages.seller.dashboardp')->name('seller.dashboardp');
@@ -103,13 +102,12 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('product')->group(function () {
             Route::get('/', [ListProdukController::class, 'show'])->name('seller.product');
-            Route::post('/', [ListProdukController::class, 'store'])->name('seller.product.store');
-            Route::put('/{id}', [ListProdukController::class, 'update'])->name('seller.product.update');
-            Route::delete('/{id}', [ListProdukController::class, 'destroy'])->name('seller.product.destroy');
-            Route::get('/{id}/specification', [ListProdukController::class, 'getSpecification'])->name('seller.product.specification');
+            Route::post('/', [ListProdukController::class, 'store'])->name('product.store');
+            Route::put('/{id}', [ListProdukController::class, 'update'])->name('product.update');
+            Route::delete('/{id}', [ListProdukController::class, 'destroy'])->name('product.destroy');
+            Route::get('/{id}/specification', [ListProdukController::class, 'getSpecification'])->name('product.specification');
         });
 
         Route::view('/order', 'pages.seller.order')->name('seller.order');
         Route::view('/laporan', 'pages.seller.laporan')->name('seller.laporan');
     });
-});
