@@ -10,45 +10,47 @@ class Produk extends Model
 {
     use HasFactory;
 
-    protected $table = 'tblproduk'; // sesuai tabel kamu
+    protected $table = 'products'; // sesuai tabel kamu
 
     protected $fillable = [
-        'nama',
-        'deskripsi',
+        'product_name',
+        'description',
         'type',
-        'harga',
-        'stok',
-        'gambar'
+        'price',
+        'stock',
+        'sold',
+        'rating_total',
+        'images'
     ];
 
     protected $casts = [
-        'harga' => 'decimal:2',
-        'stok' => 'integer',
+        'price' => 'decimal:2',
+        'stock' => 'integer',
     ];
 
     // Relasi: 1 produk punya banyak Specification
     public function specification()
     {
-        return $this->hasOne(Specification::class, 'product_id', 'id');
+        return $this->hasOne(Specification::class, 'product_id', 'product_id');
         // pastikan FK di tabel Specification adalah product_id
     }
 
     // Accessor untuk format harga
     public function getFormattedHargaAttribute()
     {
-        return 'Rp' . number_format($this->harga, 0, ',', '.');
+        return 'Rp' . number_format($this->price, 0, ',', '.');
     }
 
     // Accessor untuk gambar URL
     public function getGambarUrlAttribute()
     {
-        return $this->gambar ? asset('images/' . $this->gambar) : null;
+        return $this->images ? asset('images/' . $this->images) : null;
     }
 
-    // Scope untuk produk yang masih ada stok
+    // Scope untuk produk yang masih ada stock
     public function scopeInStock($query)
     {
-        return $query->where('stok', '>', 0);
+        return $query->where('stock', '>', 0);
     }
 
     // Scope untuk produk berdasarkan type

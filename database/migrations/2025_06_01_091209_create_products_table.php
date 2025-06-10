@@ -21,7 +21,9 @@ return new class extends Migration
             $table->integer('price');
             $table->string('image');
             $table->text('description');
+            $table->timestamps;
             $table->decimal('rating_total', 2, 1)->nullable();
+
 
             // Foreign key
             $table->foreign('seller_id')->references('seller_id')->on('sellers')->onDelete('cascade');
