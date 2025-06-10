@@ -17,10 +17,10 @@ class ListProdukController extends Controller
         return view('pages.seller.crud', compact('produk'));
     }
 
-    public function getSpecification($id)
+    public function getSpecification($product_id)
     {
         try {
-            $produk = Produk::with('specification')->findOrFail($id);
+            $produk = Produk::with('specification')->findOrFail($product_id);
             $spec = $produk->specification;
 
             if (!$spec) return response()->json([]);
@@ -42,11 +42,11 @@ class ListProdukController extends Controller
     private function validateProductData($request, $isUpdate = false)
     {
         $rules = [
-            'nama' => 'required|string|max:255',
-            'deskripsi' => 'required|string|max:1000',
+            'product_name' => 'required|string|max:255',
+            'description' => 'required|string|max:1000',
             'type' => 'required|string|max:100',
-            'harga' => 'required|numeric|min:1',
-            'stok' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:1',
+            'stock' => 'required|integer|min:0',
             // Spesifikasi OPTIONAL - tidak wajib diisi
             'specification.scale' => 'nullable|string|max:50',
             'specification.material' => 'nullable|string|max:100',
@@ -55,30 +55,30 @@ class ListProdukController extends Controller
             'specification.series' => 'nullable|string|max:100',
         ];
 
-        // Untuk create, gambar wajib. Untuk update, gambar optional
+        // Untuk create, image wajib. Untuk update, image optional
         if ($isUpdate) {
-            $rules['gambar'] = 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048';
+            $rules['image'] = 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048';
         } else {
-            $rules['gambar'] = 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048';
+            $rules['image'] = 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048';
         }
 
         $messages = [
-            'nama.required' => 'Nama produk wajib diisi',
-            'nama.max' => 'Nama produk maksimal 255 karakter',
-            'deskripsi.required' => 'Deskripsi produk wajib diisi',
-            'deskripsi.max' => 'Deskripsi maksimal 1000 karakter',
+            'product_name.required' => 'product_name produk wajib diisi',
+            'product_name.max' => 'product_name produk maksimal 255 karakter',
+            'description.required' => 'description produk wajib diisi',
+            'description.max' => 'description maksimal 1000 karakter',
             'type.required' => 'Type produk wajib diisi',
             'type.max' => 'Type maksimal 100 karakter',
-            'harga.required' => 'price wajib diisi',
-            'harga.numeric' => 'price harus berupa angka',
-            'harga.min' => 'price minimal Rp 1',
-            'stok.required' => 'Stok wajib diisi',
-            'stok.integer' => 'Stok harus berupa angka bulat',
-            'stok.min' => 'Stok tidak boleh negatif',
-            'gambar.required' => 'Gambar produk wajib diupload',
-            'gambar.image' => 'File harus berupa gambar',
-            'gambar.mimes' => 'Format gambar yang diperbolehkan: JPEG, PNG, JPG, GIF, WEBP',
-            'gambar.max' => 'Ukuran gambar maksimal 2MB',
+            'price.required' => 'price wajib diisi',
+            'price.numeric' => 'price harus berupa angka',
+            'price.min' => 'price minimal Rp 1',
+            'stock.required' => 'stock wajib diisi',
+            'stock.integer' => 'stock harus berupa angka bulat',
+            'stock.min' => 'stock tidak boleh negatif',
+            'image.required' => 'image produk wajib diupload',
+            'image.image' => 'File harus berupa image',
+            'image.mimes' => 'Format image yang diperbolehkan: JPEG, PNG, JPG, GIF, WEBP',
+            'image.max' => 'Ukuran image maksimal 2MB',
             'specification.scale.max' => 'Scale maksimal 50 karakter',
             'specification.material.max' => 'Material maksimal 100 karakter',
             'specification.manufacture.max' => 'Manufacture maksimal 100 karakter',
@@ -91,16 +91,16 @@ class ListProdukController extends Controller
 
     private function handleImageUpload($request, $oldImage = null)
     {
-        if (!$request->hasFile('gambar') || !$request->file('gambar')->isValid()) {
+        if (!$request->hasFile('image') || !$request->file('image')->isValid()) {
             return null;
         }
 
-        // Hapus gambar lama jika ada
+        // Hapus image lama jika ada
         if ($oldImage && file_exists(public_path('images/' . $oldImage))) {
             unlink(public_path('images/' . $oldImage));
         }
 
-        $image = $request->file('gambar');
+        $image = $request->file('image');
         $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
 
         // Pindahkan ke folder public/images
@@ -201,16 +201,16 @@ class ListProdukController extends Controller
         }
 
         try {
-            $data = $request->only(['nama', 'deskripsi', 'type', 'price', 'stok']);
+            $data = $request->only(['product_name', 'description', 'type', 'price', 'stock']);
 
             // Handle image upload
             $imageName = $this->handleImageUpload($request);
             if ($imageName) {
-                $data['gambar'] = $imageName;
+                $data['image'] = $imageName;
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Gagal mengupload gambar. Pastikan file gambar valid.'
+                    'message' => 'Gagal mengupload image. Pastikan file image valid.'
                 ], 422);
             }
 
@@ -235,7 +235,7 @@ class ListProdukController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $product_id)
     {
         $validator = $this->validateProductData($request, true);
 
@@ -248,14 +248,14 @@ class ListProdukController extends Controller
         }
 
         try {
-            $produk = Produk::findOrFail($id);
-            $data = $request->only(['nama', 'deskripsi', 'type', 'price', 'stok']);
+            $produk = Produk::findOrFail($product_id);
+            $data = $request->only(['product_name', 'description', 'type', 'price', 'stock']);
 
             // Handle image upload jika ada file baru
-            if ($request->hasFile('gambar')) {
-                $imageName = $this->handleImageUpload($request, $produk->gambar);
+            if ($request->hasFile('image')) {
+                $imageName = $this->handleImageUpload($request, $produk->image);
                 if ($imageName) {
-                    $data['gambar'] = $imageName;
+                    $data['image'] = $imageName;
                 }
             }
 
@@ -285,14 +285,14 @@ class ListProdukController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy($product_id)
     {
         try {
-            $produk = Produk::findOrFail($id);
+            $produk = Produk::findOrFail($product_id);
 
-            // Hapus gambar jika ada
-            if ($produk->gambar && file_exists(public_path('images/' . $produk->gambar))) {
-                unlink(public_path('images/' . $produk->gambar));
+            // Hapus image jika ada
+            if ($produk->image && file_exists(public_path('images/' . $produk->image))) {
+                unlink(public_path('images/' . $produk->image));
             }
 
             // Hapus spesifikasi dan produk

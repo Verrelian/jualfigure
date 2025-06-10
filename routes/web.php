@@ -50,7 +50,7 @@ Route::post('/contact-submit', [ContactController::class, 'submit'])->name('cont
 Route::get('/products', fn() => view('pages.products'))->name('products');
 Route::get('/products/by-category', [ProductController::class, 'getProductsByCategory'])->name('products.by-category');
 Route::get('/product-detail', [ProductController::class, 'index'])->name('product-detail');
-Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
+Route::get('/product/{product_id}', [ProductController::class, 'show'])->name('product.detail');
 Route::get('/explore', [ProductController::class, 'explore'])->name('explore');
 
 /*
@@ -116,9 +116,9 @@ Route::prefix('seller')->group(function () {
     Route::prefix('product')->group(function () {
         Route::get('/', [ListProdukController::class, 'show'])->name('seller.product');
         Route::post('/', [ListProdukController::class, 'store'])->name('product.store');
-        Route::put('/{id}', [ListProdukController::class, 'update'])->name('product.update');
-        Route::delete('/{id}', [ListProdukController::class, 'destroy'])->name('product.destroy');
-        Route::get('/{id}/specification', [ListProdukController::class, 'getSpecification'])->name('product.specification');
+        Route::put('/{product_id}', [ListProdukController::class, 'update'])->name('product.update');
+        Route::delete('/{product_id}', [ListProdukController::class, 'destroy'])->name('product.destroy');
+        Route::get('/{product_id}/specification', [ListProdukController::class, 'getSpecification'])->name('product.specification');
     });
 
     Route::view('/order', 'pages.seller.order')->name('seller.order');

@@ -13,12 +13,12 @@
           <thead class="bg-gray-50">
             <tr>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">No</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Gambar</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Nama Produk</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-64">Deskripsi</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">image</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Product Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-64">description</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Type</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Harga</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Stok</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">price</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">stock</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Aksi</th>
             </tr>
           </thead>
@@ -27,8 +27,8 @@
             <tr class="hover:bg-gray-50 transition-colors">
               <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
               <td class="px-3 py-4 whitespace-nowrap">
-                @if($item->gambar)
-                  <img src="{{ asset('images/' . $item->gambar) }}" alt="{{ $item->nama }}" class="w-20 h-20 object-cover rounded-lg">
+                @if($item->image)
+                  <img src="{{ asset('images/' . $item->image) }}" alt="{{ $item->product_name }}" class="w-20 h-20 object-cover rounded-lg">
                 @else
                   <div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,11 +38,11 @@
                 @endif
               </td>
               <td class="px-3 py-4">
-                <div class="text-sm font-medium text-gray-900 truncate max-w-32" title="{{ $item->nama }}">{{ $item->nama }}</div>
+                <div class="text-sm font-medium text-gray-900 truncate max-w-32" title="{{ $item->product_name }}">{{ $item->product_name }}</div>
               </td>
               <td class="px-3 py-4">
                 <div class="text-sm text-gray-900 max-w-40">
-                  <p class="truncate" title="{{ $item->deskripsi }}">{{ Str::limit($item->deskripsi, 40) }}</p>
+                  <p class="truncate" title="{{ $item->description }}">{{ Str::limit($item->description, 40) }}</p>
                 </div>
               </td>
               <td class="px-3 py-4 whitespace-nowrap">
@@ -51,19 +51,19 @@
                 </span>
               </td>
               <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                <div class="truncate max-w-28" title="Rp{{ number_format($item->harga, 0, ',', '.') }}">
-                  Rp{{ number_format($item->harga, 0, ',', '.') }}
+                <div class="truncate max-w-28" title="Rp{{ number_format($item->price, 0, ',', '.') }}">
+                  Rp{{ number_format($item->price, 0, ',', '.') }}
                 </div>
               </td>
               <td class="px-3 py-4 whitespace-nowrap">
-                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ $item->stok > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                  {{ $item->stok > 0 ? $item->stok . ' unit' : 'Habis' }}
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ $item->stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                  {{ $item->stock > 0 ? $item->stock . ' unit' : 'Habis' }}
                 </span>
               </td>
               <td class="px-3 py-4 whitespace-nowrap text-sm font-medium">
                 <div class="flex flex-col space-y-2">
                   <!-- Tombol Lihat Spesifikasi -->
-                  <button onclick="showSpecModal({{ $item->id }})"
+                  <button onclick="showSpecModal({{ $item->product_id }})"
                           class="inline-flex items-center justify-center px-3 py-1 text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition">
                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -84,7 +84,7 @@
                     </button>
 
                     <!-- Hapus -->
-                    <button onclick="openDeleteModal({{ $item->id }}, '{{ $item->nama }}')"
+                    <button onclick="openDeleteModal({{ $item->product_id }}, '{{ $item->product_name }}')"
                             class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md text-white bg-red-500 hover:bg-red-600 transition">
                       <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -142,17 +142,17 @@
 
               <div class="space-y-4">
                 <div>
-                  <label for="productName" class="block text-sm font-medium text-gray-700 mb-2">Nama Produk</label>
-                  <input type="text" id="productName" name="nama"
+                  <label for="productName" class="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+                  <input type="text" id="productName" name="product_name"
                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                         placeholder="Masukkan nama produk" required>
+                         placeholder="Input Your Product Name" required>
                 </div>
 
                 <div>
-                  <label for="productDescription" class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
-                  <textarea id="productDescription" name="deskripsi" rows="3"
+                  <label for="productDescription" class="block text-sm font-medium text-gray-700 mb-2">description</label>
+                  <textarea id="productDescription" name="description" rows="3"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                            placeholder="Masukkan deskripsi produk" required></textarea>
+                            placeholder="Masukkan description produk" required></textarea>
                 </div>
 
                 <div>
@@ -169,15 +169,15 @@
 
                 <div class="grid grid-cols-2 gap-4">
                   <div>
-                    <label for="productPrice" class="block text-sm font-medium text-gray-700 mb-2">Harga</label>
-                    <input type="number" id="productPrice" name="harga" min="0"
+                    <label for="productPrice" class="block text-sm font-medium text-gray-700 mb-2">price</label>
+                    <input type="number" id="productPrice" name="price" min="0"
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                            placeholder="0" required>
                   </div>
 
                   <div>
-                    <label for="productStock" class="block text-sm font-medium text-gray-700 mb-2">Stok</label>
-                    <input type="number" id="productStock" name="stok" min="0"
+                    <label for="productStock" class="block text-sm font-medium text-gray-700 mb-2">stock</label>
+                    <input type="number" id="productStock" name="stock" min="0"
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                            placeholder="0" required>
                           </div>
@@ -228,7 +228,7 @@
                           </div>
                         </fieldset>
                     <div>
-                      <label for="productImage" class="block text-sm font-medium text-gray-700 mb-2">Gambar Produk</label>
+                      <label for="productImage" class="block text-sm font-medium text-gray-700 mb-2">image Produk</label>
                       <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
                         <div class="space-y-1 text-center">
                           <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
@@ -236,8 +236,8 @@
                           </svg>
                           <div class="flex text-sm text-gray-600">
                             <label for="productImage" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                              <span>Upload gambar</span>
-                              <input type="file" id="productImage" name="gambar" accept="image/*" class="sr-only">
+                              <span>Upload image</span>
+                              <input type="file" id="productImage" name="image" accept="image/*" class="sr-only">
                             </label>
                             <p class="pl-1">atau drag and drop</p>
                           </div>
@@ -341,19 +341,19 @@
   function openEditModal(product) {
     resetModalState();
     isEditMode = true;
-    currentEditId = product.id;
+    currentEditId = product.product_id;
 
     document.getElementById('modalTitle').textContent = 'Edit Produk';
     document.getElementById('saveButtonText').textContent = 'Update';
-    document.getElementById('productId').value = product.id;
-    document.getElementById('productName').value = product.nama;
-    document.getElementById('productDescription').value = product.deskripsi;
+    document.getElementById('productId').value = product.product_id;
+    document.getElementById('productName').value = product.product_name;
+    document.getElementById('productDescription').value = product.description;
     document.getElementById('productType').value = product.type;
-    document.getElementById('productPrice').value = product.harga;
-    document.getElementById('productStock').value = product.stok;
+    document.getElementById('productPrice').value = product.price;
+    document.getElementById('productStock').value = product.stock;
 
     // Set form action dan method dengan benar
-    document.getElementById('productForm').action = '{{ route("product.update", ":id") }}'.replace(':id', product.id);
+    document.getElementById('productForm').action = '{{ route("product.update", ":id") }}'.replace(':id', product.product_id);
     document.getElementById('formMethod').value = 'PUT';
 
     // Reset semua field spesifikasi terlebih dahulu

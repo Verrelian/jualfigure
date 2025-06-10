@@ -11,6 +11,8 @@ class Produk extends Model
     use HasFactory;
 
     protected $table = 'products'; // sesuai tabel kamu
+    protected $primaryKey = 'product_id'; // ← ADD THIS LINE
+
 
     protected $fillable = [
         'product_name',
@@ -20,7 +22,7 @@ class Produk extends Model
         'stock',
         'sold',
         'rating_total',
-        'images'
+        'image'
     ];
 
     protected $casts = [
