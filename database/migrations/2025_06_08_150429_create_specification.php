@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->date('release_date');
             $table->string('series');
             $table->unsignedBigInteger('product_id'); // FK ke products
-            $table->timestamps;
+            $table->timestamps();
 
             // Foreign key constraint
             $table->foreign('product_id')
