@@ -28,6 +28,6 @@ class Specification extends Model
 
     public function produk()
     {
-        return $this->belongsTo(Produk::class, 'product_id', 'id');
+        return $this->belongsTo(Produk::class, 'product_id', 'product_id');
     }
 }

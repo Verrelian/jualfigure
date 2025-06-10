@@ -13,7 +13,7 @@ class ListProdukController extends Controller
     public function show()
     {
         // Load dengan spesifikasi untuk data edit
-        $produk = Produk::with('specification')->orderBy('harga', 'desc')->get();
+        $produk = Produk::with('specification')->orderBy('price', 'desc')->get();
         return view('pages.seller.crud', compact('produk'));
     }
 
@@ -69,9 +69,9 @@ class ListProdukController extends Controller
             'deskripsi.max' => 'Deskripsi maksimal 1000 karakter',
             'type.required' => 'Type produk wajib diisi',
             'type.max' => 'Type maksimal 100 karakter',
-            'harga.required' => 'Harga wajib diisi',
-            'harga.numeric' => 'Harga harus berupa angka',
-            'harga.min' => 'Harga minimal Rp 1',
+            'harga.required' => 'price wajib diisi',
+            'harga.numeric' => 'price harus berupa angka',
+            'harga.min' => 'price minimal Rp 1',
             'stok.required' => 'Stok wajib diisi',
             'stok.integer' => 'Stok harus berupa angka bulat',
             'stok.min' => 'Stok tidak boleh negatif',
@@ -201,7 +201,7 @@ class ListProdukController extends Controller
         }
 
         try {
-            $data = $request->only(['nama', 'deskripsi', 'type', 'harga', 'stok']);
+            $data = $request->only(['nama', 'deskripsi', 'type', 'price', 'stok']);
 
             // Handle image upload
             $imageName = $this->handleImageUpload($request);
@@ -249,7 +249,7 @@ class ListProdukController extends Controller
 
         try {
             $produk = Produk::findOrFail($id);
-            $data = $request->only(['nama', 'deskripsi', 'type', 'harga', 'stok']);
+            $data = $request->only(['nama', 'deskripsi', 'type', 'price', 'stok']);
 
             // Handle image upload jika ada file baru
             if ($request->hasFile('gambar')) {
