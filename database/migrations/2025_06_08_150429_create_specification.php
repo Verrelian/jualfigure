@@ -8,21 +8,22 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('specification', function (Blueprint $table) {
-            $table->id('spec_id'); // PK
+            $table->id('spec_id');
             $table->string('scale');
             $table->string('material');
             $table->string('manufacture');
             $table->date('release_date');
             $table->string('series');
-            $table->unsignedBigInteger('product_id'); // FK ke products
+            $table->unsignedBigInteger('product_id'); // sesuaikan tipe
+
             $table->timestamps();
 
-            // Foreign key constraint
             $table->foreign('product_id')
-                  ->references('id')
-                  ->on('products')
-                  ->onDelete('cascade');
+                ->references('product_id') // cocokkan dengan nama PK di 'products'
+                ->on('products')
+                ->onDelete('cascade');
         });
+
     }
 
     public function down(): void

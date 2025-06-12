@@ -2,7 +2,7 @@
 
 @section('content')
   <!-- Header -->
-  <div class="bg-white bg-opacity-80 text-black text-center py-4 text-2xl font-bold shadow-md">
+  <div class="container mx-auto p-4 bg-white bg-opacity-80 text-black text-center py-4 text-2xl font-bold shadow-md">
     LEADERBOARD
   </div>
 

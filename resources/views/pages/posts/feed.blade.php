@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div class="container mx-auto p-4">
     <!-- Header Section -->
     <div class="bg-white border-b border-gray-200 sticky top-0 z-10 backdrop-blur-sm bg-white/95">
         <div class="container mx-auto max-w-4xl px-4 py-4">

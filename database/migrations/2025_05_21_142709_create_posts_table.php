@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->string('image')->nullable(); // jika boleh kosong
+            $table->enum('status', ['active', 'inactive'])->default('active'); // contoh
             $table->timestamps();
         });
     }
@@ -25,4 +29,3 @@ return new class extends Migration
         Schema::dropIfExists('posts');
     }
 };
-
