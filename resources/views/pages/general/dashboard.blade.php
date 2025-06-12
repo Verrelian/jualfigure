@@ -62,8 +62,8 @@
             @foreach($trendingProducts as $product)
                 <div class="flex-shrink-0 w-36 md:w-44 lg:w-52">
                     @include('component.product-ranking', [
-                        'id' => $product->id,
-                        'image' => $product->gambar_url,
+                        'product_id' => $product->product_id,
+                        'image' => $product->image,
                         'type' => $product->type,
                         'title' => $product->nama,
                         'price' => $product->formatted_harga
@@ -83,8 +83,8 @@
             @foreach($newProducts as $product)
                 <div class="bg-gray-50 rounded-lg p-4">
                     @include('component.product-card', [
-                        'id' => $product->id,
-                        'image' => $product->gambar_url,
+                        'product_id' => $product->product_id,
+                        'image' => $product->image,
                         'type' => $product->type,
                         'title' => $product->nama,
                         'price' => $product->formatted_harga
@@ -104,8 +104,8 @@
             @foreach($regularProducts as $product)
                 <div>
                     @include('component.product-card', [
-                        'id' => $product->id,
-                        'image' => $product->gambar_url,
+                        'product_id' => $product->product_id,
+                        'image' => $product->image,
                         'type' => $product->type,
                         'title' => $product->nama,
                         'price' => $product->formatted_harga

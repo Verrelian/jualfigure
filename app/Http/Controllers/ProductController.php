@@ -11,13 +11,13 @@ class ProductController extends Controller
         return view('pages.product.product-detail');
     }
 
-    public function show($id)
+    public function show($product_id)
     {
         // Eager load the specification relationship
-        $product = Produk::with('specification')->findOrFail($id);
+        $product = Produk::with('specification')->findOrFail($product_id);
 
         // Get related products (3 random products of the same type, excluding current product)
-        $relatedProducts = Produk::where('id', '!=', $id)
+        $relatedProducts = Produk::where('product_id', '!=', $product_id)
             ->byType($product->type) // Using the scope from the model
             ->inStock() // Using the scope from the model
             ->inRandomOrder()
@@ -25,12 +25,12 @@ class ProductController extends Controller
             ->get()
             ->map(function ($relatedProduct) {
                 return [
-                    'id' => $relatedProduct->id,
+                    'product_id' => $relatedProduct->product_id,
                     'image' => $relatedProduct->gambar_url, // Using the accessor
-                    'title' => $relatedProduct->nama,
+                    'title' => $relatedProduct->product_name, // Fixed: use product_name
                     'type' => $relatedProduct->type,
                     'price' => $relatedProduct->formatted_harga, // Using the accessor
-                    'description' => $relatedProduct->deskripsi,
+                    'description' => $relatedProduct->description,
                     'specifications' => $relatedProduct->specification ? [
                         'Scale' => $relatedProduct->specification->scale ?? 'N/A',
                         'Material' => $relatedProduct->specification->material ?? 'N/A',
@@ -44,12 +44,12 @@ class ProductController extends Controller
 
         return view('pages.product.product-detail', [
             'product' => [
-                'id' => $product->id,
+                'product_id' => $product->product_id,
                 'image' => $product->gambar_url, // Using the accessor
-                'title' => $product->nama,
+                'title' => $product->product_name, // Fixed: use product_name
                 'type' => $product->type,
                 'price' => $product->formatted_harga, // Using the accessor
-                'description' => $product->deskripsi,
+                'description' => $product->description,
                 'specifications' => $product->specification ? [
                     'Scale' => $product->specification->scale ?? 'N/A',
                     'Material' => $product->specification->material ?? 'N/A',
@@ -118,12 +118,12 @@ class ProductController extends Controller
                 'success' => true,
                 'products' => $products->map(function($product) {
                     return [
-                        'id' => $product->id,
-                        'nama' => $product->nama,
+                        'product_id' => $product->product_id,
+                        'name' => $product->product_name, // Fixed: use product_name
                         'type' => $product->type,
                         'harga' => $product->formatted_harga,
                         'gambar_url' => $product->gambar_url,
-                        'stok' => $product->stok
+                        'stok' => $product->stock // Fixed: use stock not stok
                     ];
                 }),
                 'category' => $categorySlug

@@ -1,7 +1,7 @@
 <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-    <a href="product/{{ $id }}" class="block">
+    <a href="product/{{ $product_id }}" class="block">
         <div class="aspect-square w-full">
-            <img src="{{ $image }}" alt="{{ $title }}" class="w-full h-full object-cover">
+            <img src="{{ asset('images/' . $image) }}" alt="{{ $title }}" class="w-full h-auto rounded-md">
         </div>
         <div class="p-3">
             <p class="text-xs text-gray-500 mb-1">{{ $type }}</p>

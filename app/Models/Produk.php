@@ -1,18 +1,16 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Specification; // jangan lupa import model Specification
+use App\Models\Specification;
 
 class Produk extends Model
 {
     use HasFactory;
 
-    protected $table = 'products'; // sesuai tabel kamu
-    protected $primaryKey = 'product_id'; // ← ADD THIS LINE
-
+    protected $table = 'products';
+    protected $primaryKey = 'product_id';
 
     protected $fillable = [
         'product_name',
@@ -22,7 +20,7 @@ class Produk extends Model
         'stock',
         'sold',
         'rating_total',
-        'image'
+        'image' // ← pastikan ini sesuai dengan nama kolom di database
     ];
 
     protected $casts = [
@@ -30,32 +28,29 @@ class Produk extends Model
         'stock' => 'integer',
     ];
 
-    // Relasi: 1 produk punya banyak Specification
     public function specification()
     {
         return $this->hasOne(Specification::class, 'product_id', 'product_id');
-        // pastikan FK di tabel Specification adalah product_id
     }
 
-    // Accessor untuk format harga
+    // Perbaiki accessor ini
     public function getFormattedHargaAttribute()
     {
         return 'Rp' . number_format($this->price, 0, ',', '.');
     }
 
-    // Accessor untuk gambar URL
+    // PERBAIKI: gunakan kolom yang benar
     public function getGambarUrlAttribute()
     {
-        return $this->images ? asset('images/' . $this->images) : null;
+        return $this->image ? 'images/' . $this->image : null;
+        // ↑ gunakan 'image' bukan 'images'
     }
 
-    // Scope untuk produk yang masih ada stock
     public function scopeInStock($query)
     {
         return $query->where('stock', '>', 0);
     }
 
-    // Scope untuk produk berdasarkan type
     public function scopeByType($query, $type)
     {
         return $query->where('type', $type);
