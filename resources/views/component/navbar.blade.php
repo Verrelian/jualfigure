@@ -54,8 +54,9 @@
           class="flex items-center space-x-2 text-sm bg-gray-100 rounded-full p-1 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300"
           id="user-menu-button" data-dropdown-toggle="user-dropdown">
           <img class="w-8 h-8 rounded-full"
-            src="{{ Auth::check() && Auth::user()->avatar ? asset('images/' . Auth::user()->avatar) : 'https://via.placeholder.com/150/FF5733/FFFFFF?text=U' }}"
-            alt="User Image">
+     src="{{ $user && $user->avatar ? asset('images/' . $user->avatar) : 'https://via.placeholder.com/150/FF5733/FFFFFF?text=U' }}"
+     alt="User Image">
+
           <span class="hidden md:block text-gray-700 pr-2">Profile</span>
           <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -66,12 +67,12 @@
         <div class="z-50 hidden absolute right-0 mt-2 w-56 bg-white divide-y divide-gray-100 rounded-lg shadow-lg"
           id="user-dropdown">
           <div class="px-4 py-3 bg-gray-50 rounded-t-lg">
-            @if(Auth::check())
-              <span class="block text-sm font-medium text-gray-900">{{ Auth::user()->name }}</span>
-              <span class="block text-sm text-gray-500 truncate">{{ Auth::user()->email }}</span>
-            @else
-              <span class="block text-sm text-gray-500">Guest</span>
-            @endif
+            @if ($user)
+  <span class="block text-sm font-medium text-gray-900">{{ $user->name }}</span>
+  <span class="block text-sm text-gray-500 truncate">{{ $user->email }}</span>
+@else
+  <span class="block text-sm text-gray-500">Guest</span>
+@endif
           </div>
           <ul class="py-2" aria-labelledby="user-menu-button">
             <li>
