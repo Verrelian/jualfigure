@@ -11,7 +11,7 @@
 
   <!-- Navigation -->
   <nav class="flex flex-col space-y-1">
-    <a href="/mole/seller/crud" class="flex items-center px-4 py-2 rounded hover:bg-gray-100 transition">
+    <a href="/mole/seller/dashboardp" class="flex items-center px-4 py-2 rounded hover:bg-gray-100 transition">
       <span>📊 Dashboard</span>
     </a>
     <a href="/mole/seller/product" class="flex items-center px-4 py-2 rounded hover:bg-gray-100 transition">

@@ -3,7 +3,14 @@
 @section('content')
 <div class="flex w-full h-screen overflow-hidden">
   @include('component.seller.sidebar')
-
+@if(config('app.debug'))
+<div class="bg-gray-100 p-4 mb-4 rounded">
+    <h4>Debug Info:</h4>
+    <p>Role: {{ session('role') }}</p>
+    <p>User ID: {{ session('user_id') }}</p>
+    <p>Is Seller: {{ session('role') === 'seller' ? 'Yes' : 'No' }}</p>
+</div>
+@endif
   <!-- Main Content -->
   <main class="flex-1 bg-gray-200 p-6 overflow-y-auto">
 

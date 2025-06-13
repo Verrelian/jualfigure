@@ -135,7 +135,7 @@
 
           <!-- Modal Body -->
           <div class="px-6 py-4 overflow-y-auto max-h-[calc(90vh-120px)]">
-            <form id="productForm" action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="productForm" action="{{ route('seller.product.store') }}" method="POST" enctype="multipart/form-data">
               @csrf
               <input type="hidden" id="productId" name="productId">
               <input type="hidden" id="formMethod" name="_method" value="POST">
@@ -333,7 +333,7 @@
     resetModalState();
     document.getElementById('modalTitle').textContent = 'Tambah Produk Baru';
     document.getElementById('saveButtonText').textContent = 'Simpan';
-    document.getElementById('productForm').action = '{{ route("product.store") }}';
+    document.getElementById('productForm').action = '{{ route("seller.product.store") }}';
     document.getElementById('formMethod').value = 'POST';
     showModal('productModal');
   }
@@ -353,7 +353,7 @@
     document.getElementById('productStock').value = product.stock;
 
     // Set form action dan method dengan benar
-    document.getElementById('productForm').action = '{{ route("product.update", ":id") }}'.replace(':id', product.product_id);
+    document.getElementById('productForm').action = '{{ route("seller.product.update", ":id") }}'.replace(':id', product.product_id);
     document.getElementById('formMethod').value = 'PUT';
 
     // Reset semua field spesifikasi terlebih dahulu
@@ -408,7 +408,7 @@
 
   function openDeleteModal(productId, productName) {
     document.getElementById('deleteProductName').textContent = productName;
-    document.getElementById('deleteForm').action = '{{ route("product.destroy", ":id") }}'.replace(':id', productId);
+    document.getElementById('deleteForm').action = '{{ route("seller.product.destroy", ":id") }}'.replace(':id', productId);
     showModal('deleteModal');
   }
 

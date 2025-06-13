@@ -18,7 +18,7 @@ use App\Http\Controllers\{
 
 /*
 |--------------------------------------------------------------------------
-| Authentication Routes
+| AUTH ROUTES (Login/Register/Logout)
 |--------------------------------------------------------------------------
 */
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -31,7 +31,7 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
 /*
 |--------------------------------------------------------------------------
-| Public Routes
+| PUBLIC ROUTES
 |--------------------------------------------------------------------------
 */
 Route::view('/', 'welcome')->name('home');
@@ -39,12 +39,11 @@ Route::view('/webs', 'welcome')->name('webs');
 Route::view('/contact-us', 'pages.general.contact-us')->name('contact-us');
 Route::view('/ambabot', 'pages.general.ambabot')->name('ambabot');
 Route::view('/leaderboard', 'pages.general.leaderboard')->name('leaderboard');
-
 Route::post('/contact-submit', [ContactController::class, 'submit'])->name('contact.submit');
 
 /*
 |--------------------------------------------------------------------------
-| Product Routes
+| PRODUCT ROUTES (PUBLIC)
 |--------------------------------------------------------------------------
 */
 Route::get('/products', fn() => view('pages.products'))->name('products');
@@ -55,88 +54,77 @@ Route::get('/explore', [ProductController::class, 'explore'])->name('explore');
 
 /*
 |--------------------------------------------------------------------------
-| Checkout & Payment
+| CHECKOUT & PAYMENT ROUTES (Require Authentication)
 |--------------------------------------------------------------------------
 */
-Route::get('/checkout/{product_id}', [CheckoutController::class, 'showForm'])->name('checkout.form');
-Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
-
-Route::get('/payment-receipt/{payment_id}', [PaymentController::class, 'showReceipt'])->name('payment.receipt');
-Route::get('/payment-receipt/{payment_id}/download', [PaymentController::class, 'downloadReceipt'])->name('payment.receipt.download');
+Route::middleware(['web', 'auth.check'])->group(function () {
+    Route::get('/checkout/{product_id}', [CheckoutController::class, 'showForm'])->name('checkout.form');
+    Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+    Route::get('/payment-receipt/{payment_id}', [PaymentController::class, 'showReceipt'])->name('payment.receipt');
+    Route::get('/payment-receipt/{payment_id}/download', [PaymentController::class, 'downloadReceipt'])->name('payment.receipt.download');
+});
 
 /*
 |--------------------------------------------------------------------------
-| Protected Routes
+| BUYER ROUTES (Protected - Buyer Only)
 |--------------------------------------------------------------------------
 */
+Route::middleware(['web', 'buyer.auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-// Dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::prefix('user')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'show'])->name('user.profile');
+        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('user.profile.edit');
+        Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::view('/posts', 'pages.user.user_posts')->name('user.posts');
+        Route::view('/toys', 'pages.user.user_toys')->name('user.toys');
+    });
 
-// User Profile
-Route::prefix('user')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'show'])->name('user.profile');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('user.profile.edit');
-    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::view('/posts', 'pages.user.user_posts')->name('user.posts');
-    Route::view('/toys', 'pages.user.user_toys')->name('user.toys');
+    Route::view('/wishlist', 'pages.product.wishlist')->name('wishlist');
+
+    Route::prefix('order')->group(function () {
+        Route::view('/detail', 'pages.order-detail')->name('order.detail');
+        Route::get('/status/{id?}', [OrderController::class, 'status'])->name('order.status');
+        Route::get('/history/{id?}', [OrderController::class, 'history'])->name('order.history');
+    });
+
+    Route::prefix('feed')->group(function () {
+        Route::get('/', [PostController::class, 'index'])->name('posts.index');
+        Route::post('/', [PostController::class, 'store'])->name('posts.store');
+        Route::post('/{post}/like', [PostController::class, 'like'])->name('posts.like');
+        Route::post('/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
+    });
+    Route::get('/posts', [PostController::class, 'create'])->name('posts.create');
 });
 
-// Wishlist
-Route::view('/wishlist', 'pages.product.wishlist')->name('wishlist');
+/*
+|--------------------------------------------------------------------------
+| SELLER ROUTES (Protected - Seller Only)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['web', 'seller.auth'])->prefix('seller')->group(function () {
+    // Dashboard seller (pilih salah satu)
+    Route::get('/dashboard', [ListProdukController::class, 'index'])->name('seller.dashboard');
 
-// Orders
-Route::prefix('order')->group(function () {
-    Route::view('/detail', 'pages.order-detail')->name('order.detail');
-    Route::get('/status/{id?}', [OrderController::class, 'status'])->name('order.status');
-    Route::get('/history/{id?}', [OrderController::class, 'history'])->name('order.history');
-});
-
-// Feed / Posts
-Route::prefix('feed')->group(function () {
-    Route::get('/', [PostController::class, 'index'])->name('posts.index');
-    Route::post('/', [PostController::class, 'store'])->name('posts.store');
-    Route::post('/{post}/like', [PostController::class, 'like'])->name('posts.like');
-    Route::post('/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
-});
-Route::get('/posts', [PostController::class, 'create'])->name('posts.create');
-
-// Seller
-Route::prefix('seller')->group(function () {
-    Route::get('/dashboard', [CrudController::class, 'index'])->name('seller.dashboard');
-    Route::view('/dashboardp', 'pages.seller.dashboardp')->name('seller.dashboardp');
-
+    // Profile routes
     Route::view('/profile', 'pages.seller.profile')->name('seller.profile');
     Route::get('/edit_profile', [SellerProfileController::class, 'edit'])->name('seller.edit_profile');
-    Route::post('/profile/update', [SellerProfileController::class, 'updateProfile'])->name('update');
+    Route::post('/profile/update', [SellerProfileController::class, 'updateProfile'])->name('seller.profile.update');
 
+    // Posts and toys
     Route::get('/posts', [SellerProfileController::class, 'posts'])->name('seller.posts');
     Route::get('/toys', [SellerProfileController::class, 'toys'])->name('seller.toys');
 
+    // Product management
     Route::prefix('product')->group(function () {
         Route::get('/', [ListProdukController::class, 'show'])->name('seller.product');
-        Route::post('/', [ListProdukController::class, 'store'])->name('product.store');
-        Route::put('/{product_id}', [ListProdukController::class, 'update'])->name('product.update');
-        Route::delete('/{product_id}', [ListProdukController::class, 'destroy'])->name('product.destroy');
-        Route::get('/{product_id}/specification', [ListProdukController::class, 'getSpecification'])->name('product.specification');
+        Route::post('/', [ListProdukController::class, 'store'])->name('seller.product.store');
+        Route::put('/{product_id}', [ListProdukController::class, 'update'])->name('seller.product.update');
+        Route::delete('/{product_id}', [ListProdukController::class, 'destroy'])->name('seller.product.destroy');
+        Route::get('/{product_id}/specification', [ListProdukController::class, 'getSpecification'])->name('seller.product.specification');
     });
 
+    // Orders and reports
     Route::view('/order', 'pages.seller.order')->name('seller.order');
     Route::view('/laporan', 'pages.seller.laporan')->name('seller.laporan');
 });
-
-/*
-|--------------------------------------------------------------------------
-| Redundant or Legacy Routes (optional to keep or clean)
-|--------------------------------------------------------------------------
-*/
-Route::get('/order-detail', fn() => view('pages.order-detail'));
-Route::get('/order-status/{id?}', [OrderController::class, 'status']);
-Route::get('/order-history/{id?}', [OrderController::class, 'history']);
-
-Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
-Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-
-Route::get('/user/posts', fn() => view('user-posts'))->name('user.posts');
-Route::get('/user/toys', fn() => view('user-toys'))->name('user.toys');

@@ -36,8 +36,17 @@ class AuthController extends Controller
         }
 
         if ($user && Hash::check($request->password, $user->password)) {
-            session(['role' => $request->role, 'user_id' => $user->getKey()]);
-            return redirect()->route($request->role === 'seller' ? 'seller.dashboardp' : 'dashboard');
+            // Set session data
+            session([
+                'role' => $request->role,
+                'user_id' => $user->getKey(),
+                'user_data' => $user->toArray() // Tambahkan data lengkap user
+            ]);
+
+            // Optional: Set Auth guard jika sudah dikonfigurasi
+            // Auth::guard($request->role)->login($user);
+
+            return redirect()->route($request->role === 'seller' ? 'seller.dashboard' : 'dashboard');
         }
 
         return back()->withInput($request->only('identity', 'role'))
@@ -52,6 +61,21 @@ class AuthController extends Controller
             'password' => 'required|confirmed|min:6',
             'role'     => 'required|in:buyer,seller',
         ]);
+
+        // Check unique email dan username
+        $emailExists = Buyer::where('email', $request->email)->exists() ||
+                      Seller::where('email', $request->email)->exists();
+
+        $usernameExists = Buyer::where('username', $request->username)->exists() ||
+                         Seller::where('username', $request->username)->exists();
+
+        if ($emailExists) {
+            return back()->withInput()->with('error', 'Email sudah terdaftar.');
+        }
+
+        if ($usernameExists) {
+            return back()->withInput()->with('error', 'Username sudah terdaftar.');
+        }
 
         $data = [
             'username' => $request->username,
@@ -77,7 +101,38 @@ class AuthController extends Controller
 
     public function logout()
     {
+        // Clear auth jika menggunakan guard
+        // Auth::logout();
+
         session()->flush();
         return redirect()->route('login');
+    }
+
+    // Helper method untuk mengecek apakah user sudah login
+    public static function getAuthenticatedUser()
+    {
+        if (!session('user_id') || !session('role')) {
+            return null;
+        }
+
+        $role = session('role');
+        $userId = session('user_id');
+
+        if ($role === 'buyer') {
+            return Buyer::find($userId);
+        } elseif ($role === 'seller') {
+            return Seller::find($userId);
+        }
+
+        return null;
+    }
+
+    // Helper method untuk mendapatkan seller ID
+    public static function getSellerID()
+    {
+        if (session('role') === 'seller' && session('user_id')) {
+            return session('user_id');
+        }
+        return null;
     }
 }

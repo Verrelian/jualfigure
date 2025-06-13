@@ -10,17 +10,78 @@ use Illuminate\Support\Facades\Storage;
 
 class ListProdukController extends Controller
 {
+    /**
+     * Helper method untuk mendapatkan seller ID dari session
+     */
+    private function getSellerId()
+    {
+        if (session('role') !== 'seller' || !session('user_id')) {
+            return null;
+        }
+        return session('user_id');
+    }
+
+    /**
+     * Helper method untuk validasi seller authorization
+     */
+    private function validateSellerAuth()
+    {
+        $sellerId = $this->getSellerId();
+        if (!$sellerId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized. Silakan login sebagai seller.'
+            ], 401);
+        }
+        return null;
+    }
+
+    public function index()
+    {
+        // Untuk dashboard seller - tampilkan hanya produk milik seller yang login
+        $sellerId = $this->getSellerId();
+        if (!$sellerId) {
+            return redirect()->route('login')->with('error', 'Silakan login sebagai seller.');
+        }
+
+        $produk = Produk::with('specification')
+                        ->where('seller_id', $sellerId)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
+        return view('pages.seller.dashboard', compact('produk'));
+    }
+
     public function show()
     {
-        // Load dengan spesifikasi untuk data edit
-        $produk = Produk::with('specification')->orderBy('price', 'desc')->get();
+        // Untuk halaman CRUD - tampilkan hanya produk milik seller yang login
+        $sellerId = $this->getSellerId();
+        if (!$sellerId) {
+            return redirect()->route('login')->with('error', 'Silakan login sebagai seller.');
+        }
+
+        $produk = Produk::with('specification')
+                        ->where('seller_id', $sellerId)
+                        ->orderBy('price', 'desc')
+                        ->get();
+
         return view('pages.seller.crud', compact('produk'));
     }
 
     public function getSpecification($product_id)
     {
         try {
-            $produk = Produk::with('specification')->findOrFail($product_id);
+            $sellerId = $this->getSellerId();
+            if (!$sellerId) {
+                return response()->json([], 401);
+            }
+
+            // 🔧 FIX: Ganti 'id' jadi 'product_id'
+            $produk = Produk::with('specification')
+                           ->where('product_id', $product_id)
+                           ->where('seller_id', $sellerId)
+                           ->firstOrFail();
+
             $spec = $produk->specification;
 
             if (!$spec) return response()->json([]);
@@ -35,7 +96,7 @@ class ListProdukController extends Controller
             return response()->json($data);
 
         } catch (\Exception $e) {
-            return response()->json([]);
+            return response()->json([], 404);
         }
     }
 
@@ -63,22 +124,22 @@ class ListProdukController extends Controller
         }
 
         $messages = [
-            'product_name.required' => 'product_name produk wajib diisi',
-            'product_name.max' => 'product_name produk maksimal 255 karakter',
-            'description.required' => 'description produk wajib diisi',
-            'description.max' => 'description maksimal 1000 karakter',
+            'product_name.required' => 'Nama produk wajib diisi',
+            'product_name.max' => 'Nama produk maksimal 255 karakter',
+            'description.required' => 'Deskripsi produk wajib diisi',
+            'description.max' => 'Deskripsi maksimal 1000 karakter',
             'type.required' => 'Type produk wajib diisi',
             'type.max' => 'Type maksimal 100 karakter',
-            'price.required' => 'price wajib diisi',
-            'price.numeric' => 'price harus berupa angka',
-            'price.min' => 'price minimal Rp 1',
-            'stock.required' => 'stock wajib diisi',
-            'stock.integer' => 'stock harus berupa angka bulat',
-            'stock.min' => 'stock tidak boleh negatif',
-            'image.required' => 'image produk wajib diupload',
-            'image.image' => 'File harus berupa image',
-            'image.mimes' => 'Format image yang diperbolehkan: JPEG, PNG, JPG, GIF, WEBP',
-            'image.max' => 'Ukuran image maksimal 2MB',
+            'price.required' => 'Harga wajib diisi',
+            'price.numeric' => 'Harga harus berupa angka',
+            'price.min' => 'Harga minimal Rp 1',
+            'stock.required' => 'Stock wajib diisi',
+            'stock.integer' => 'Stock harus berupa angka bulat',
+            'stock.min' => 'Stock tidak boleh negatif',
+            'image.required' => 'Gambar produk wajib diupload',
+            'image.image' => 'File harus berupa gambar',
+            'image.mimes' => 'Format gambar yang diperbolehkan: JPEG, PNG, JPG, GIF, WEBP',
+            'image.max' => 'Ukuran gambar maksimal 2MB',
             'specification.scale.max' => 'Scale maksimal 50 karakter',
             'specification.material.max' => 'Material maksimal 100 karakter',
             'specification.manufacture.max' => 'Manufacture maksimal 100 karakter',
@@ -190,6 +251,12 @@ class ListProdukController extends Controller
 
     public function store(Request $request)
     {
+        // Validasi seller authorization
+        $authError = $this->validateSellerAuth();
+        if ($authError) return $authError;
+
+        $sellerId = $this->getSellerId();
+
         $validator = $this->validateProductData($request, false);
 
         if ($validator->fails()) {
@@ -203,6 +270,9 @@ class ListProdukController extends Controller
         try {
             $data = $request->only(['product_name', 'description', 'type', 'price', 'stock']);
 
+            // PENTING: Tambahkan seller_id
+            $data['seller_id'] = $sellerId;
+
             // Handle image upload
             $imageName = $this->handleImageUpload($request);
             if ($imageName) {
@@ -210,7 +280,7 @@ class ListProdukController extends Controller
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Gagal mengupload image. Pastikan file image valid.'
+                    'message' => 'Gagal mengupload gambar. Pastikan file gambar valid.'
                 ], 422);
             }
 
@@ -237,6 +307,12 @@ class ListProdukController extends Controller
 
     public function update(Request $request, $product_id)
     {
+        // Validasi seller authorization
+        $authError = $this->validateSellerAuth();
+        if ($authError) return $authError;
+
+        $sellerId = $this->getSellerId();
+
         $validator = $this->validateProductData($request, true);
 
         if ($validator->fails()) {
@@ -248,7 +324,11 @@ class ListProdukController extends Controller
         }
 
         try {
-            $produk = Produk::findOrFail($product_id);
+            // 🔧 FIX: Ganti 'id' jadi 'product_id'
+            $produk = Produk::where('product_id', $product_id)
+                           ->where('seller_id', $sellerId)
+                           ->firstOrFail();
+
             $data = $request->only(['product_name', 'description', 'type', 'price', 'stock']);
 
             // Handle image upload jika ada file baru
@@ -272,10 +352,10 @@ class ListProdukController extends Controller
                 'data' => $produk->load('specification')
             ]);
 
-        } catch (\ModelNotFoundException $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Produk tidak ditemukan!'
+                'message' => 'Produk tidak ditemukan atau bukan milik Anda!'
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
@@ -287,8 +367,17 @@ class ListProdukController extends Controller
 
     public function destroy($product_id)
     {
+        // Validasi seller authorization
+        $authError = $this->validateSellerAuth();
+        if ($authError) return $authError;
+
+        $sellerId = $this->getSellerId();
+
         try {
-            $produk = Produk::findOrFail($product_id);
+            // 🔧 FIX: Ganti 'id' jadi 'product_id'
+            $produk = Produk::where('product_id', $product_id)
+                           ->where('seller_id', $sellerId)
+                           ->firstOrFail();
 
             // Hapus image jika ada
             if ($produk->image && file_exists(public_path('images/' . $produk->image))) {
@@ -304,10 +393,10 @@ class ListProdukController extends Controller
                 'message' => 'Produk berhasil dihapus!'
             ]);
 
-        } catch (\ModelNotFoundException $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Produk tidak ditemukan!'
+                'message' => 'Produk tidak ditemukan atau bukan milik Anda!'
             ], 404);
         } catch (\Exception $e) {
             return response()->json([

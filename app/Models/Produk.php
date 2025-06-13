@@ -20,13 +20,21 @@ class Produk extends Model
         'stock',
         'sold',
         'rating_total',
-        'image' // ← pastikan ini sesuai dengan nama kolom di database
+        'image', // ← pastikan ini sesuai dengan nama kolom di database
+        'seller_id'
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'stock' => 'integer',
     ];
+    /**
+     * Relationship dengan Seller
+     */
+    public function seller()
+    {
+        return $this->belongsTo(Seller::class);
+    }
 
     public function specification()
     {
