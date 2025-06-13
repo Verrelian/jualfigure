@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('buyers', function (Blueprint $table) {
-            $table->id('buyer_id');
-            $table->string('username');
-            $table->string('name');
-            $table->string('email');
-            $table->string('password');
-            $table->string('address');
-            $table->integer('exp');
-            $table->string('bio');
-            $table->bigInteger('phone_number');
-            // tanpa timestamps
-        });
+    $table->id('buyer_id');
+    $table->string('username')->unique();
+    $table->string('name');
+    $table->string('email')->unique();
+    $table->string('password');
+    $table->string('address')->nullable();
+    $table->integer('exp')->default(0);
+    $table->text('bio')->nullable();
+    $table->string('phone_number')->nullable();
+    $table->timestamps();
+});
     }
 
     /**

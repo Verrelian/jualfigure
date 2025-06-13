@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\Buyer;
+use App\Models\Seller;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+            view()->composer('*', function ($view) {
+        $user = null;
+        $role = session('role');
+        $userId = session('user_id');
+
+        if ($role === 'buyer') {
+            $user = Buyer::find($userId);
+        } elseif ($role === 'seller') {
+            $user = Seller::find($userId);
+        }
+
+        $view->with('user', $user);
+    });
     }
 }

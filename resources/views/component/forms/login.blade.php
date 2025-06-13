@@ -8,8 +8,8 @@
       <select id="role" name="role" required
         class="w-full px-4 py-3 border-b border-gray-300 bg-transparent focus:border-green-500 focus:outline-none text-gray-700">
         <option value="" disabled selected>Pilih jenis pengguna</option>
-        <option value="pembeli">Pembeli</option>
-        <option value="penjual">Penjual</option>
+        <option value="buyer">Pembeli</option>
+        <option value="seller">Penjual</option>
       </select>
     </div>
 
