@@ -32,6 +32,9 @@
 
     <!-- Flowbite CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css" rel="stylesheet" />
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 </head>
 <body class="font-[Poppins] min-h-screen bg-gradient-to-b from-gray-100 via-gray-100 to-gray-230">
 

@@ -159,98 +159,119 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+// JavaScript untuk menangani tombol wishlist
     const wishlistBtn = document.getElementById('wishlistBtn');
-    const heartIcon = document.getElementById('heartIcon');
-
-    if (wishlistBtn && heartIcon) {
-        const productId = wishlistBtn?.dataset.productId;
-        const productTitle = wishlistBtn?.dataset.title;
-        const productImage = wishlistBtn?.dataset.image;
-        const productPrice = wishlistBtn?.dataset.price;
-        const productType = wishlistBtn?.dataset.type;
-        const productManufacture = wishlistBtn?.dataset.manufacture;
-
-        function showNotification(message, isSuccess = true) {
-            const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 px-4 py-2 rounded-md shadow-lg z-50 transition-opacity duration-300 ${isSuccess ? 'bg-gray-800 text-white' : 'bg-red-500 text-white'}`;
-            notification.innerText = message;
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
-        }
-
-        function isInWishlist(productId) {
-            const wishlist = getWishlist();
-            return wishlist.some(item => item.product_id === productId);
-        }
-
-        function getWishlist() {
-            const wishlistData = localStorage.getItem('wishlist');
-            return wishlistData ? JSON.parse(wishlistData) : [];
-        }
-
-        function saveWishlist(wishlist) {
-            localStorage.setItem('wishlist', JSON.stringify(wishlist));
-            updateWishlistCount();
-        }
-
-        function updateWishlistCount() {
-            const wishlist = getWishlist();
-            const wishlistCountElement = document.getElementById('wishlistCount');
-            if (wishlistCountElement) {
-                wishlistCountElement.textContent = wishlist.length;
-            }
-        }
-
-        function toggleWishlist() {
-            const wishlist = getWishlist();
-            const productInWishlist = isInWishlist(productId);
-
-            if (productInWishlist) {
-                const updatedWishlist = wishlist.filter(item => item.product_id !== productId);
-                saveWishlist(updatedWishlist);
-                updateHeartIcon(false);
-                showNotification(`${productTitle} removed from wishlist`);
-            } else {
-                const product = {
-                    product_id: productId,
-                    title: productTitle,
-                    price: productPrice,
-                    image: productImage,
-                    type: productType,
-                    isWishlisted: true,
-                    specifications: {
-                        Manufacture: productManufacture
-                    }
-                };
-                wishlist.push(product);
-                saveWishlist(wishlist);
-                updateHeartIcon(true);
-                showNotification(`${productTitle} added to wishlist`);
-            }
-        }
-
-        function updateHeartIcon(isWishlisted) {
-            if (isWishlisted) {
-                heartIcon.setAttribute('fill', 'currentColor');
-                heartIcon.style.color = '#e53e3e';
-            } else {
-                heartIcon.setAttribute('fill', 'none');
-                heartIcon.style.color = '';
-            }
-        }
-
-        if (productId) {
-            updateHeartIcon(isInWishlist(productId));
-        }
-
-        updateWishlistCount();
-
-        wishlistBtn.addEventListener('click', toggleWishlist);
+    
+    if (wishlistBtn) {
+        wishlistBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const productId = this.getAttribute('data-product-id');
+            const button = this;
+            
+            // Disable button sementara untuk mencegah double click
+            button.disabled = true;
+            button.style.opacity = '0.7';
+            
+            // Kirim request AJAX ke server
+            fetch('/wishlist/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    product_id: productId
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Ubah tampilan tombol jika berhasil
+                    const svg = button.querySelector('svg');
+                    svg.style.fill = 'currentColor';
+                    svg.classList.remove('text-gray-600');
+                    svg.classList.add('text-red-500');
+                    
+                    // Ubah class button untuk menunjukkan status aktif
+                    button.classList.add('wishlist-active');
+                    button.setAttribute('data-wishlisted', 'true');
+                    
+                    // Tampilkan notifikasi sukses
+                    showNotification(data.message || 'Produk berhasil ditambahkan ke wishlist!', 'success');
+                    
+                    // Optional: Update counter wishlist jika ada
+                    updateWishlistCounter();
+                    
+                } else {
+                    showNotification(data.message || 'Gagal menambahkan ke wishlist', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                if (error.message.includes('401')) {
+                    showNotification('Silakan login terlebih dahulu', 'error');
+                } else {
+                    showNotification('Terjadi kesalahan. Silakan coba lagi.', 'error');
+                }
+            })
+            .finally(() => {
+                // Re-enable button
+                button.disabled = false;
+                button.style.opacity = '1';
+            });
+        });
     }
 });
+// Fungsi untuk menampilkan notifikasi
+function showNotification(message, type) {
+    // Buat elemen notifikasi
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 ${
+        type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+    }`;
+    notification.textContent = message;
+    
+    // Tambahkan ke body
+    document.body.appendChild(notification);
+    
+    // Hilangkan setelah 3 detik
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// Fungsi untuk update counter wishlist (optional)
+function updateWishlistCounter() {
+    fetch('/wishlist/count')
+        .then(response => response.json())
+        .then(data => {
+            const counter = document.querySelector('.wishlist-counter');
+            if (counter && data.count !== undefined) {
+                counter.textContent = data.count;
+            }
+        })
+       // Tambahkan di bagian catch error pada tombol wishlist
+.catch(error => {
+    console.error('Full error:', error);
+    console.error('Error message:', error.message);
+    
+    // Cek jika ada response dari server
+    if (error.response) {
+        console.error('Response status:', error.response.status);
+        console.error('Response data:', error.response.data);
+    }
+    
+    if (error.message.includes('401')) {
+        showNotification('Silakan login terlebih dahulu', 'error');
+    } else {
+        showNotification('Terjadi kesalahan. Silakan coba lagi.', 'error');
+    }
+})
+}
