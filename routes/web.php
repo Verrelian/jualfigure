@@ -14,7 +14,8 @@ use App\Http\Controllers\{
     ContactController,
     CheckoutController,
     PaymentController,
-    BankController
+    BankController,
+    WishlistController
 };
 
 /*
@@ -87,7 +88,15 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
         Route::view('/toys', 'pages.user.user_toys')->name('user.toys');
     });
 
+Route::middleware('auth')->group(function() {
     Route::view('/wishlist', 'pages.product.wishlist')->name('wishlist');
+    Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
+    Route::post('/wishlist/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
+    Route::post('/wishlist/clear', [WishlistController::class, 'clear'])->name('wishlist.clear'); // Tambah ini
+    Route::get('/wishlist/count', [WishlistController::class, 'count'])->name('wishlist.count');
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+});
+
 
     Route::prefix('order')->group(function () {
         Route::view('/detail', 'pages.order-detail')->name('order.detail');
