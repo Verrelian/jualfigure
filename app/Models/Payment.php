@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\PaymentReceipt;
 
 class Payment extends Model
 {
@@ -26,6 +27,12 @@ class Payment extends Model
         'transaction_status',
         'payment_date',
         'payment_status',
+        'expired_at',
     ];
     public $timestamps = false;
+
+    public function receipt()
+    {
+        return $this->hasOne(PaymentReceipt::class, 'payment_id');
+    }
 }

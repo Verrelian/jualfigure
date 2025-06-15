@@ -31,6 +31,7 @@ class ProductController extends Controller
                     'type' => $relatedProduct->type,
                     'price' => $relatedProduct->formatted_harga, // Using the accessor
                     'description' => $relatedProduct->description,
+                    'stock' => $relatedProduct->stock,
                     'specifications' => $relatedProduct->specification ? [
                         'Scale' => $relatedProduct->specification->scale ?? 'N/A',
                         'Material' => $relatedProduct->specification->material ?? 'N/A',
@@ -50,6 +51,7 @@ class ProductController extends Controller
                 'type' => $product->type,
                 'price' => $product->formatted_harga, // Using the accessor
                 'description' => $product->description,
+                'stock' => $product->stock,
                 'specifications' => $product->specification ? [
                     'Scale' => $product->specification->scale ?? 'N/A',
                     'Material' => $product->specification->material ?? 'N/A',

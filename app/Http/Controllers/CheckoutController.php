@@ -14,7 +14,7 @@ class CheckoutController extends Controller
 
     public function showForm($product_id)
     {
-        $product = Product::findOrFail($product_id);
+        $product = produk::findOrFail($product_id);
         return view('checkout', compact('product'));
     }
 
@@ -42,24 +42,28 @@ class CheckoutController extends Controller
         $orderId = '#' . str_pad(random_int(0, 9999999), 7, '0', STR_PAD_LEFT);
         $paymentCode = str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT);
 
-        // Simpan data ke tabel buyers
-        $buyer = Buyer::create([
-            //'buyer_id' => $buyer_id,
-            'phone_number' => $request->phone_number,
-            'address' => $request->address,
-            'name' => $request->name,
-        ]);
+        // update data ke tabel buyers
+        $buyer = Buyer::find(session('user_id'));
+
+        if ($buyer) {
+            $buyer->update([
+                'name' => $request->name,
+                'address' => $request->address,
+                'phone_number' => $request->phone_number,
+            ]);
+        }
 
         // Ambil data produk dari database (untuk keperluan payment)
-        $product = Product::findOrFail($request->product_id);
+        $product = produk::findOrFail($request->product_id);
 
         // Hitung total harga
         $price_total = ($product->price * $request->quantity) + 50000 + 100000;
+        $priceqty = $product->price * $request->quantity;
 
         // Simpan ke tabel payments
         $payment = Payment::create([
             'product_id' => $product->product_id,
-            //    'buyer_id' => $buyer->buyer_id,
+            'buyer_id' => $buyer->buyer_id,
             'seller_id' => $product->seller_id,
             'name' => $request->name,
             'quantity' => $request->quantity,
@@ -67,12 +71,13 @@ class CheckoutController extends Controller
             'product_name' => $product->product_name,
             'type' => $product->type,
             'image' => $product->image,
-            'price' => $product->price,
+            'price' => $priceqty,
             'price_total' => $price_total,
             'address' => $request->address,
             'order_id' => $orderId,
             'payment_code' => $paymentCode,
             'phone_number' => $request->phone_number,
+            'expired_at' => now()->addMinutes(1),
         ]);
 
         // Redirect atau kirim notifikasi sukses

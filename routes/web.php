@@ -13,7 +13,8 @@ use App\Http\Controllers\{
     SellerProfileController,
     ContactController,
     CheckoutController,
-    PaymentController
+    PaymentController,
+    BankController
 };
 
 /*
@@ -62,6 +63,12 @@ Route::middleware(['web', 'auth.check'])->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
     Route::get('/payment-receipt/{payment_id}', [PaymentController::class, 'showReceipt'])->name('payment.receipt');
     Route::get('/payment-receipt/{payment_id}/download', [PaymentController::class, 'downloadReceipt'])->name('payment.receipt.download');
+    // Tampilkan halaman bank (BNI, BRI, Mandiri, BCA)
+    Route::get('/bank/{bank}', [BankController::class, 'showPaymentPage'])->name('bank.payment');
+    // Proses validasi VA number (payment_code)
+    Route::post('/bank/validate-va', [BankController::class, 'validateVA'])->name('bank.validate.va');
+    // Proses pembayaran (setelah VA valid dan user klik "Pay")
+    Route::post('/bank/pay', [BankController::class, 'processPayment'])->name('bank.process.payment');
 });
 
 /*

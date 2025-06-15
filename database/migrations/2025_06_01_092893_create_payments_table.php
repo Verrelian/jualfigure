@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('payment_status')->default('UNPAID');
             $table->string('transaction_status')->default('NOT YET PROCESSED');
             $table->timestamp('payment_date');
+            $table->timestamp('expired_at')->nullable();
 
             // Foreign keys
             $table->foreign('seller_id')->references('seller_id')->on('sellers')->onDelete('cascade');

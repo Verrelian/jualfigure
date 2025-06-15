@@ -85,7 +85,7 @@ class AuthController extends Controller
 
         if ($request->role === 'buyer') {
             $data = array_merge($data, [
-                'name'         => $request->username,
+                'name'         => '',
                 'address'      => '',
                 'exp'          => 0,
                 'bio'          => '',

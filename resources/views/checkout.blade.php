@@ -37,15 +37,15 @@
                 @csrf
                 <label class="block mb-5">
                     <h1 class="mb-3 text-2xl">Phone Number</h1>
-                    <input type="text" name="phone_number" required class="block w-full h-16 text-xl px-2 border border-black rounded" placeholder="ts pmo 💔">
+                    <input type="text" name="phone_number" required class="block w-full h-16 text-xl px-2 border border-black rounded" placeholder="Ex : 08123456789">
                 </label>
                 <label class="block mb-5">
                     <h1 class="mb-3 text-2xl">Name</h1>
-                    <input type="text" name="name" required class="block w-full h-16 text-xl px-2 border border-black rounded" placeholder="sybau 🥀">
+                    <input type="text" name="name" required class="block w-full h-16 text-xl px-2 border border-black rounded" placeholder="Ex : John">
                 </label>
                 <label class="block mb-5">
                     <h1 class="mb-3 text-2xl">Address</h1>
-                    <input type="text" name="address" required class="block w-full h-16 text-xl px-2 border border-black rounded" placeholder="Yo : Gurt, Gurt : Yo">
+                    <input type="text" name="address" required class="block w-full h-16 text-xl px-2 border border-black rounded" placeholder="Ex : Dusseldorf, German">
                 </label>
                 <label class="block mb-10">
                     <h1 class="mb-3 text-2xl ml-16">Quantity</h1>
@@ -55,10 +55,10 @@
                     <h2 class="text-5xl font-bold mb-5 py-5">Payment Method </h2>
                     <select name="payment_method" id="paymentMethod" class="block w-full h-16 text-xl px-2 pr-64 border border-black rounded" onchange="updateTotal()">
                         <option value="" disabled selected>Select Payment Method</option>
-                        <option value="BANK_BCA">BANK BCA</option>
-                        <option value="BANK_MANDIRI">BANK Mandiri</option>
-                        <option value="BANK_BNI">BANK BNI</option>
-                        <option value="BANK_BRI">BANK BRI</option>
+                        <option value="BANK BCA">BANK BCA</option>
+                        <option value="BANK MANDIRI">BANK Mandiri</option>
+                        <option value="BANK BNI">BANK BNI</option>
+                        <option value="BANK BRI">BANK BRI</option>
                     </select>
                 </label>
                 <button type="submit" id="checkoutBtn" class="w-full h-16 font-bold bg-blue-500 text-2xl text-white p-2 rounded disabled:opacity-50" disabled>Checkout</button>
@@ -72,7 +72,7 @@
                 <div class="ml-10 mt-10 flex text-center items-start gap-4">
                     <div class="w-48 h-48 overflow-hidden">
                         <img src="{{ asset('images/' . $product->image) }}" alt="{{ $product->product_name }}" class="h-40 rounded-lg object-contain">
-                        <a class="text-blue-500 mt-2 mr-8 hover:underline inline-block">Product Detail</a>
+                        <a href="{{ route('product.detail', $product->product_id) }}" class="text-blue-500 mt-2 mr-8 hover:underline inline-block">Product Detail</a>
                     </div>
                     <div class="justify-center font-bold text-left mt-6">
                         <h2 class="text-lg font-semibold">{{ $product->product_name }}</h2>
@@ -80,13 +80,9 @@
                     </div>
                 </div>
 
-                <!-- Product detail link -->
-                <div>
-                </div>
-
                 <!-- Harga subtotal, pajak, ongkir, total -->
                 <div class="ml-10 space-y-6">
-                    <p>Subtotal: <span id="subtotal" class="font-semibold">Rp {{ number_format($product->price) }}</span></p>
+                    <p>Subtotal: <span id="subtotal" class="font-semibold">IDR {{ number_format($product->price) }}</span></p>
                     <p>Tax: <span id="tax" class="font-semibold">-</span></p>
                     <p>Shipping: <span id="shipping" class="font-semibold">-</span></p>
                     <span id="bankCharge"></span>
@@ -113,7 +109,7 @@
                 const productPrice = @json($product->price);
                 const quantity = parseInt(document.getElementById('quantity').value) || 1;
                 const subtotal = productPrice * quantity;
-                document.getElementById('subtotal').textContent = `Rp ${subtotal.toLocaleString()}`;
+                document.getElementById('subtotal').textContent = `IDR ${subtotal.toLocaleString()}`;
             }
 
             function updateTotal() {
@@ -129,16 +125,16 @@
 
                 // Bank Charge berdasarkan pilihan
                 switch (paymentMethod) {
-                    case 'BANK_BCA':
+                    case 'BANK BCA':
                         bankCharge = 350000;
                         break;
-                    case 'BANK_MANDIRI':
+                    case 'BANK MANDIRI':
                         bankCharge = 300000;
                         break;
-                    case 'BANK_BNI':
+                    case 'BANK BNI':
                         bankCharge = 260000;
                         break;
-                    case 'BANK_BRI':
+                    case 'BANK BRI':
                         bankCharge = 250000;
                         break;
                     default:
@@ -151,13 +147,13 @@
                 const subtotal = productPrice * quantity;
                 const total = subtotal + tax + shipping + bankCharge;
 
-                document.getElementById('subtotal').innerText = `Rp ${subtotal.toLocaleString()}`;
-                document.getElementById('tax').innerText = `Rp ${tax.toLocaleString()}`;
-                document.getElementById('shipping').innerText = `Rp ${shipping.toLocaleString()}`;
+                document.getElementById('subtotal').innerText = `IDR ${subtotal.toLocaleString()}`;
+                document.getElementById('tax').innerText = `IDR ${tax.toLocaleString()}`;
+                document.getElementById('shipping').innerText = `IDR ${shipping.toLocaleString()}`;
 
                 // Hanya tampilkan total jika paymentMethod dipilih
                 if (paymentMethod) {
-                    document.getElementById('total').innerText = `Rp ${total.toLocaleString()}`;
+                    document.getElementById('total').innerText = `IDR ${total.toLocaleString()}`;
                     checkoutBtn.disabled = false;
                 } else {
                     document.getElementById('total').innerText = `-`;
@@ -168,7 +164,7 @@
             document.getElementById('checkoutForm').addEventListener('submit', function(event) {
                 // Nonaktifkan pengiriman form bawaan saat testing
                 //event.preventDefault();
-                alert('Checkout Success!');
+                //alert('Checkout Success!');
 
                 //console.log({
                 //    phone: this.phone.value,
