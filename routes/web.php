@@ -88,14 +88,15 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
         Route::view('/toys', 'pages.user.user_toys')->name('user.toys');
     });
 
-Route::middleware('auth')->group(function() {
-    Route::view('/wishlist', 'pages.product.wishlist')->name('wishlist');
-    Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
-    Route::post('/wishlist/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
-    Route::post('/wishlist/clear', [WishlistController::class, 'clear'])->name('wishlist.clear'); // Tambah ini
-    Route::get('/wishlist/count', [WishlistController::class, 'count'])->name('wishlist.count');
-    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-});
+    // PINDAHKAN WISHLIST ROUTES KE SINI (bukan nested)
+    Route::prefix('wishlist')->group(function() {
+        Route::post('/add', [WishlistController::class, 'add'])->name('wishlist.add');
+        Route::post('/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
+        Route::post('/clear', [WishlistController::class, 'clear'])->name('wishlist.clear');
+        Route::get('/count', [WishlistController::class, 'count'])->name('wishlist.count');
+        Route::get('/', [WishlistController::class, 'index'])->name('wishlist.index');
+    });
+
 
 
     Route::prefix('order')->group(function () {

@@ -150,7 +150,7 @@
         <div id="products-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             @foreach($products as $product)
                 @include('component.product-card', [
-                    'product_id' => $product->product_od,
+                    'product_id' => $product->product_id,
                     'image' => $product->gambar_url,
                     'type' => $product->type,
                     'title' => $product->nama,

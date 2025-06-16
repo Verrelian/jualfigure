@@ -1,21 +1,19 @@
 <?php
-// =================
-// WishlistController
-// =================
+// app/Http/Controllers/WishlistController.php
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Wishlist;
 use App\Models\Buyer;
+use App\Models\Produk; // TAMBAHKAN INI
 
 class WishlistController extends Controller
 {
     public function add(Request $request)
     {
-        // Pastikan user sudah login
-        if (!Auth::check()) {
+        // GANTI Auth::check() dengan session check
+        if (!session('user_id') || session('role') !== 'buyer') {
             return response()->json([
                 'success' => false,
                 'message' => 'Silakan login terlebih dahulu'
@@ -23,17 +21,7 @@ class WishlistController extends Controller
         }
 
         $productId = $request->input('product_id');
-        
-        // Ambil buyer_id dari user yang sedang login
-        // Asumsi: user memiliki relasi dengan buyer atau buyer_id disimpan di session/user
-        $buyerId = $this->getBuyerId();
-        
-        if (!$buyerId) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data buyer tidak ditemukan'
-            ], 400);
-        }
+        $buyerId = session('user_id'); // Langsung ambil dari session
 
         // Validasi input
         if (!$productId) {
@@ -56,7 +44,6 @@ class WishlistController extends Controller
         }
 
         try {
-            // Tambahkan ke wishlist
             Wishlist::create([
                 'buyer_id' => $buyerId,
                 'product_id' => $productId,
@@ -78,45 +65,35 @@ class WishlistController extends Controller
 
     public function count()
     {
-        if (!Auth::check()) {
+        if (!session('user_id') || session('role') !== 'buyer') {
             return response()->json(['count' => 0]);
         }
 
-        $buyerId = $this->getBuyerId();
-        
-        if (!$buyerId) {
-            return response()->json(['count' => 0]);
-        }
-
+        $buyerId = session('user_id');
         $count = Wishlist::where('buyer_id', $buyerId)->count();
-        
+
         return response()->json(['count' => $count]);
     }
 
     public function index()
     {
-        if (!Auth::check()) {
+        if (!session('user_id') || session('role') !== 'buyer') {
             return redirect()->route('login');
         }
 
-        $buyerId = $this->getBuyerId();
-        
-        if (!$buyerId) {
-            return redirect()->back()->with('error', 'Data buyer tidak ditemukan');
-        }
+        $buyerId = session('user_id');
 
-        // Ambil semua wishlist dengan relasi product
         $wishlists = Wishlist::where('buyer_id', $buyerId)
                             ->with('product')
                             ->orderBy('created_at', 'desc')
                             ->get();
 
-        return view('wishlist.index', compact('wishlists'));
+        return view('pages.product.wishlist', compact('wishlists'));
     }
 
     public function remove(Request $request)
     {
-        if (!Auth::check()) {
+        if (!session('user_id') || session('role') !== 'buyer') {
             return response()->json([
                 'success' => false,
                 'message' => 'Silakan login terlebih dahulu'
@@ -124,14 +101,7 @@ class WishlistController extends Controller
         }
 
         $productId = $request->input('product_id');
-        $buyerId = $this->getBuyerId();
-
-        if (!$buyerId) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data buyer tidak ditemukan'
-            ], 400);
-        }
+        $buyerId = session('user_id');
 
         try {
             $deleted = Wishlist::where('buyer_id', $buyerId)
@@ -159,21 +129,14 @@ class WishlistController extends Controller
 
     public function clear()
     {
-        if (!Auth::check()) {
+        if (!session('user_id') || session('role') !== 'buyer') {
             return response()->json([
                 'success' => false,
                 'message' => 'Silakan login terlebih dahulu'
             ], 401);
         }
 
-        $buyerId = $this->getBuyerId();
-
-        if (!$buyerId) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data buyer tidak ditemukan'
-            ], 400);
-        }
+        $buyerId = session('user_id');
 
         try {
             $deleted = Wishlist::where('buyer_id', $buyerId)->delete();
@@ -189,31 +152,5 @@ class WishlistController extends Controller
                 'message' => 'Gagal mengosongkan wishlist: ' . $e->getMessage()
             ], 500);
         }
-    }
-
-    /**
-     * Helper method untuk mendapatkan buyer_id
-     * Sesuaikan dengan struktur aplikasi Anda
-     */
-    private function getBuyerId()
-    {
-        // Opsi 1: Jika buyer_id disimpan di tabel users
-        // return Auth::user()->buyer_id;
-
-        // Opsi 2: Jika ada relasi antara users dan buyers
-        // return Auth::user()->buyer->buyer_id;
-
-        // Opsi 3: Jika buyer_id disimpan di session
-        // return session('buyer_id');
-
-        // Opsi 4: Jika user_id sama dengan buyer_id
-        // return Auth::id();
-
-        // Opsi 5: Cari buyer berdasarkan user_id (jika ada kolom user_id di tabel buyers)
-        $buyer = Buyer::where('user_id', Auth::id())->first();
-        return $buyer ? $buyer->buyer_id : null;
-
-        // Pilih salah satu opsi di atas sesuai dengan struktur database Anda
-        // Untuk sementara, saya gunakan opsi 5 sebagai contoh
     }
 }
