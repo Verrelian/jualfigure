@@ -53,16 +53,17 @@ class PostController extends Controller
         return redirect()->route('posts.index')
             ->with('success', 'Post berhasil dibuat!');
     }
-    // app/Http/Controllers/PostController.php
+
+    // Method like yang sudah diperbaiki
     public function like(Post $post)
     {
-        // Jika belum login, redirect ke halaman login
-        if (!auth()->check()) {
+        // Ganti auth check dengan session check
+        if (session('role') !== 'buyer' || !session('user_id')) {
             return redirect()->route('login')->with('error', 'Silakan login dulu');
         }
 
         $existingLike = PostLike::where('post_id', $post->id)
-            ->where('user_id', auth()->id())
+            ->where('user_id', session('user_id')) // Gunakan session user_id
             ->first();
 
         if ($existingLike) {
@@ -72,25 +73,26 @@ class PostController extends Controller
 
         PostLike::create([
             'post_id' => $post->id,
-            'user_id' => auth()->id()
+            'user_id' => session('user_id') // Gunakan session user_id
         ]);
 
         return back()->with('success', 'Post disukai!');
     }
 
+    // Method comment yang sudah diperbaiki
     public function comment(Request $request, Post $post)
     {
         $request->validate([
             'comment' => 'required|min:3|max:500'
         ]);
 
-        // Jika belum login
-        if (!auth()->check()) {
+        // Ganti auth check dengan session check
+        if (session('role') !== 'buyer' || !session('user_id')) {
             return redirect()->route('login')->with('error', 'Silakan login dulu');
         }
 
         $post->comments()->create([
-            'user_id' => auth()->id(),
+            'user_id' => session('user_id'), // Gunakan session user_id
             'comment' => $request->comment
         ]);
 
