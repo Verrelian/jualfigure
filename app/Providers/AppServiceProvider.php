@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Buyer;
 use App\Models\Seller;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,10 +20,9 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-            view()->composer('*', function ($view) {
-        $user = null;
+    public function boot()
+{
+    View::composer('*', function ($view) {
         $role = session('role');
         $userId = session('user_id');
 
@@ -30,9 +30,11 @@ class AppServiceProvider extends ServiceProvider
             $user = Buyer::find($userId);
         } elseif ($role === 'seller') {
             $user = Seller::find($userId);
+        } else {
+            $user = null;
         }
 
-        $view->with('user', $user);
+        $view->with('user', $user); // sekarang $user bisa dipakai di semua Blade
     });
-    }
+}
 }
