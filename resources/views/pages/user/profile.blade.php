@@ -24,16 +24,18 @@
         <div class="md:col-span-1">
             <div class="bg-white rounded-lg p-6 shadow-sm flex flex-col items-center">
                 <div class="w-40 h-40 rounded-full overflow-hidden mb-4 border-4 border-gray-200">
-                    <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('images/muka.jpg') }}" alt="Profile" class="w-full h-full object-cover rounded-full">
+                    <img src="{{ session('user')->avatar ? asset('storage/' . session('user')->avatar) : asset('images/muka.jpg') }}"
+                         alt="Profile"
+                         class="w-full h-full object-cover rounded-full">
                 </div>
-                <h2 class="text-lg font-bold">{{ auth()->user()->name }}</h2>
-                <p class="text-gray-600 text-sm mb-4">{{ auth()->user()->username }}</p>
+                <h2 class="text-lg font-bold">{{ session('user')->name }}</h2>
+                <p class="text-gray-600 text-sm mb-4">{{ session('user')->username }}</p>
 
                 <div class="w-full text-sm text-gray-600 space-y-1 text-left mt-2">
-                    <p><strong>Tanggal Lahir:</strong> {{ auth()->user()->birthdate ?? '-' }}</p>
-                    <p><strong>Telepon:</strong> {{ auth()->user()->phone ?? '-' }}</p>
-                    <p><strong>Email:</strong> {{ auth()->user()->email }}</p>
-                    <p><strong>Alamat:</strong> {{ auth()->user()->address ?? '-' }}</p>
+                    <p><strong>Tanggal Lahir:</strong> {{ session('user')->birthdate ?? '-' }}</p>
+                    <p><strong>Telepon:</strong> {{ session('user')->phone_number ?? '-' }}</p>
+                    <p><strong>Email:</strong> {{ session('user')->email }}</p>
+                    <p><strong>Alamat:</strong> {{ session('user')->address ?? '-' }}</p>
                 </div>
 
                 <button id="edit-profile-btn" class="bg-black text-white mt-4 w-full py-2 text-sm rounded-md">Edit Profile</button>

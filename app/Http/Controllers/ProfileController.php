@@ -3,45 +3,43 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Buyer; // Ganti sesuai model user yang kamu pakai
 
 class ProfileController extends Controller
 {
     public function show()
     {
-        if (!Auth::check()) {
+        // Gunakan session, bukan Auth
+        if (!session()->has('user') || session('role') !== 'buyer') {
             return redirect()->route('login')->with('error', 'Silakan login dahulu.');
         }
 
-        $user = Auth::user();
-
-        // SESUAIKAN dengan lokasi view Anda - pilih salah satu:
-        return view('pages.user.profile', compact('user')); // Jika file di resources/views/profile.blade.php
-        // return view('pages.user.profile', compact('user')); // Jika file di resources/views/pages/user/profile.blade.php
+        $user = Buyer::find(session('user')->buyer_id); // Ambil dari database supaya data up-to-date
+        return view('pages.user.profile', compact('user'));
     }
 
     public function edit()
     {
-        if (!Auth::check()) {
+        if (!session()->has('user') || session('role') !== 'buyer') {
             return redirect()->route('login');
         }
 
-        $user = Auth::user();
+        $user = Buyer::find(session('user')->buyer_id);
         return view('pages.user.edit_profile', compact('user'));
     }
 
     public function update(Request $request)
     {
-        if (!Auth::check()) {
+        if (!session()->has('user') || session('role') !== 'buyer') {
             return redirect()->route('login');
         }
 
-        $user = Auth::user();
+        $user = Buyer::find(session('user')->buyer_id);
 
         $request->validate([
             'name' => 'required',
-            'username' => 'required|unique:users,username,' . $user->id,
-            'email' => 'required|email|unique:users,email,' . $user->id,
+            'username' => 'required|unique:buyers,username,' . $user->buyer_id . ',buyer_id',
+            'email' => 'required|email|unique:buyers,email,' . $user->buyer_id . ',buyer_id',
             'nickname' => 'nullable|string',
             'country' => 'nullable|string',
             'birthdate' => 'nullable|date',
@@ -63,8 +61,9 @@ class ProfileController extends Controller
 
         $user->update($data);
 
-        // SESUAIKAN dengan route name yang ada di web.php Anda:
+        // Simpan ulang data yang baru ke session
+        session(['user' => $user]);
+
         return redirect()->route('user.profile')->with('success', 'Profil berhasil diperbarui.');
-        // return redirect()->route('pages.user.profile')->with('success', 'Profil berhasil diperbarui.');
     }
 }

@@ -40,7 +40,8 @@ class AuthController extends Controller
             session([
                 'role' => $request->role,
                 'user_id' => $user->getKey(),
-                'user_data' => $user->toArray() // Tambahkan data lengkap user
+                'user_data' => $user->toArray(),
+                'user' => $user, // Tambahkan data lengkap user
             ]);
 
             // Optional: Set Auth guard jika sudah dikonfigurasi
