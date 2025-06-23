@@ -132,7 +132,7 @@ Route::middleware(['web', 'seller.auth'])->prefix('seller')->group(function () {
     Route::get('/dashboard', [ListProdukController::class, 'index'])->name('seller.dashboard');
 
     // Profile routes
-    Route::view('/profile', 'pages.seller.profile')->name('seller.profile');
+    Route::get('/profile', [SellerProfileController::class, 'show'])->name('seller.profile');
     Route::get('/edit_profile', [SellerProfileController::class, 'edit'])->name('seller.edit_profile');
     Route::post('/profile/update', [SellerProfileController::class, 'updateProfile'])->name('seller.profile.update');
 

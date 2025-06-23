@@ -12,7 +12,7 @@
       <div class="bg-black text-white p-4 flex items-center justify-between">
         <img src="{{ asset('images/icon.png') }}" alt="Mole Logo" class="w-10">
         <div class="hidden md:flex space-x-4">
-          <a href="{{ route('user.profile') }}" class="hover:underline">Back</a>
+          <a href="{{ route('seller.profile') }}" class="hover:underline">Back</a>
         </div>
       </div>
 
@@ -28,7 +28,7 @@
           </div>
 
           <div class="w-3/4">
-            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('seller.profile.update') }}" enctype="multipart/form-data">
               @csrf
 
               <div class="mb-2">
@@ -50,11 +50,20 @@
                 <label class="block text-gray-600 text-xs mb-1">Email:</label>
                 <input type="email" name="email" value="{{ $user->email }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
               </div>
+              <div class="mb-3">
+  <label class="block text-gray-600 text-xs mb-1">Birthdate:</label>
+  <input type="date" name="birthdate" value="{{ $user->birthdate }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
+</div>
 
               <div class="mb-3">
                 <label class="block text-gray-600 text-xs mb-1">Phone Number:</label>
                 <input type="text" name="phone_number" value="{{ $user->phone_number }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
               </div>
+              <div class="mb-3">
+  <label class="block text-gray-600 text-xs mb-1">Negara:</label>
+  <input type="text" name="country" value="{{ $user->country }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
+</div>
+
 
               <div class="mb-3">
                 <label class="block text-gray-600 text-xs mb-1">Address:</label>

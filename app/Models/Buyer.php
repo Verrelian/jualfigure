@@ -13,9 +13,13 @@ class Buyer extends Model
     'email',
     'password',
     'address',
+    'birthdate',
     'exp',
     'bio',
     'phone_number',
+    'avatar',
+    'country',
+    'nickname',
 ];
 
     public $timestamps = false;
