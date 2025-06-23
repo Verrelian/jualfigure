@@ -15,7 +15,8 @@ use App\Http\Controllers\{
     CheckoutController,
     PaymentController,
     BankController,
-    WishlistController
+    WishlistController,
+    LeaderboardController
 };
 
 /*
@@ -37,10 +38,12 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 |--------------------------------------------------------------------------
 */
 Route::view('/', 'welcome')->name('home');
+Route::view('/filter', 'filter')->name('filter');
 Route::view('/webs', 'welcome')->name('webs');
 Route::view('/contact-us', 'pages.general.contact-us')->name('contact-us');
 Route::view('/ambabot', 'pages.general.ambabot')->name('ambabot');
-Route::view('/leaderboard', 'pages.general.leaderboard')->name('leaderboard');
+Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+Route::get('/api/leaderboard', [LeaderboardController::class, 'getLeaderboardData'])->name('leaderboard.api');
 Route::post('/contact-submit', [ContactController::class, 'submit'])->name('contact.submit');
 
 /*
@@ -53,6 +56,10 @@ Route::get('/products/by-category', [ProductController::class, 'getProductsByCat
 Route::get('/product-detail', [ProductController::class, 'index'])->name('product-detail');
 Route::get('/product/{product_id}', [ProductController::class, 'show'])->name('product.detail');
 Route::get('/explore', [ProductController::class, 'explore'])->name('explore');
+Route::get('/products/filter', [ProductController::class, 'filter'])->name('products.filter');
+Route::get('/api/filter-options', [ProductController::class, 'getFilterOptions']);
+
+
 
 /*
 |--------------------------------------------------------------------------
