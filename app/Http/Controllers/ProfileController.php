@@ -41,7 +41,6 @@ class ProfileController extends Controller
             'username' => 'required|unique:buyers,username,' . $user->buyer_id . ',buyer_id',
             'email' => 'required|email|unique:buyers,email,' . $user->buyer_id . ',buyer_id',
             'nickname' => 'nullable|string',
-            'country' => 'nullable|string',
             'birthdate' => 'nullable|date',
             'phone' => 'nullable|string',
             'address' => 'nullable|string',

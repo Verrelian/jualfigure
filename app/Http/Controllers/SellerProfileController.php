@@ -41,7 +41,6 @@ class SellerProfileController extends Controller
             'username' => 'required|unique:sellers,username,' . $user->seller_id . ',seller_id',
             'email' => 'required|email|unique:sellers,email,' . $user->seller_id . ',seller_id',
             'nickname' => 'nullable|string',
-            'country' => 'nullable|string',
             'birthdate' => 'nullable|date',
             'phone_number' => 'nullable|string',
             'address' => 'nullable|string',
@@ -50,7 +49,7 @@ class SellerProfileController extends Controller
         ]);
 
         $data = $request->only([
-            'name', 'username', 'email', 'nickname', 'country',
+            'name', 'username', 'email', 'nickname',
             'birthdate', 'phone_number', 'address', 'bio'
         ]);
 

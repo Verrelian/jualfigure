@@ -60,12 +60,6 @@
                 <input type="text" name="phone_number" value="{{ $user->phone_number }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
               </div>
               <div class="mb-3">
-  <label class="block text-gray-600 text-xs mb-1">Negara:</label>
-  <input type="text" name="country" value="{{ $user->country }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
-</div>
-
-
-              <div class="mb-3">
                 <label class="block text-gray-600 text-xs mb-1">Address:</label>
                 <input type="text" name="address" value="{{ $user->address }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
               </div>

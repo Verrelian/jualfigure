@@ -18,7 +18,6 @@ class Buyer extends Model
     'bio',
     'phone_number',
     'avatar',
-    'country',
     'nickname',
 ];
 
