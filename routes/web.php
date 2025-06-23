@@ -16,6 +16,7 @@ use App\Http\Controllers\{
     PaymentController,
     BankController,
     WishlistController,
+    InvoiceController,
     LeaderboardController
 };
 
@@ -150,5 +151,5 @@ Route::middleware(['web', 'seller.auth'])->prefix('seller')->group(function () {
 
     // Orders and reports
     Route::view('/order', 'pages.seller.order')->name('seller.order');
-    Route::view('/laporan', 'pages.seller.laporan')->name('seller.laporan');
+    Route::get('/laporan', [invoiceController::class, 'index'])->name('seller.laporan');
 });

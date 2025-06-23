@@ -22,7 +22,7 @@ class SellerProfileController extends Controller
         ]);
 
         // Contoh: update ke user login
-        $user = auth()->user();
+        $user = session('user');
         $user->update($validated);
 
         return redirect()->route('seller.profile.show')->with('success', 'Profil berhasil diperbarui');

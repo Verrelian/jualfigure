@@ -13,7 +13,7 @@
         <h1 class="text-xl font-bold">MOLE</h1>
         <div class="flex items-center gap-4">
             <span class="text-sm text-gray-600">Profil Seller</span>
-            <button onclick="window.location.href='{{ route('dashboardp') }}'" class="text-sm bg-gray-200 px-4 py-1 rounded">Back</button>
+            <button onclick="window.location.href='{{ route('dashboard') }}'" class="text-sm bg-gray-200 px-4 py-1 rounded">Back</button>
         </div>
     </div>
 
@@ -23,9 +23,8 @@
         <div class="md:col-span-1">
             <div class="bg-white rounded-lg p-6 shadow-sm flex flex-col items-center">
                 @php
-                    $user = auth()->user();
+                    $user = session('user');
                 @endphp
-
                 <div class="w-40 h-40 rounded-full overflow-hidden mb-4 border-4 border-gray-200">
                     <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('images/muka.jpg') }}" alt="Profile" class="w-full h-full object-cover rounded-full">
                 </div>

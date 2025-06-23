@@ -22,12 +22,12 @@
       <!-- Dropdown Menu -->
       <div class="z-50 hidden mt-2 w-48 bg-white divide-y divide-gray-100 rounded-lg shadow-lg absolute right-0" id="user-dropdown">
         <div class="px-4 py-3 bg-gray-50 rounded-t-lg">
-          @if(Auth::check())
-            <span class="block text-sm font-medium text-gray-900">{{ Auth::user()->name }}</span>
-            <span class="block text-sm text-gray-500 truncate">{{ Auth::user()->email }}</span>
-          @else
-            <span class="block text-sm text-gray-500">Guest</span>
-          @endif
+        @if(session()->has('user'))
+          <span class="block text-sm font-medium text-gray-900">{{ session('user')->name }}</span>
+          <span class="block text-sm text-gray-500 truncate">{{ session('user')->email }}</span>
+        @else
+          <span class="block text-sm text-gray-500">Guest</span>
+        @endif
         </div>
         <ul class="py-1">
           <li>

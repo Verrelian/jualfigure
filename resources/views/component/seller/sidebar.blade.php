@@ -1,7 +1,7 @@
 <aside class="w-64 h-screen bg-white text-gray-800 border-r border-gray-200 shadow-sm flex flex-col p-5 space-y-6 font-medium">
 
   <!-- Seller Profile -->
-  <div class="flex items-center space-x-4 bg-gray-100 p-4 rounded-lg">
+  <div class="flex items-center bg-gray-100 p-4 rounded-lg">
     <img src="{{ asset('images/figure1.png') }}" alt="Avatar" class="h-12 w-12 rounded-full border">
     <div>
       <p class="text-base font-semibold">Verrelian</p>
@@ -11,7 +11,7 @@
 
   <!-- Navigation -->
   <nav class="flex flex-col space-y-1">
-    <a href="/mole/seller/dashboardp" class="flex items-center px-4 py-2 rounded hover:bg-gray-100 transition">
+    <a href="/mole/seller/dashboard" class="flex items-center px-4 py-2 rounded hover:bg-gray-100 transition">
       <span>📊 Dashboard</span>
     </a>
     <a href="/mole/seller/product" class="flex items-center px-4 py-2 rounded hover:bg-gray-100 transition">
