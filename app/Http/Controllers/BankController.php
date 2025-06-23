@@ -5,9 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Payment;
 use App\Models\PaymentReceipt;
+use App\Services\ExpService;
 
 class BankController extends Controller
 {
+    protected $expService;
+
+    public function __construct(ExpService $expService)
+    {
+        $this->expService = $expService;
+    }
+
     public function showPaymentPage($bank)
     {
         $allowedBanks = ['bca', 'mandiri', 'bni', 'bri'];
@@ -38,8 +46,10 @@ class BankController extends Controller
         // Simpan flag untuk satu kali redirect
         session()->flash('just_inquired', true);
 
+        // Fix syntax error
+        $priceqty = $payment->price * $payment->quantity;
+
         session([
-            $priceqty = $payment->price * $payment->quantity,
             'inquired' => true,
             'payment' => (object)[
                 'payment_id' => $payment->payment_id,
@@ -60,8 +70,6 @@ class BankController extends Controller
         return redirect()->route('bank.payment', ['bank' => $request->bank]);
     }
 
-
-
     public function processPayment(Request $request)
     {
         $request->validate([
@@ -72,7 +80,7 @@ class BankController extends Controller
 
         // Cegah pembayaran ganda
         if ($payment->receipt) {
-            session()->forget(['inquired', 'payment']); // ⬅ Hapus session biar ga lengket
+            session()->forget(['inquired', 'payment']);
             return back()->with('error', 'Payment already completed.');
         }
 
@@ -95,9 +103,17 @@ class BankController extends Controller
 
         // Update status pembayaran di tabel payments
         $payment->update([
-            'payment_status'     => 'PAID',
+            'payment_status' => 'PAID',
             'transaction_status' => 'PROCESSED',
         ]);
+
+        // 🎯 TRIGGER EXP UPDATE
+        try {
+            $this->expService->updateUserExp($payment);
+        } catch (\Exception $e) {
+            // Log error tapi jangan break payment flow
+            \Log::error('EXP Update Error: ' . $e->getMessage());
+        }
 
         // Hapus session agar tidak tampil terus
         session()->forget(['inquired', 'payment']);
