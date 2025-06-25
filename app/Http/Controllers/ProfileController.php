@@ -42,14 +42,14 @@ class ProfileController extends Controller
             'email' => 'required|email|unique:buyers,email,' . $user->buyer_id . ',buyer_id',
             'nickname' => 'nullable|string',
             'birthdate' => 'nullable|date',
-            'phone' => 'nullable|string',
+            'phone_number' => 'nullable|string',
             'address' => 'nullable|string',
             'bio' => 'nullable|string',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $data = $request->only([
-            'name', 'username', 'email', 'nickname', 'country', 'birthdate', 'phone', 'address', 'bio'
+            'name', 'username', 'email', 'nickname', 'country', 'birthdate', 'phone_number', 'address', 'bio'
         ]);
 
         if ($request->hasFile('avatar')) {
