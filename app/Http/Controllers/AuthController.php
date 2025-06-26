@@ -19,7 +19,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'identity' => 'required',
-            'password' => 'required',
+            'password' => 'required|min:8',
             'role'     => 'required|in:buyer,seller',
         ]);
 
@@ -35,70 +35,85 @@ class AuthController extends Controller
                         ->first();
         }
 
-        if ($user && Hash::check($request->password, $user->password)) {
-            // Set session data
-            session([
-                'role' => $request->role,
-                'user_id' => $user->getKey(),
-                'user_data' => $user->toArray(),
-                'user' => $user, // Tambahkan data lengkap user
-            ]);
-
-            // Optional: Set Auth guard jika sudah dikonfigurasi
-            // Auth::guard($request->role)->login($user);
-
-            return redirect()->route($request->role === 'seller' ? 'seller.dashboard' : 'dashboard');
+        if (!$user) {
+         return back()->withInput($request->only('identity', 'role'))
+                 ->with('error', 'Username atau email tidak ditemukan.');
         }
 
-        return back()->withInput($request->only('identity', 'role'))
-                     ->with('error', 'Username/email, password, atau role salah.');
+        if (!Hash::check($request->password, $user->password)) {
+            return back()->withInput($request->only('identity', 'role'))
+                 ->with('error', 'Password salah.');
+        }
+
+        // jika lolos semua, login
+        session([
+        'role' => $request->role,
+        'user_id' => $user->getKey(),
+        'user_data' => $user->toArray(),
+        'user' => $user,
+        ]);
+
+return redirect()->route($request->role === 'seller' ? 'seller.dashboard' : 'dashboard');
     }
 
     public function register(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|string|max:255',
-            'email'    => 'required|email',
-            'password' => 'required|confirmed|min:6',
-            'role'     => 'required|in:buyer,seller',
-        ]);
+{
+    $request->validate([
+        'username' => 'required|string|max:255',
+        'email'    => 'required|email',
+        'password' => 'required|confirmed|min:8',
+        'role'     => 'required|in:buyer,seller',
+    ]);
 
-        // Check unique email dan username
-        $emailExists = Buyer::where('email', $request->email)->exists() ||
-                      Seller::where('email', $request->email)->exists();
+    // Cek apakah email atau username sudah ada
+    $emailExists = Buyer::where('email', $request->email)->exists()
+        || Seller::where('email', $request->email)->exists();
 
-        $usernameExists = Buyer::where('username', $request->username)->exists() ||
-                         Seller::where('username', $request->username)->exists();
+    $usernameExists = Buyer::where('username', $request->username)->exists()
+        || Seller::where('username', $request->username)->exists();
 
-        if ($emailExists) {
-            return back()->withInput()->with('error', 'Email sudah terdaftar.');
-        }
-
-        if ($usernameExists) {
-            return back()->withInput()->with('error', 'Username sudah terdaftar.');
-        }
-
-        $data = [
-            'username' => $request->username,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-        ];
-
-        if ($request->role === 'buyer') {
-            $data = array_merge($data, [
-                'name'         => '',
-                'address'      => '',
-                'exp'          => 0,
-                'bio'          => '',
-                'phone_number' => 0,
-            ]);
-            Buyer::create($data);
-        } elseif ($request->role === 'seller') {
-            Seller::create($data);
-        }
-
-        return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login.');
+    // Simpan error manual
+    $errors = [];
+    if ($emailExists) {
+        $errors[] = 'Email sudah terdaftar.';
     }
+    if ($usernameExists) {
+        $errors[] = 'Username sudah terdaftar.';
+    }
+
+    // Kalau ada error, kembali ke halaman register
+    if (!empty($errors)) {
+        return back()
+            ->withErrors($errors)
+            ->withInput()
+            ->with('old_tab', 'register'); // Penting agar tetap di tab register
+    }
+
+    // Simpan user baru
+    $data = [
+        'username' => $request->username,
+        'email'    => $request->email,
+        'password' => Hash::make($request->password),
+    ];
+
+    if ($request->role === 'buyer') {
+        $data = array_merge($data, [
+            'name'         => '',
+            'address'      => '',
+            'exp'          => 0,
+            'bio'          => '',
+            'phone_number' => 0,
+        ]);
+        Buyer::create($data);
+    } else {
+        Seller::create($data);
+    }
+
+    // Redirect ke login jika berhasil
+    return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login.');
+}
+
+
 
     public function logout()
     {
