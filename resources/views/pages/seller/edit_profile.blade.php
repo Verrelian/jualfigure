@@ -31,14 +31,10 @@
             <form method="POST" action="{{ route('seller.profile.update') }}" enctype="multipart/form-data">
               @csrf
 
-              <div class="mb-4">
-  <label class="block text-sm font-medium text-gray-700 mb-1">Foto Profil</label>
-  <input type="file" name="avatar" class="border rounded w-full p-2" accept="image/*">
-  @if (session('seller')['avatar'] ?? false)
-    <img src="{{ asset('storage/avatars/' . session('seller')['avatar']) }}" alt="Foto Profil" class="w-20 mt-2 rounded">
-  @endif
-</div>
-
+              <div class="mb-2">
+                <label class="block text-gray-600 text-xs mb-1">Change Avatar:</label>
+                <input type="file" name="avatar" class="text-xs text-gray-700">
+              </div>
 
               <div class="mb-3">
                 <label class="block text-gray-600 text-xs mb-1">Name:</label>
@@ -55,9 +51,9 @@
                 <input type="email" name="email" value="{{ $user->email }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
               </div>
               <div class="mb-3">
-                <label class="block text-gray-600 text-xs mb-1">Birthdate:</label>
-                <input type="date" name="birthdate" value="{{ $user->birthdate }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
-              </div>
+  <label class="block text-gray-600 text-xs mb-1">Birthdate:</label>
+  <input type="date" name="birthdate" value="{{ $user->birthdate }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
+</div>
 
               <div class="mb-3">
                 <label class="block text-gray-600 text-xs mb-1">Phone Number:</label>

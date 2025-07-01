@@ -69,14 +69,6 @@
         <div class="z-50 hidden absolute right-0 mt-2 w-56 bg-white divide-y divide-gray-100 rounded-lg shadow-lg"
              id="user-dropdown">
           <div class="px-4 py-3 bg-gray-50 rounded-t-lg">
-            <!-- before down -->
-            @if ($user)
-            <span class="block text-sm font-medium text-gray-900">{{ $user->name }}</span>
-            <span class="block text-sm text-gray-500 truncate">{{ $user->email }}</span>
-            @else
-            <span class="block text-sm text-gray-500">Guest</span>
-            @endif
-            <!-- Before to up -->
             <!--After down-->
             <span class="block text-sm font-medium text-gray-900">{{ session('user')->name }}</span>
             <span class="block text-sm text-gray-500 truncate">{{ session('user')->email }}</span>
