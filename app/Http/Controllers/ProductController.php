@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Produk;
+use App\Services\FilterService;
+
 
 class ProductController extends Controller
 {
@@ -66,7 +68,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function explore()
+    public function explore(Request $request)
     {
         // Ambil semua type unik dari database
         $categories = Produk::select('type')
@@ -86,55 +88,101 @@ class ProductController extends Controller
         $initialCategory = request()->query('category', 'nendoroid');
         $initialType = $categorySlugs[$initialCategory] ?? $categories[0] ?? 'Nendoroid';
 
-        // Get initial products
-        $products = Produk::where('type', $initialType)
-                         ->inStock()
-                         ->orderBy('created_at', 'desc')
-                         ->get();
 
+        // Dengan ini:
+        $filterService = new \App\Services\FilterService();
+        $query = Produk::with(['specification', 'seller'])->where('type', $initialType);
+        $products = $filterService->apply($query, $request->all())->paginate(12);
+        $filterOptions = $filterService->getFilterOptions();
+
+        // Dan update return view:
         return view('pages.general.explore', [
             'categories' => $categorySlugs,
             'initialCategory' => $initialCategory,
-            'products' => $products
+            'products' => $products,
+            'filterOptions' => $filterOptions,
+            'activeFilters' => $request->all()
         ]);
     }
 
     public function getProductsByCategory(Request $request)
     {
-        // Category slug to type mapping
+        // Step 1: Mapping slug ke nama tipe
         $categoryMap = [
             'nendoroid' => 'Nendoroid',
-            'popup' => 'Pop Up Parade',
-            'hottoys' => 'Hot Toys'
+            'popup'     => 'Pop Up Parade',
+            'hottoys'   => 'Hot Toys'
         ];
 
         $categorySlug = $request->query('category', 'nendoroid');
         $type = $categoryMap[$categorySlug] ?? 'Nendoroid';
 
-        $products = Produk::where('type', $type)
-                         ->inStock()
-                         ->orderBy('created_at', 'desc')
-                         ->get();
+        // Step 2: Build query dasar
+        $query = Produk::with(['specification', 'seller'])
+                    ->where('type', $type)
+                    ->inStock()
+                    ->orderBy('created_at', 'desc');
 
-        // Return JSON response for AJAX
+        // Step 3: Apply filters via service
+        $filters = array_merge($request->all(), ['type' => $type]);
+        $filterService = new FilterService();
+        $products = $filterService->apply($query, $filters)->paginate(12);
+
+        // Step 4: AJAX response
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
                 'products' => $products->map(function($product) {
                     return [
-                        'product_id' => $product->product_id,
-                        'name' => $product->product_name, // Fixed: use product_name
-                        'type' => $product->type,
-                        'harga' => $product->formatted_harga,
-                        'gambar_url' => $product->gambar_url,
-                        'stok' => $product->stock // Fixed: use stock not stok
+                        'product_id'  => $product->product_id,
+                        'name'        => $product->product_name,
+                        'type'        => $product->type,
+                        'harga'       => $product->formatted_harga,
+                        'gambar_url'  => $product->gambar_url,
+                        'stok'        => $product->stock
                     ];
                 }),
                 'category' => $categorySlug
             ]);
         }
 
-        // Fallback for non-AJAX requests
-        return view('partials.explore.products', ['products' => $products]);
+        // Step 5: Fallback view
+        return view('partials.explore.products', [
+            'products' => $products,
+            'category' => $categorySlug
+        ]);
     }
+    public function filter(Request $request)
+    {
+        $filterService = new \App\Services\FilterService();
+        $query = Produk::with(['specification', 'seller']);
+        $products = $filterService->apply($query, $request->all())->paginate(12);
+
+        // Return JSON response aja
+        return response()->json([
+            'success' => true,
+            'products' => $products->map(function($product) {
+                return [
+                    'product_id' => $product->product_id,
+                    'name' => $product->product_name,
+                    'type' => $product->type,
+                    'harga' => $product->formatted_harga,
+                    'gambar_url' => $product->gambar_url,
+                    'stok' => $product->stock,
+                    'specifications' => $product->specification ? [
+                        'scale' => $product->specification->scale,
+                        'material' => $product->specification->material,
+                        'manufacture' => $product->specification->manufacture,
+                        'series' => $product->specification->series
+                    ] : null
+                ];
+            })
+        ]);
+    }
+        public function getFilterOptions()
+    {
+        $filterService = new \App\Services\FilterService();
+        return response()->json($filterService->getFilterOptions());
+    }
+
 }

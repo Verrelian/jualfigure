@@ -21,6 +21,7 @@ return new class extends Migration
     $table->integer('exp')->default(0);
     $table->text('bio')->nullable();
     $table->string('phone_number')->nullable();
+    $table->string('avatar')->nullable();
     $table->timestamps();
 });
     }

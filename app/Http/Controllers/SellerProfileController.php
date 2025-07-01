@@ -3,38 +3,64 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Seller;
 
 class SellerProfileController extends Controller
 {
+    public function show()
+{
+    if (!session()->has('user') || session('role') !== 'seller') {
+        return redirect()->route('login');
+    }
+
+    $user = Seller::find(session('user')->seller_id);
+    session(['user' => $user]); // refresh session supaya data paling baru
+    return view('pages.seller.profile', compact('user'));
+}
+
     public function edit()
     {
-        // Tampilkan halaman edit profil seller
-        return view('pages.seller.edit_profile');
+        if (!session()->has('user') || session('role') !== 'seller') {
+            return redirect()->route('login');
+        }
+
+        $user = Seller::find(session('user')->seller_id);
+        return view('pages.seller.edit_profile', compact('user'));
     }
 
     public function updateProfile(Request $request)
     {
-        // Validasi dan update profil seller
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email',
-            // Tambahkan sesuai kebutuhan
+        if (!session()->has('user') || session('role') !== 'seller') {
+            return redirect()->route('login');
+        }
+
+        $user = Seller::find(session('user')->seller_id);
+
+        $request->validate([
+            'name' => 'required',
+            'username' => 'required|unique:sellers,username,' . $user->seller_id . ',seller_id',
+            'email' => 'required|email|unique:sellers,email,' . $user->seller_id . ',seller_id',
+            'nickname' => 'nullable|string',
+            'birthdate' => 'nullable|date',
+            'phone_number' => 'nullable|string',
+            'address' => 'nullable|string',
+            'bio' => 'nullable|string',
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Contoh: update ke user login
-        $user = auth()->user();
-        $user->update($validated);
+        $data = $request->only([
+            'name', 'username', 'email', 'nickname',
+            'birthdate', 'phone_number', 'address', 'bio'
+        ]);
 
-        return redirect()->route('seller.profile.show')->with('success', 'Profil berhasil diperbarui');
-    }
+        if ($request->hasFile('avatar')) {
+            $filename = time() . '.' . $request->avatar->extension();
+            $path = $request->avatar->storeAs('avatars', $filename, 'public');
+            $data['avatar'] = $path;
+        }
 
-    public function posts()
-    {
-        return view('pages.seller.posts');
-    }
-
-    public function toys()
-    {
-        return view('pages.seller.toys');
+        $user->update($data);
+        session(['user' => $user->fresh()]); // ambil ulang data dari database
+        return redirect()->route('seller.profile')->with('success', 'Profil berhasil diperbarui.');
     }
 }

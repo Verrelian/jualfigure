@@ -12,7 +12,7 @@
       <div class="bg-black text-white p-4 flex items-center justify-between">
         <img src="{{ asset('images/icon.png') }}" alt="Mole Logo" class="w-10">
         <div class="hidden md:flex space-x-4">
-          <a href="{{ url('/seller/profile') }}" class="hover:underline">Back</a>
+          <a href="{{ route('seller.profile') }}" class="hover:underline">Back</a>
         </div>
       </div>
 
@@ -22,60 +22,56 @@
         <div class="flex flex-wrap">
           <div class="w-1/4 pr-4 flex flex-col items-center">
             <div class="w-20 h-20 rounded-full overflow-hidden mb-2">
-              <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : 'https://via.placeholder.com/150/FF5733/FFFFFF?text=LH' }}" alt="Profile" class="w-full h-full object-cover">
+              <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('images/muka.jpg') }}"
+                   alt="Profile" class="w-full h-full object-cover">
             </div>
-            <input type="file" name="avatar" class="text-xs text-gray-700">
           </div>
 
           <div class="w-3/4">
-            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('seller.profile.update') }}" enctype="multipart/form-data">
               @csrf
-              <div class="flex mb-3 space-x-3">
-                <div class="w-1/2">
-                  <label class="block text-gray-600 text-xs mb-1">Name:</label>
-                  <input type="text" name="name" value="{{ auth()->user()->name }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
-                </div>
-                <div class="w-1/2">
-                  <label class="block text-gray-600 text-xs mb-1">Username:</label>
-                  <input type="text" name="username" value="{{ auth()->user()->username }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
-                </div>
+
+              <div class="mb-4">
+  <label class="block text-sm font-medium text-gray-700 mb-1">Foto Profil</label>
+  <input type="file" name="avatar" class="border rounded w-full p-2" accept="image/*">
+  @if (session('seller')['avatar'] ?? false)
+    <img src="{{ asset('storage/avatars/' . session('seller')['avatar']) }}" alt="Foto Profil" class="w-20 mt-2 rounded">
+  @endif
+</div>
+
+
+              <div class="mb-3">
+                <label class="block text-gray-600 text-xs mb-1">Name:</label>
+                <input type="text" name="name" value="{{ $user->name }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
+              </div>
+
+              <div class="mb-3">
+                <label class="block text-gray-600 text-xs mb-1">Username:</label>
+                <input type="text" name="username" value="{{ $user->username }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
               </div>
 
               <div class="mb-3">
                 <label class="block text-gray-600 text-xs mb-1">Email:</label>
-                <input type="email" name="email" value="{{ auth()->user()->email }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
+                <input type="email" name="email" value="{{ $user->email }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
+              </div>
+              <div class="mb-3">
+                <label class="block text-gray-600 text-xs mb-1">Birthdate:</label>
+                <input type="date" name="birthdate" value="{{ $user->birthdate }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
               </div>
 
-              <div class="flex mb-3 space-x-3">
-                <div class="w-1/2">
-                  <label class="block text-gray-600 text-xs mb-1">Nickname:</label>
-                  <input type="text" name="nickname" value="{{ auth()->user()->nickname }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
-                </div>
-                <div class="w-1/2">
-                  <label class="block text-gray-600 text-xs mb-1">Country:</label>
-                  <input type="text" name="country" value="{{ auth()->user()->country }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
-                </div>
-              </div>
-
-              <div class="flex mb-3 space-x-3">
-                <div class="w-1/2">
-                  <label class="block text-gray-600 text-xs mb-1">Birthdate:</label>
-                  <input type="date" name="birthdate" value="{{ auth()->user()->birthdate }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
-                </div>
-                <div class="w-1/2">
-                  <label class="block text-gray-600 text-xs mb-1">Phone:</label>
-                  <input type="text" name="phone" value="{{ auth()->user()->phone }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
-                </div>
+              <div class="mb-3">
+                <label class="block text-gray-600 text-xs mb-1">Phone Number:</label>
+                <input type="text" name="phone_number" value="{{ $user->phone_number }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
               </div>
 
               <div class="mb-3">
                 <label class="block text-gray-600 text-xs mb-1">Address:</label>
-                <input type="text" name="address" value="{{ auth()->user()->address }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
+                <input type="text" name="address" value="{{ $user->address }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
               </div>
 
               <div class="mb-4">
                 <label class="block text-gray-600 text-xs mb-1">Bio:</label>
-                <textarea name="bio" class="w-full border border-gray-300 rounded p-2 text-sm h-24">{{ auth()->user()->bio }}</textarea>
+                <textarea name="bio" class="w-full border border-gray-300 rounded p-2 text-sm h-24">{{ $user->bio }}</textarea>
               </div>
 
               <div class="flex space-x-2">

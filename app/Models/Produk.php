@@ -41,13 +41,11 @@ class Produk extends Model
         return $this->hasOne(Specification::class, 'product_id', 'product_id');
     }
 
-    // Perbaiki accessor ini
     public function getFormattedHargaAttribute()
     {
         return 'Rp' . number_format($this->price, 0, ',', '.');
     }
 
-    // PERBAIKI: gunakan kolom yang benar
     public function getGambarUrlAttribute()
     {
         return $this->image ? 'images/' . $this->image : null;

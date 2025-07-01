@@ -24,26 +24,67 @@
         <div class="md:col-span-1">
             <div class="bg-white rounded-lg p-6 shadow-sm flex flex-col items-center">
                 <div class="w-40 h-40 rounded-full overflow-hidden mb-4 border-4 border-gray-200">
-                    <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('images/muka.jpg') }}" alt="Profile" class="w-full h-full object-cover rounded-full">
+                    {{-- PERBAIKAN: Gunakan $user->avatar_url --}}
+                    <img src="{{ $user->avatar_url }}"
+                         alt="{{ $user->username ?? 'Profile' }}"
+                         class="w-full h-full object-cover rounded-full">
                 </div>
-                <h2 class="text-lg font-bold">{{ auth()->user()->name }}</h2>
-                <p class="text-gray-600 text-sm mb-4">{{ auth()->user()->username }}</p>
+                {{-- PERBAIKAN: Gunakan $user->name --}}
+                <h2 class="text-lg font-bold">{{ $user->name }}</h2>
+                {{-- PERBAIKAN: Gunakan $user->username --}}
+                <p class="text-gray-600 text-sm mb-4">{{ $user->username }}</p>
 
                 <div class="w-full text-sm text-gray-600 space-y-1 text-left mt-2">
-                    <p><strong>Tanggal Lahir:</strong> {{ auth()->user()->birthdate ?? '-' }}</p>
-                    <p><strong>Telepon:</strong> {{ auth()->user()->phone ?? '-' }}</p>
-                    <p><strong>Email:</strong> {{ auth()->user()->email }}</p>
-                    <p><strong>Alamat:</strong> {{ auth()->user()->address ?? '-' }}</p>
+                    <p><strong>Tanggal Lahir:</strong> {{ $user->birthdate ?? '-' }}</p>
+                    <p><strong>Telepon:</strong> {{ $user->phone_number ?? '-' }}</p>
+                    <p><strong>Email:</strong> {{ $user->email }}</p>
+                    <p><strong>Alamat:</strong> {{ $user->address ?? '-' }}</p>
+                    @if ($user->bio)
+                        <p><strong>Bio:</strong> {{ $user->bio }}</p>
+                    @endif
                 </div>
 
-                <button id="edit-profile-btn" class="bg-black text-white mt-4 w-full py-2 text-sm rounded-md">Edit Profile</button>
+                {{-- TOMBOL EDIT PROFILE: Hanya tampilkan jika ini profil user yang sedang login --}}
+                @if (session()->has('user_id') && (int)session('user_id') === (int)$user->buyer_id)
+                    <button id="edit-profile-btn" class="bg-black text-white mt-4 w-full py-2 text-sm rounded-md">Edit Profile</button>
+                @endif
             </div>
         </div>
 
         <!-- Main Section -->
         <div class="md:col-span-2 space-y-6">
             <div class="bg-white rounded-lg shadow-sm p-6">
-                <h3 class="text-xl font-semibold mb-4">Toys Collection</h3>
+                <h3 class="text-xl font-semibold mb-4">Posts by {{ $user->username }}</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @forelse($user->posts as $post)
+                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100">
+                            <h4 class="text-lg font-semibold">{{ $post->title }}</h4>
+                            <p class="text-gray-700 text-sm mt-1">{{ Str::limit($post->description, 100) }}</p>
+                            @if($post->image_url) {{-- Gunakan image_url dari accessor Post --}}
+                                <img src="{{ $post->image_url }}" alt="Post Image" class="mt-2 rounded-lg max-h-60 object-cover w-full">
+                            @endif
+                            <div class="text-xs text-gray-500 mt-2">
+                                {{ $post->created_at->diffForHumans() }}
+                                {{-- Pastikan relasi likes dan comments ada di Post model untuk ini --}}
+                                @if(isset($post->likes_count))
+                                <span class="ml-4">Likes: {{ $post->likes_count }}</span>
+                                @else
+                                <span class="ml-4">Likes: {{ $post->likes->count() }}</span>
+                                @endif
+
+                                @if(isset($post->comments_count))
+                                <span class="ml-2">Comments: {{ $post->comments_count }}</span>
+                                @else
+                                <span class="ml-2">Comments: {{ $post->comments->count() }}</span>
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-gray-500 col-span-full text-center">No posts found from this user.</p>
+                    @endforelse
+                </div>
+
+                <h3 class="text-xl font-semibold mb-4 mt-6">Toys Collection (Example)</h3>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     @foreach ([
                         'Golden Toy' => 'bg-yellow-500',
@@ -62,8 +103,8 @@
                 </div>
 
                 <div class="mt-6 flex gap-3">
-                    <button id="view-post-btn" class="bg-black text-white rounded-full px-6 py-2 text-sm font-medium">View Post</button>
-                    <button id="view-toys-btn" class="bg-gray-200 text-black rounded-full px-6 py-2 text-sm font-medium">View Toys</button>
+                    <button id="view-post-btn" class="bg-black text-white rounded-full px-6 py-2 text-sm font-medium">View All Posts</button>
+                    <button id="view-toys-btn" class="bg-gray-200 text-black rounded-full px-6 py-2 text-sm font-medium">View All Toys</button>
                 </div>
             </div>
         </div>
@@ -77,10 +118,12 @@
             window.location.href = "{{ route('dashboard') }}";
         });
         document.getElementById('view-post-btn').addEventListener('click', function () {
-            window.location.href = "{{ route('user.posts') }}";
+            // Ini akan mengarahkan ke halaman dengan semua postingan user ini
+            // Anda mungkin perlu membuat route dan controller baru untuk ini
+            alert('Fungsionalitas "View All Posts" belum diimplementasikan.');
         });
         document.getElementById('view-toys-btn').addEventListener('click', function () {
-            window.location.href = "{{ route('user.toys') }}";
+            alert('Fungsionalitas "View All Toys" belum diimplementasikan.');
         });
     </script>
 

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Buyer;
 use App\Models\Seller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -19,7 +18,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'identity' => 'required',
-            'password' => 'required',
+            'password' => 'required|min:8',
             'role'     => 'required|in:buyer,seller',
         ]);
 
@@ -35,64 +34,60 @@ class AuthController extends Controller
                         ->first();
         }
 
-        if ($user && Hash::check($request->password, $user->password)) {
-            // Set session data
-            session([
-                'role' => $request->role,
-                'user_id' => $user->getKey(),
-                'user_data' => $user->toArray() // Tambahkan data lengkap user
-            ]);
-
-            // Optional: Set Auth guard jika sudah dikonfigurasi
-            // Auth::guard($request->role)->login($user);
-
-            return redirect()->route($request->role === 'seller' ? 'seller.dashboard' : 'dashboard');
+        if (!$user) {
+         return back()->withInput($request->only('identity', 'role'))
+                 ->with('error', 'Username atau email tidak ditemukan.');
         }
 
-        return back()->withInput($request->only('identity', 'role'))
-                     ->with('error', 'Username/email, password, atau role salah.');
+        if (!Hash::check($request->password, $user->password)) {
+            return back()->withInput($request->only('identity', 'role'))
+                 ->with('error', 'Password salah.');
+        }
+
+        // --- PERBAIKAN: Hanya simpan data primitif ke session ---
+        session([
+            'role' => $request->role,
+            // $user->getKey() akan mengembalikan primary key model (buyer_id atau id)
+            'user_id' => $user->getKey(),
+            'username' => $user->username,
+            'email' => $user->email,
+            // Dapatkan URL avatar melalui accessor, pastikan method_exists
+            'buyer_avatar_url' => ($request->role === 'buyer' && method_exists($user, 'getAvatarUrlAttribute'))
+                                  ? $user->avatar_url
+                                  : asset('images/default_avatar.jpg'),
+        ]);
+        // --- AKHIR PERBAHAN ---
+
+        return redirect()->route($request->role === 'seller' ? 'seller.dashboard' : 'dashboard');
     }
 
     public function register(Request $request)
     {
         $request->validate([
-            'username' => 'required|string|max:255',
-            'email'    => 'required|email',
-            'password' => 'required|confirmed|min:6',
+            'username' => 'required|string|max:255|unique:buyers,username|unique:sellers,username',
+            'email'    => 'required|email|unique:buyers,email|unique:sellers,email',
+            'password' => 'required|confirmed|min:8',
             'role'     => 'required|in:buyer,seller',
+            'name'     => 'nullable|string|max:255',
         ]);
-
-        // Check unique email dan username
-        $emailExists = Buyer::where('email', $request->email)->exists() ||
-                      Seller::where('email', $request->email)->exists();
-
-        $usernameExists = Buyer::where('username', $request->username)->exists() ||
-                         Seller::where('username', $request->username)->exists();
-
-        if ($emailExists) {
-            return back()->withInput()->with('error', 'Email sudah terdaftar.');
-        }
-
-        if ($usernameExists) {
-            return back()->withInput()->with('error', 'Username sudah terdaftar.');
-        }
 
         $data = [
             'username' => $request->username,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
+            'name'     => $request->name ?? '',
         ];
 
         if ($request->role === 'buyer') {
             $data = array_merge($data, [
-                'name'         => '',
                 'address'      => '',
                 'exp'          => 0,
                 'bio'          => '',
                 'phone_number' => 0,
+                'avatar'       => null,
             ]);
             Buyer::create($data);
-        } elseif ($request->role === 'seller') {
+        } else {
             Seller::create($data);
         }
 
@@ -101,33 +96,10 @@ class AuthController extends Controller
 
     public function logout()
     {
-        // Clear auth jika menggunakan guard
-        // Auth::logout();
-
         session()->flush();
         return redirect()->route('login');
     }
 
-    // Helper method untuk mengecek apakah user sudah login
-    public static function getAuthenticatedUser()
-    {
-        if (!session('user_id') || !session('role')) {
-            return null;
-        }
-
-        $role = session('role');
-        $userId = session('user_id');
-
-        if ($role === 'buyer') {
-            return Buyer::find($userId);
-        } elseif ($role === 'seller') {
-            return Seller::find($userId);
-        }
-
-        return null;
-    }
-
-    // Helper method untuk mendapatkan seller ID
     public static function getSellerID()
     {
         if (session('role') === 'seller' && session('user_id')) {

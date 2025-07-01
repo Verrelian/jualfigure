@@ -6,91 +6,116 @@ use App\Models\Post;
 use App\Models\PostLike;
 use App\Models\PostComment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage; // PERBAIKAN: Menggunakan backslash ( \ )
 
 class PostController extends Controller
 {
-    // Menampilkan daftar post
+    /**
+     * Menampilkan semua postingan dengan like & comment count,
+     * serta memuat relasi buyer dan komentator (buyer).
+     */
     public function index()
     {
         $posts = Post::withCount(['likes', 'comments'])
+            ->with(['buyer', 'comments.buyer']) // Tambahkan eager loading komentar dan pembuatnya
             ->orderBy('created_at', 'desc')
             ->get();
 
         return view('pages.posts.feed', compact('posts'));
     }
 
-    // Menampilkan form create
+    /**
+     * Menampilkan form create post
+     */
     public function create()
     {
+        if (session('role') !== 'buyer' || !session('user_id')) {
+            return redirect()->route('login')->with('error', 'Silakan login sebagai buyer untuk membuat post.');
+        }
+
         return view('pages.posts.create');
     }
 
-    // Menyimpan post baru
+    /**
+     * Menyimpan postingan baru
+     */
     public function store(Request $request)
     {
+        if (session('role') !== 'buyer' || !session('user_id')) {
+            return redirect()->route('login')->with('error', 'Silakan login sebagai buyer untuk membuat post.');
+        }
+
         $request->validate([
             'title' => 'required|max:255',
             'description' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $imageName = null;
-
+        $imagePath = null;
         if ($request->hasFile('image')) {
-            // Simpan gambar ke public/postfeed
-            $imageName = 'postf/' . time() . '.' . $request->image->extension();
-            $request->image->move(public_path('postf'), $imageName);
+            $imagePath = $request->file('image')->store('post_images', 'public');
+        }
+
+        $userId = session('user_id');
+
+        if (!$userId) {
+            return back()->with('error', 'ID pengguna tidak ditemukan di sesi. Silakan login kembali.');
         }
 
         Post::create([
             'title' => $request->title,
             'description' => $request->description,
-            'image' => $imageName, // Simpan path relatif
+            'image' => $imagePath,
             'status' => 'active',
+            'user_id' => $userId,
         ]);
 
-        return redirect()->route('posts.index')
-            ->with('success', 'Post berhasil dibuat!');
+        return redirect()->route('posts.index')->with('success', 'Post berhasil dibuat!');
     }
-    // app/Http/Controllers/PostController.php
+
+    /**
+     * Menyukai atau batal menyukai postingan
+     */
     public function like(Post $post)
     {
-        // Jika belum login, redirect ke halaman login
-        if (!auth()->check()) {
-            return redirect()->route('login')->with('error', 'Silakan login dulu');
+        if (session('role') !== 'buyer' || !session('user_id')) {
+            return redirect()->route('login')->with('error', 'Silakan login dulu.');
         }
 
+        $userId = session('user_id');
+
         $existingLike = PostLike::where('post_id', $post->id)
-            ->where('user_id', auth()->id())
+            ->where('user_id', $userId) // PERBAIKAN: Pastikan ini menggunakan 'user_id'
             ->first();
 
         if ($existingLike) {
             $existingLike->delete();
-            return back()->with('info', 'Like dihapus');
+            return back()->with('info', 'Like dihapus.');
         }
 
         PostLike::create([
             'post_id' => $post->id,
-            'user_id' => auth()->id()
+            'user_id' => $userId // PERBAIKAN PENTING: Tambahkan 'user_id' di sini!
         ]);
 
         return back()->with('success', 'Post disukai!');
     }
 
+    /**
+     * Menambahkan komentar ke postingan
+     */
     public function comment(Request $request, Post $post)
     {
         $request->validate([
             'comment' => 'required|min:3|max:500'
         ]);
 
-        // Jika belum login
-        if (!auth()->check()) {
-            return redirect()->route('login')->with('error', 'Silakan login dulu');
+        if (session('role') !== 'buyer' || !session('user_id')) {
+            return redirect()->route('login')->with('error', 'Silakan login dulu.');
         }
 
         $post->comments()->create([
-            'user_id' => auth()->id(),
+            'user_id' => session('user_id'),
             'comment' => $request->comment
         ]);
 

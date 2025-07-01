@@ -18,7 +18,10 @@ use App\Http\Controllers\{
     WishlistController,
     SellerOrderController,
     BuyerHistoryController,
-    ShippingProgressController
+    ShippingProgressController,
+    InvoiceController,
+    CartController,
+    LeaderboardController
 };
 
 /*
@@ -34,6 +37,7 @@ Route::get('/forgot_password', fn() => view('forgot_password'))->name('forgot_pa
 Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/auth/register', [AuthController::class, 'register'])->name('auth.register');
 Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+Route::get('/product/{product_id}', [ProductController::class, 'show'])->name('product.detail');
 
 /*
 |--------------------------------------------------------------------------
@@ -41,22 +45,19 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 |--------------------------------------------------------------------------
 */
 Route::view('/', 'welcome')->name('home');
+Route::view('/history', 'pages.product.order-history')->name('order-history');
+Route::view('/filter', 'filter')->name('filter');
 Route::view('/webs', 'welcome')->name('webs');
 Route::view('/contact-us', 'pages.general.contact-us')->name('contact-us');
 Route::view('/ambabot', 'pages.general.ambabot')->name('ambabot');
-Route::view('/leaderboard', 'pages.general.leaderboard')->name('leaderboard');
+Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+Route::get('/api/leaderboard', [LeaderboardController::class, 'getLeaderboardData'])->name('leaderboard.api');
 Route::post('/contact-submit', [ContactController::class, 'submit'])->name('contact.submit');
 
-/*
-|--------------------------------------------------------------------------
-| PRODUCT ROUTES (PUBLIC)
-|--------------------------------------------------------------------------
-*/
-Route::get('/products', fn() => view('pages.products'))->name('products');
-Route::get('/products/by-category', [ProductController::class, 'getProductsByCategory'])->name('products.by-category');
-Route::get('/product-detail', [ProductController::class, 'index'])->name('product-detail');
-Route::get('/product/{product_id}', [ProductController::class, 'show'])->name('product.detail');
-Route::get('/explore', [ProductController::class, 'explore'])->name('explore');
+// --- RUTE PROFIL PENGGUNA LAIN (PUBLIC) ---
+// Rute ini harus di luar middleware otentikasi agar bisa diakses oleh siapa saja
+Route::get('/profile/{buyer_id}', [ProfileController::class, 'showOtherUser'])->name('profile.show');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -91,6 +92,18 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
         Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::view('/posts', 'pages.user.user_posts')->name('user.posts');
         Route::view('/toys', 'pages.user.user_toys')->name('user.toys');
+    });
+    // Cart routes
+    Route::prefix('cart')->group(function () {
+        Route::get('/', [CartController::class, 'showCartPage'])->name('cart.index');
+        Route::get('/data', [CartController::class, 'index'])->name('cart.data');
+        Route::post('/add', [CartController::class, 'add'])->name('cart.add');
+        Route::post('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+        Route::put('/update/{id}', [CartController::class, 'update'])->name('cart.update');
+        Route::post('/update/{id}', [CartController::class, 'update']); // Alternative for method spoofing
+        Route::get('/count', [CartController::class, 'getCount'])->name('cart.count');
+        Route::get('/total', [CartController::class, 'getTotal'])->name('cart.total');
+        Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear');
     });
 
     // PINDAHKAN WISHLIST ROUTES KE SINI (bukan nested)
@@ -127,9 +140,12 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
         Route::get('/', [PostController::class, 'index'])->name('posts.index');
         Route::post('/', [PostController::class, 'store'])->name('posts.store');
         Route::post('/{post}/like', [PostController::class, 'like'])->name('posts.like');
+        // Pastikan hanya ada satu route untuk comment
         Route::post('/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
     });
-    Route::get('/posts', [PostController::class, 'create'])->name('posts.create');
+    // --- PERBAIKAN: Pindahkan rute 'posts.create' ke dalam grup 'feed' jika itu memang bagian dari feed
+    // atau biarkan di luar jika ingin diakses terpisah. Untuk saat ini, asumsikan di luar.
+    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
 });
 
 /*
@@ -138,13 +154,14 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['web', 'seller.auth'])->prefix('seller')->group(function () {
-    // Dashboard seller (pilih salah satu)
     Route::get('/dashboard', [ListProdukController::class, 'index'])->name('seller.dashboard');
 
     // Profile routes
-    Route::view('/profile', 'pages.seller.profile')->name('seller.profile');
+    Route::get('/profile', [SellerProfileController::class, 'show'])->name('seller.profile');
     Route::get('/edit_profile', [SellerProfileController::class, 'edit'])->name('seller.edit_profile');
     Route::post('/profile/update', [SellerProfileController::class, 'updateProfile'])->name('seller.profile.update');
+    // PERBAIKAN: Gunakan rute baru untuk melihat profil buyer/seller lain dari perspektif seller
+    Route::get('/profile/{id}', [ProfileController::class, 'showOtherUser'])->name('seller.profile.show_other');
 
     // Posts and toys
     Route::get('/posts', [SellerProfileController::class, 'posts'])->name('seller.posts');
