@@ -1,4 +1,15 @@
 <div id="login-form" class="form-section active">
+  @if (session('success'))
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+      {{ session('success') }}
+    </div>
+  @endif
+  @if (session('error'))
+  <div class="bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded mb-4">
+    {{ session('error') }}
+  </div>
+@endif
+
   <form action="{{ route('auth.login') }}" method="POST" class="space-y-4">
     @csrf
 
@@ -40,7 +51,8 @@
         class="w-full px-4 py-3 border-b border-gray-300 bg-transparent focus:border-green-500 focus:outline-none placeholder-gray-500"
         placeholder="Masukkan password"
         required
-      >
+      ><small class="text-gray-500 text-xs">Minimal 8 karakter</small>
+
       @error('password')
         <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
       @enderror

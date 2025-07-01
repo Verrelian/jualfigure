@@ -49,19 +49,9 @@ Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leade
 Route::get('/api/leaderboard', [LeaderboardController::class, 'getLeaderboardData'])->name('leaderboard.api');
 Route::post('/contact-submit', [ContactController::class, 'submit'])->name('contact.submit');
 
-/*
-|--------------------------------------------------------------------------
-| PRODUCT ROUTES (PUBLIC)
-|--------------------------------------------------------------------------
-*/
-Route::get('/products', fn() => view('pages.products'))->name('products');
-Route::get('/products/by-category', [ProductController::class, 'getProductsByCategory'])->name('products.by-category');
-Route::get('/product-detail', [ProductController::class, 'index'])->name('product-detail');
-Route::get('/product/{product_id}', [ProductController::class, 'show'])->name('product.detail');
-Route::get('/explore', [ProductController::class, 'explore'])->name('explore');
-Route::get('/products/filter', [ProductController::class, 'filter'])->name('products.filter');
-Route::get('/api/filter-options', [ProductController::class, 'getFilterOptions']);
-
+// --- RUTE PROFIL PENGGUNA LAIN (PUBLIC) ---
+// Rute ini harus di luar middleware otentikasi agar bisa diakses oleh siapa saja
+Route::get('/profile/{buyer_id}', [ProfileController::class, 'showOtherUser'])->name('profile.show');
 
 
 /*
@@ -74,11 +64,8 @@ Route::middleware(['web', 'auth.check'])->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
     Route::get('/payment-receipt/{payment_id}', [PaymentController::class, 'showReceipt'])->name('payment.receipt');
     Route::get('/payment-receipt/{payment_id}/download', [PaymentController::class, 'downloadReceipt'])->name('payment.receipt.download');
-    // Tampilkan halaman bank (BNI, BRI, Mandiri, BCA)
     Route::get('/bank/{bank}', [BankController::class, 'showPaymentPage'])->name('bank.payment');
-    // Proses validasi VA number (payment_code)
     Route::post('/bank/validate-va', [BankController::class, 'validateVA'])->name('bank.validate.va');
-    // Proses pembayaran (setelah VA valid dan user klik "Pay")
     Route::post('/bank/pay', [BankController::class, 'processPayment'])->name('bank.process.payment');
 });
 
@@ -110,7 +97,6 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
         Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear');
     });
 
-    // PINDAHKAN WISHLIST ROUTES KE SINI (bukan nested)
     Route::prefix('wishlist')->group(function() {
         Route::post('/add', [WishlistController::class, 'add'])->name('wishlist.add');
         Route::post('/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
@@ -118,8 +104,6 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
         Route::get('/count', [WishlistController::class, 'count'])->name('wishlist.count');
         Route::get('/', [WishlistController::class, 'index'])->name('wishlist.index');
     });
-
-
 
     Route::prefix('order')->group(function () {
         Route::view('/detail', 'pages.order-detail')->name('order.detail');
@@ -130,9 +114,12 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
         Route::get('/', [PostController::class, 'index'])->name('posts.index');
         Route::post('/', [PostController::class, 'store'])->name('posts.store');
         Route::post('/{post}/like', [PostController::class, 'like'])->name('posts.like');
+        // Pastikan hanya ada satu route untuk comment
         Route::post('/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
     });
-    Route::get('/posts', [PostController::class, 'create'])->name('posts.create');
+    // --- PERBAIKAN: Pindahkan rute 'posts.create' ke dalam grup 'feed' jika itu memang bagian dari feed
+    // atau biarkan di luar jika ingin diakses terpisah. Untuk saat ini, asumsikan di luar.
+    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
 });
 
 /*
@@ -141,13 +128,14 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['web', 'seller.auth'])->prefix('seller')->group(function () {
-    // Dashboard seller (pilih salah satu)
     Route::get('/dashboard', [ListProdukController::class, 'index'])->name('seller.dashboard');
 
     // Profile routes
     Route::get('/profile', [SellerProfileController::class, 'show'])->name('seller.profile');
     Route::get('/edit_profile', [SellerProfileController::class, 'edit'])->name('seller.edit_profile');
     Route::post('/profile/update', [SellerProfileController::class, 'updateProfile'])->name('seller.profile.update');
+    // PERBAIKAN: Gunakan rute baru untuk melihat profil buyer/seller lain dari perspektif seller
+    Route::get('/profile/{id}', [ProfileController::class, 'showOtherUser'])->name('seller.profile.show_other');
 
     // Posts and toys
     Route::get('/posts', [SellerProfileController::class, 'posts'])->name('seller.posts');
@@ -164,5 +152,5 @@ Route::middleware(['web', 'seller.auth'])->prefix('seller')->group(function () {
 
     // Orders and reports
     Route::view('/order', 'pages.seller.order')->name('seller.order');
-    Route::get('/laporan', [invoiceController::class, 'index'])->name('seller.laporan');
+    Route::get('/laporan', [InvoiceController::class, 'index'])->name('seller.laporan');
 });

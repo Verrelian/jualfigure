@@ -9,7 +9,7 @@ class UpdateSellersTable extends Migration
     public function up(): void
     {
         Schema::table('sellers', function (Blueprint $table) {
-            $table->string('name')->after('seller_id');
+            $table->string('name')->nullable()->after('seller_id');
             $table->date('birthdate')->nullable()->after('name');
             $table->string('phone_number')->nullable()->after('birthdate');
             $table->string('address')->nullable()->after('phone_number');
@@ -22,8 +22,7 @@ class UpdateSellersTable extends Migration
     {
         Schema::table('sellers', function (Blueprint $table) {
             $table->dropColumn([
-                'name', 'birthdate',
-                'phone_number', 'address', 'bio', 'avatar'
+                'name','birthdate', 'phone_number', 'address', 'bio', 'avatar'
             ]);
         });
     }

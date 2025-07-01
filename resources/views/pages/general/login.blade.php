@@ -68,46 +68,50 @@
 
   <!-- Handle Server-side Messages -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Tunggu sampai authFormManager tersedia
-      const checkAuthManager = () => {
-        if (window.authFormManager) {
-          handleServerMessages();
-        } else {
-          // Retry setelah 50ms jika belum tersedia
-          setTimeout(checkAuthManager, 50);
-        }
-      };
+    @if (session('old_tab') === 'register')
+  // Tunggu hingga tab siap
+  setTimeout(() => {
+    document.querySelector('#login-tab').classList.remove('active');
+    document.querySelector('#register-tab').classList.add('active');
+    document.querySelector('#login-form').classList.remove('active');
+    document.querySelector('#register-form').classList.add('active');
+  }, 100); // delay agar DOM siap
+@endif
 
-      checkAuthManager();
-    });
+  document.addEventListener('DOMContentLoaded', function () {
+    const checkAuthManager = () => {
+      if (window.authFormManager) {
+        handleServerMessages();
+      } else {
+        setTimeout(checkAuthManager, 50); // Retry setiap 50ms
+      }
+    };
 
-    function handleServerMessages() {
-      // Handle success messages
-      @if (session('success'))
-        window.authFormManager.showSuccessMessage("{{ session('success') }}");
+    checkAuthManager();
+  });
+
+  function handleServerMessages() {
+    // Success message dari session
+    @if (session('success'))
+      window.authFormManager.showSuccessMessage(@json(session('success')));
+    @endif
+
+    // Error biasa dari session
+    @if (session('error'))
+      window.authFormManager.showErrorMessage(@json(session('error')));
+    @endif
+
+    // Validasi errors (dari Validator Laravel)
+    @if ($errors->any())
+      const errors = @json($errors->all());
+      window.authFormManager.showErrorAlert(errors);
+
+      // Kalau dari form register, switch ke tab register
+      @if (session('old_tab') === 'register' || old('email'))
+        window.authFormManager.switchToRegisterTab();
       @endif
-
-      // Handle error messages
-      @if (session('error'))
-        window.authFormManager.showErrorMessage("{{ session('error') }}");
-      @endif
-
-      // Handle validation errors
-      @if ($errors->any())
-        const errors = [
-          @foreach ($errors->all() as $error)
-            "{{ addslashes($error) }}",
-          @endforeach
-        ];
-        window.authFormManager.showErrorAlert(errors);
-
-        // Switch to register tab if there are validation errors and old email exists
-        @if (old('email'))
-          window.authFormManager.switchToRegisterTab();
-        @endif
-      @endif
-    }
-  </script>
+    @endif
+  }
+</script>
 </body>
 </html>

@@ -31,10 +31,14 @@
             <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
               @csrf
 
-              <div class="mb-2">
-                <label class="block text-gray-600 text-xs mb-1">Change Avatar:</label>
-                <input type="file" name="avatar" class="text-xs text-gray-700">
-              </div>
+              <div class="mb-4">
+  <label class="block text-sm font-medium text-gray-700 mb-1">Foto Profil</label>
+  <input type="file" name="avatar" class="border rounded w-full p-2" accept="image/*">
+  @if (session('buyer')['avatar'] ?? false)
+    <img src="{{ asset('storage/avatars/' . session('buyer')['avatar']) }}" alt="Foto Profil" class="w-20 mt-2 rounded">
+  @endif
+</div>
+
 
               <div class="mb-3">
                 <label class="block text-gray-600 text-xs mb-1">Name:</label>
