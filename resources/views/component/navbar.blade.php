@@ -38,8 +38,8 @@
           class="{{ Request::is('wishlist') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
           Wishlist
         </a>
-        <a href="{{ url('/order-history') }}"
-          class="{{ Request::is('order-history') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
+        <a href="{{ url('/history') }}"
+          class="{{ Request::is('history') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
           History
         </a>
         <a href="{{ url('/leaderboard') }}"
@@ -54,8 +54,8 @@
           class="flex items-center space-x-2 text-sm bg-gray-100 rounded-full p-1 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300"
           id="user-menu-button" data-dropdown-toggle="user-dropdown">
           <img class="w-8 h-8 rounded-full"
-     src="{{ $user && $user->avatar ? asset('images/' . $user->avatar) : 'https://via.placeholder.com/150/FF5733/FFFFFF?text=U' }}"
-     alt="User Image">
+            src="{{ $user && $user->avatar ? asset('images/' . $user->avatar) : 'https://via.placeholder.com/150/FF5733/FFFFFF?text=U' }}"
+            alt="User Image">
 
           <span class="hidden md:block text-gray-700 pr-2">Profile</span>
           <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,11 +68,11 @@
           id="user-dropdown">
           <div class="px-4 py-3 bg-gray-50 rounded-t-lg">
             @if ($user)
-  <span class="block text-sm font-medium text-gray-900">{{ $user->name }}</span>
-  <span class="block text-sm text-gray-500 truncate">{{ $user->email }}</span>
-@else
-  <span class="block text-sm text-gray-500">Guest</span>
-@endif
+            <span class="block text-sm font-medium text-gray-900">{{ $user->name }}</span>
+            <span class="block text-sm text-gray-500 truncate">{{ $user->email }}</span>
+            @else
+            <span class="block text-sm text-gray-500">Guest</span>
+            @endif
           </div>
           <ul class="py-2" aria-labelledby="user-menu-button">
             <li>
@@ -112,6 +112,7 @@
     </div>
 
     <!-- Baris 2: Feed & Explore centered -->
+    @if (!View::hasSection('hideFeedExplore'))
     <div class="py-2 flex justify-center space-x-6">
       <a href="{{ url('/feed') }}"
         class="text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 py-2 font-semibold">
@@ -122,5 +123,6 @@
         Explore
       </a>
     </div>
+    @endif
   </div>
 </nav>

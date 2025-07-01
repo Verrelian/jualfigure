@@ -1,5 +1,5 @@
 @extends('layout.apps')
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @section('content')
 <div class="flex min-h-screen">
   <!-- Sidebar -->
@@ -23,7 +23,93 @@
           </tr>
         </thead>
         <tbody id="orderTableBody">
-          <!-- Data pesanan akan ditampilkan di sini -->
+          @forelse ($orders as $order)
+          <tr class="border-b hover:bg-gray-50">
+            <td class="py-2 px-4">{{ $order->order_id }}</td>
+            <td class="py-2 px-4">{{ $order->name }}</td>
+            <td class="py-2 px-4">{{ \Carbon\Carbon::parse($order->payment_date)->format('d M Y') }}</td>
+            <td class="py-2 px-4">Rp{{ number_format($order->price_total, 0, ',', '.') }}</td>
+            <td class="py-2 px-4">
+              @if ($order->payment_status === 'PAID' && $order->transaction_status === 'NOT YET PROCESSED')
+              <span class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded text-xs">Waiting confirmation</span>
+              @else
+              @switch($order->transaction_status)
+              @case('NOT YET PROCESSED')
+              <span class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded text-xs">Waiting for payment</span>
+              @break
+
+              @case('PROCESSED')
+              <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded text-xs">Processed</span>
+              @break
+
+              @case('SHIPPING')
+              <span class="bg-orange-200 text-orange-800 px-2 py-1 rounded text-xs">Shipping</span>
+              @break
+
+              @case('DELIVERED')
+              <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded text-xs">Delivered</span>
+              @break
+
+              @case('COMPLETED')
+              <span class="bg-emerald-200 text-emerald-800 px-2 py-1 rounded text-xs">Completed</span>
+              @break
+
+              @case('CANCELED')
+              <span class="bg-red-200 text-red-800 px-2 py-1 rounded text-xs">Canceled</span>
+              @break
+
+              @default
+              <span class="bg-gray-200 text-gray-800 px-2 py-1 rounded text-xs">Unknown</span>
+              @endswitch
+              @endif
+            </td>
+            <td class="py-2 px-4 space-x-2">
+              <button class="text-blue-600 hover:underline view-order" data-id="{{ $order->payment_id }}">Lihat Detail</button>
+              @if($order->payment_status === 'PAID' && $order->transaction_status === 'NOT YET PROCESSED')
+              <button class="text-green-600 hover:underline confirm-order" data-id="{{ $order->payment_id }}">Konfirmasi</button>
+              <button class="text-red-600 hover:underline cancel-order" data-id="{{ $order->payment_id }}">Batalkan</button>
+              @endif
+            </td>
+          </tr>
+          @if($order->transaction_status === 'PROCESSED')
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              const paymentId = @json($order->payment_id);
+              const csrfToken = @json(csrf_token());
+              const readyAt = new Date("{{ \Carbon\Carbon::parse($order->shipping_ready_at)->format('Y-m-d H:i:s') }}");
+
+              function checkShippingStatus() {
+                const now = new Date();
+                const diff = (now.getTime() - readyAt.getTime()) / 1000;
+
+                console.log("Checking to-shipping... Diff:", diff);
+
+                if (diff >= 10) {
+                  fetch(`/mole/seller/to-shipping/${paymentId}`, {
+                      method: 'POST',
+                      headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                      }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                      console.log("Response:", data);
+                      if (data.success) {
+                        location.reload();
+                      }
+                    })
+                    .catch(err => console.error("Fetch Error:", err));
+                }
+              }
+              setInterval(checkShippingStatus, 3000);
+            });
+          </script>
+          @endif
+          @empty
+          <tr>
+            <td colspan="6" class="text-center text-gray-500 py-4">Tidak ada pesanan.</td>
+          </tr>
+          @endforelse
         </tbody>
       </table>
     </div>
@@ -32,7 +118,7 @@
     <div id="orderDetailModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl">
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold">Detail Pesanan <span id="modalOrderId"></span></h2>
+          <h2 class="text-xl font-semibold">Order Detail <span id="modalOrderId"></span></h2>
           <button id="closeDetailModal" class="text-gray-500 hover:text-gray-700">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -101,9 +187,7 @@
     <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
         <h2 class="text-xl font-semibold mb-4">Konfirmasi Tindakan</h2>
-
         <p id="confirmationMessage" class="mb-4"></p>
-
         <div class="flex justify-end gap-2">
           <button id="cancelConfirmation" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Batal</button>
           <button id="confirmAction" class="px-4 py-2 rounded"></button>
@@ -114,336 +198,242 @@
 </div>
 
 <script>
-// Data sampel pesanan (untuk simulasi)
-let orders = [
-  {
-    id: 'ORD1024',
-    customer: 'Budi Santoso',
-    date: '30 Apr 2025',
-    total: 250000,
-    status: 'Menunggu Konfirmasi',
-    address: 'Jl. Merdeka No. 123, Jakarta Selatan, DKI Jakarta 12345',
-    items: [
-      { name: 'Action Figure Naruto', qty: 1, price: 150000, subtotal: 150000 },
-      { name: 'Manga One Piece Vol. 1', qty: 2, price: 50000, subtotal: 100000 }
-    ]
-  },
-  {
-    id: 'ORD1025',
-    customer: 'Siti Rahayu',
-    date: '29 Apr 2025',
-    total: 450000,
-    status: 'Diproses',
-    address: 'Jl. Mawar No. 45, Bandung, Jawa Barat 40111',
-    items: [
-      { name: 'Nendoroid Hatsune Miku', qty: 1, price: 450000, subtotal: 450000 }
-    ]
-  },
-  {
-    id: 'ORD1026',
-    customer: 'Ahmad Wijaya',
-    date: '28 Apr 2025',
-    total: 175000,
-    status: 'Dikirim',
-    address: 'Jl. Kenanga No. 78, Surabaya, Jawa Timur 60234',
-    items: [
-      { name: 'Manga Demon Slayer Vol. 1', qty: 1, price: 50000, subtotal: 50000 },
-      { name: 'Poster Anime Premium', qty: 3, price: 25000, subtotal: 75000 },
-      { name: 'Gantungan Kunci Anime', qty: 2, price: 25000, subtotal: 50000 }
-    ]
-  },
-  {
-    id: 'ORD1027',
-    customer: 'Dewi Lestari',
-    date: '27 Apr 2025',
-    total: 325000,
-    status: 'Selesai',
-    address: 'Jl. Dahlia No. 15, Yogyakarta 55281',
-    items: [
-      { name: 'Figure Gojo Satoru', qty: 1, price: 250000, subtotal: 250000 },
-      { name: 'Sticker Pack Anime', qty: 3, price: 25000, subtotal: 75000 }
-    ]
-  }
-];
-
-// Format angka sebagai Rupiah
-function formatRupiah(angka) {
-  return 'Rp' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-
-// Mendapatkan kelas warna berdasarkan status
-function getStatusClass(status) {
-  switch(status) {
-    case 'Menunggu Konfirmasi':
-      return 'bg-yellow-200 text-yellow-800';
-    case 'Diproses':
-      return 'bg-blue-200 text-blue-800';
-    case 'Dikirim':
-      return 'bg-purple-200 text-purple-800';
-    case 'Selesai':
-      return 'bg-green-200 text-green-800';
-    case 'Dibatalkan':
-      return 'bg-red-200 text-red-800';
-    default:
-      return 'bg-gray-200 text-gray-800';
-  }
-}
-
-// Render tabel pesanan
-function renderOrders() {
-  const tableBody = document.getElementById('orderTableBody');
-  tableBody.innerHTML = '';
-
-  orders.forEach(order => {
-    const row = document.createElement('tr');
-    row.className = 'border-b hover:bg-gray-50';
-
-    const statusClass = getStatusClass(order.status);
-
-    // Tentukan tombol aksi berdasarkan status
-    let actionButtons = `<button class="text-blue-600 hover:underline view-order" data-id="${order.id}">Lihat Detail</button> `;
-
-    if (order.status === 'Menunggu Konfirmasi') {
-      actionButtons += `
-        <button class="text-green-600 hover:underline confirm-order ml-2" data-id="${order.id}">Konfirmasi</button>
-        <button class="text-red-600 hover:underline cancel-order ml-2" data-id="${order.id}">Batalkan</button>
-      `;
-    } else if (order.status === 'Diproses') {
-      actionButtons += `
-        <button class="text-purple-600 hover:underline ship-order ml-2" data-id="${order.id}">Kirim</button>
-      `;
-    }
-
-    row.innerHTML = `
-      <td class="py-2 px-4">#${order.id}</td>
-      <td class="py-2 px-4">${order.customer}</td>
-      <td class="py-2 px-4">${order.date}</td>
-      <td class="py-2 px-4">${formatRupiah(order.total)}</td>
-      <td class="py-2 px-4">
-        <span class="${statusClass} px-2 py-1 rounded text-xs">${order.status}</span>
-      </td>
-      <td class="py-2 px-4 space-x-2">
-        ${actionButtons}
-      </td>
-    `;
-
-    tableBody.appendChild(row);
-  });
-
-  // Tambahkan event listener untuk semua tombol
-  addEventListeners();
-}
-
-// Tambahkan event listeners untuk tombol-tombol di tabel
-function addEventListeners() {
-  // Tombol lihat detail
-  document.querySelectorAll('.view-order').forEach(button => {
-    button.addEventListener('click', function() {
-      const orderId = this.getAttribute('data-id');
-      openOrderDetailModal(orderId);
-    });
-  });
-
-  // Tombol konfirmasi pesanan
-  document.querySelectorAll('.confirm-order').forEach(button => {
-    button.addEventListener('click', function() {
-      const orderId = this.getAttribute('data-id');
-      confirmOrder(orderId);
-    });
-  });
-
-  // Tombol batalkan pesanan
-  document.querySelectorAll('.cancel-order').forEach(button => {
-    button.addEventListener('click', function() {
-      const orderId = this.getAttribute('data-id');
-      cancelOrder(orderId);
-    });
-  });
-
-  // Tombol kirim pesanan
-  document.querySelectorAll('.ship-order').forEach(button => {
-    button.addEventListener('click', function() {
-      const orderId = this.getAttribute('data-id');
-      shipOrder(orderId);
-    });
-  });
-}
-
-// Buka modal detail pesanan
-function openOrderDetailModal(orderId) {
-  const order = orders.find(o => o.id === orderId);
-  if (!order) return;
-
-  // Set informasi pesanan di modal
-  document.getElementById('modalOrderId').textContent = '#' + order.id;
-  document.getElementById('modalCustomerName').textContent = order.customer;
-  document.getElementById('modalOrderDate').textContent = order.date;
-  document.getElementById('modalOrderTotal').textContent = formatRupiah(order.total);
-  document.getElementById('modalOrderStatus').textContent = order.status;
-  document.getElementById('modalOrderStatus').className = getStatusClass(order.status) + ' px-2 py-1 rounded text-xs inline-block';
-  document.getElementById('modalShippingAddress').textContent = order.address;
-  document.getElementById('modalItemsTotal').textContent = formatRupiah(order.total);
-
-  // Render item pesanan
-  const itemsContainer = document.getElementById('modalOrderItems');
-  itemsContainer.innerHTML = '';
-
-  order.items.forEach(item => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td class="py-2">${item.name}</td>
-      <td class="py-2 text-center">${item.qty}</td>
-      <td class="py-2 text-right">${formatRupiah(item.price)}</td>
-      <td class="py-2 text-right">${formatRupiah(item.subtotal)}</td>
-    `;
-    itemsContainer.appendChild(row);
-  });
-
-  // Set tombol aksi sesuai status
-  const actionButtons = document.getElementById('modalActionButtons');
-  actionButtons.innerHTML = '';
-
-  // Tombol "Tutup" selalu ada
-  const closeButton = document.createElement('button');
-  closeButton.className = 'px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400';
-  closeButton.textContent = 'Tutup';
-  closeButton.addEventListener('click', closeDetailModal);
-  actionButtons.appendChild(closeButton);
-
-  // Tambahkan tombol sesuai status
-  if (order.status === 'Menunggu Konfirmasi') {
-    const confirmButton = document.createElement('button');
-    confirmButton.className = 'px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 ml-2';
-    confirmButton.textContent = 'Konfirmasi Pesanan';
-    confirmButton.addEventListener('click', function() {
-      closeDetailModal();
-      confirmOrder(orderId);
-    });
-    actionButtons.appendChild(confirmButton);
-
-    const cancelButton = document.createElement('button');
-    cancelButton.className = 'px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 ml-2';
-    cancelButton.textContent = 'Batalkan Pesanan';
-    cancelButton.addEventListener('click', function() {
-      closeDetailModal();
-      cancelOrder(orderId);
-    });
-    actionButtons.appendChild(cancelButton);
-  } else if (order.status === 'Diproses') {
-    const shipButton = document.createElement('button');
-    shipButton.className = 'px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 ml-2';
-    shipButton.textContent = 'Kirim Pesanan';
-    shipButton.addEventListener('click', function() {
-      closeDetailModal();
-      shipOrder(orderId);
-    });
-    actionButtons.appendChild(shipButton);
+  function formatRupiah(angka) {
+    return 'Rp' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
-  // Tampilkan modal
-  document.getElementById('orderDetailModal').classList.remove('hidden');
-  document.getElementById('orderDetailModal').classList.add('flex');
-}
-
-// Tutup modal detail pesanan
-function closeDetailModal() {
-  document.getElementById('orderDetailModal').classList.remove('flex');
-  document.getElementById('orderDetailModal').classList.add('hidden');
-}
-
-// Konfirmasi pesanan
-function confirmOrder(orderId) {
-  openConfirmationModal(
-    `Apakah Anda yakin ingin mengkonfirmasi pesanan #${orderId}?`,
-    'Konfirmasi',
-    'bg-green-600 text-white hover:bg-green-700',
-    function() {
-      // Update status pesanan
-      const orderIndex = orders.findIndex(o => o.id === orderId);
-      if (orderIndex !== -1) {
-        orders[orderIndex].status = 'Diproses';
-        renderOrders();
-        closeConfirmationModal();
-        alert(`Pesanan #${orderId} telah dikonfirmasi dan sedang diproses.`);
-      }
+  function getStatusClass(status) {
+    switch (status) {
+      case 'Waiting for payment':
+        return 'bg-yellow-200 text-gray-800';
+      case 'Waiting confirmation':
+        return 'bg-yellow-200 text-yellow-800';
+      case 'Processed':
+        return 'bg-blue-200 text-blue-800';
+      case 'Shipping':
+        return 'bg-orange-200 text-orange-800';
+      case 'Delivered':
+        return 'bg-blue-200 text-blue-800';
+      case 'Completed':
+        return 'bg-green-200 text-green-800';
+      case 'Canceled':
+        return 'bg-red-200 text-red-800';
+      case 'Expired':
+        return 'bg-red-400 text-red-800';
+      default:
+        return 'bg-gray-200 text-gray-800';
     }
-  );
-}
+  }
 
-// Batalkan pesanan
-function cancelOrder(orderId) {
-  openConfirmationModal(
-    `Apakah Anda yakin ingin membatalkan pesanan #${orderId}?`,
-    'Batalkan',
-    'bg-red-600 text-white hover:bg-red-700',
-    function() {
-      // Update status pesanan
-      const orderIndex = orders.findIndex(o => o.id === orderId);
-      if (orderIndex !== -1) {
-        orders[orderIndex].status = 'Dibatalkan';
-        renderOrders();
-        closeConfirmationModal();
-        alert(`Pesanan #${orderId} telah dibatalkan.`);
-      }
-    }
-  );
-}
+  function openOrderDetailModal(orderId) {
+    fetch(`/mole/seller/order-detail/${orderId}`)
+      .then(response => response.json())
+      .then(order => {
+        document.getElementById('modalOrderId').textContent = order.order_id;
+        document.getElementById('modalCustomerName').textContent = order.name;
+        document.getElementById('modalOrderDate').textContent = order.date;
+        document.getElementById('modalOrderTotal').textContent = 'Rp' + order.total;
+        document.getElementById('modalOrderStatus').textContent = order.display_status;
+        document.getElementById('modalOrderStatus').className = getStatusClass(order.display_status) + ' px-2 py-1 rounded text-xs inline-block';
+        document.getElementById('modalShippingAddress').textContent = order.address;
+        document.getElementById('modalItemsTotal').textContent = 'Rp' + order.total;
 
-// Kirim pesanan
-function shipOrder(orderId) {
-  openConfirmationModal(
-    `Apakah Anda yakin pesanan #${orderId} siap dikirim?`,
-    'Kirim',
-    'bg-purple-600 text-white hover:bg-purple-700',
-    function() {
-      // Update status pesanan
-      const orderIndex = orders.findIndex(o => o.id === orderId);
-      if (orderIndex !== -1) {
-        orders[orderIndex].status = 'Dikirim';
-        renderOrders();
-        closeConfirmationModal();
-        alert(`Pesanan #${orderId} telah dikirim.`);
-      }
-    }
-  );
-}
+        const itemsContainer = document.getElementById('modalOrderItems');
+        itemsContainer.innerHTML = '';
+        order.items.forEach(item => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+          <td class="py-2">${item.name}</td>
+          <td class="py-2 text-center">${item.qty}</td>
+          <td class="py-2 text-right">Rp${item.price}</td>
+          <td class="py-2 text-right">Rp${item.subtotal}</td>
+        `;
+          itemsContainer.appendChild(row);
+        });
 
-// Buka modal konfirmasi
-function openConfirmationModal(message, buttonText, buttonClass, confirmCallback) {
-  document.getElementById('confirmationMessage').textContent = message;
+        const actionButtons = document.getElementById('modalActionButtons');
+        actionButtons.innerHTML = '';
 
-  const confirmButton = document.getElementById('confirmAction');
-  confirmButton.textContent = buttonText;
-  confirmButton.className = `px-4 py-2 ${buttonClass} rounded`;
+        const closeButton = document.createElement('button');
+        closeButton.className = 'px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400';
+        closeButton.textContent = 'Close';
+        closeButton.addEventListener('click', closeDetailModal);
+        actionButtons.appendChild(closeButton);
 
-  // Hapus event listener lama jika ada
-  const newConfirmButton = confirmButton.cloneNode(true);
-  confirmButton.parentNode.replaceChild(newConfirmButton, confirmButton);
+        if (order.display_status === 'Menunggu Konfirmasi') {
+          const confirmButton = document.createElement('button');
+          confirmButton.className = 'px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 ml-2';
+          confirmButton.textContent = 'Konfirmasi Pesanan';
+          confirmButton.addEventListener('click', function() {
+            closeDetailModal();
+            confirmOrder(order.order_id);
+          });
+          actionButtons.appendChild(confirmButton);
 
-  // Tambahkan event listener baru
-  newConfirmButton.addEventListener('click', confirmCallback);
+          const cancelButton = document.createElement('button');
+          cancelButton.className = 'px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 ml-2';
+          cancelButton.textContent = 'Batalkan Pesanan';
+          cancelButton.addEventListener('click', function() {
+            closeDetailModal();
+            cancelOrder(order.order_id);
+          });
+          actionButtons.appendChild(cancelButton);
+        }
 
-  // Tampilkan modal
-  document.getElementById('confirmationModal').classList.remove('hidden');
-  document.getElementById('confirmationModal').classList.add('flex');
-}
+        document.getElementById('orderDetailModal').classList.remove('hidden');
+        document.getElementById('orderDetailModal').classList.add('flex');
+      });
+  }
 
-// Tutup modal konfirmasi
-function closeConfirmationModal() {
-  document.getElementById('confirmationModal').classList.remove('flex');
-  document.getElementById('confirmationModal').classList.add('hidden');
-}
+  function closeDetailModal() {
+    document.getElementById('orderDetailModal').classList.remove('flex');
+    document.getElementById('orderDetailModal').classList.add('hidden');
+  }
 
-// Event Listeners
-document.addEventListener('DOMContentLoaded', function() {
-  // Render pesanan saat halaman dimuat
-  renderOrders();
-
-  // Tombol tutup di modal detail
   document.getElementById('closeDetailModal').addEventListener('click', closeDetailModal);
 
-  // Tombol batal di modal konfirmasi
-  document.getElementById('cancelConfirmation').addEventListener('click', closeConfirmationModal);
-});
+  function confirmOrder(orderId) {
+    Swal.fire({
+      icon: 'question',
+      title: 'Confirm Order ?',
+      text: 'Are you sure you want to process this order ?',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Process',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        confirmButton: 'bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded',
+        cancelButton: 'bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded'
+      }
+    }).then(result => {
+      if (result.isConfirmed) {
+        fetch(`/mole/seller/order/${orderId}/process`, {
+            method: 'POST',
+            headers: {
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(async (res) => {
+            const data = await res.json();
+
+            if (!res.ok) {
+              return Swal.fire({
+                icon: 'error',
+                title: 'Gagal Konfirmasi',
+                text: data.error || 'Terjadi kesalahan saat memproses pesanan.',
+                customClass: {
+                  confirmButton: 'bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded'
+                }
+              });
+            }
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil',
+              text: 'Pesanan berhasil dikonfirmasi.',
+              customClass: {
+                confirmButton: 'bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded'
+              }
+            }).then(() => {
+              location.reload();
+            });
+          })
+          .catch(() => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops!',
+              text: 'Gagal terhubung ke server.'
+            });
+          });
+      }
+    });
+  }
+
+  function cancelOrder(orderId) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Cancel Order ?',
+      text: 'This action cannot be undone. Are you sure you want to continue ?',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Cancel',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        confirmButton: 'bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded',
+        cancelButton: 'bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded'
+      }
+    }).then(result => {
+      if (result.isConfirmed) {
+        fetch(`/mole/seller/order/${orderId}/cancel`, {
+            method: 'POST',
+            headers: {
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(async res => {
+            const data = await res.json();
+
+            if (!res.ok) {
+              return Swal.fire({
+                icon: 'error',
+                title: 'Gagal Membatalkan',
+                text: data.error || 'Terjadi kesalahan saat membatalkan pesanan.',
+                customClass: {
+                  confirmButton: 'bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded'
+                }
+              });
+            }
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Pesanan Dibatalkan',
+              text: 'Pesanan berhasil dibatalkan.',
+              customClass: {
+                confirmButton: 'bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded'
+              }
+            }).then(() => {
+              location.reload();
+            });
+          })
+          .catch(() => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops!',
+              text: 'Gagal terhubung ke server.'
+            });
+          });
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    addEventListeners();
+  });
+
+  function addEventListeners() {
+    // Lihat detail
+    document.querySelectorAll('.view-order').forEach(button => {
+      button.addEventListener('click', function() {
+        const orderId = this.getAttribute('data-id');
+        openOrderDetailModal(orderId); // panggil fungsi tampil detail
+      });
+    });
+
+    // Konfirmasi
+    document.querySelectorAll('.confirm-order').forEach(button => {
+      button.addEventListener('click', function() {
+        const orderId = this.getAttribute('data-id');
+        confirmOrder(orderId);
+      });
+    });
+
+    // Batalkan
+    document.querySelectorAll('.cancel-order').forEach(button => {
+      button.addEventListener('click', function() {
+        const orderId = this.getAttribute('data-id');
+        cancelOrder(orderId);
+      });
+    });
+  }
 </script>
 @endsection

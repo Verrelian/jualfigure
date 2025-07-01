@@ -32,6 +32,9 @@ return new class extends Migration
             $table->string('transaction_status')->default('NOT YET PROCESSED');
             $table->timestamp('payment_date');
             $table->timestamp('expired_at')->nullable();
+            $table->timestamp('completed_at')->nullable();
+            $table->timestamp('shipping_ready_at')->nullable();
+            $table->unsignedTinyInteger('rating')->nullable();
 
             // Foreign keys
             $table->foreign('seller_id')->references('seller_id')->on('sellers')->onDelete('cascade');

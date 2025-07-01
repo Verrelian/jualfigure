@@ -8,10 +8,12 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PaymentController extends Controller
 {
-    public function showReceipt($payment_id)
+    public function showReceipt( Request $request, $payment_id)
     {
-        $payment = Payment::findOrFail($payment_id); // cari data by payment_id
-        return view('payment-receipt', compact('payment')); // kirim ke view
+        $payment = Payment::findOrFail($payment_id);
+        $backUrl = request()->query('back', url()->previous());
+
+        return view('payment-receipt', compact('payment', 'backUrl'));
     }
 
     public function downloadReceipt($payment_id)

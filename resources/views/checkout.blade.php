@@ -89,8 +89,16 @@
         }
 
         @keyframes pulse-ring {
-            0% { transform: scale(0.8); opacity: 1; }
-            80%, 100% { transform: scale(1.2); opacity: 0; }
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+
+            80%,
+            100% {
+                transform: scale(1.2);
+                opacity: 0;
+            }
         }
     </style>
 </head>
@@ -102,12 +110,12 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <div class="flex items-center space-x-4">
-                        <a href="{{ url('/dashboard') }}">
+                    <a href="{{ url('/dashboard') }}">
                         <img src="{{ asset('images/logo.jpeg') }}" alt="Logo" class="h-16 w-auto">
                     </a>
                     <div class="hidden md:block">
                         <h1 class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                           Complete Your Order
+                            Complete Your Order
                         </h1>
                         <p class="text-sm text-gray-500">Complete your purchase safely</p>
                     </div>
@@ -148,8 +156,8 @@
                                     <span class="text-lg font-semibold text-gray-700">Phone Number</span>
                                 </div>
                                 <input type="text" name="phone_number" required
-                                       class="input-focus block w-full h-14 text-lg px-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300"
-                                       placeholder="08123456789">
+                                    class="input-focus block w-full h-14 text-lg px-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300"
+                                    placeholder="08123456789">
                             </label>
                         </div>
 
@@ -161,8 +169,8 @@
                                     <span class="text-lg font-semibold text-gray-700">Full Name</span>
                                 </div>
                                 <input type="text" name="name" required
-                                       class="input-focus block w-full h-14 text-lg px-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300"
-                                       placeholder="John Doe">
+                                    class="input-focus block w-full h-14 text-lg px-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300"
+                                    placeholder="John Doe">
                             </label>
                         </div>
 
@@ -174,8 +182,8 @@
                                     <span class="text-lg font-semibold text-gray-700">Shipping Address</span>
                                 </div>
                                 <input type="text" name="address" required
-                                       class="input-focus block w-full h-14 text-lg px-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300"
-                                       placeholder="Dusseldorf, Germany">
+                                    class="input-focus block w-full h-14 text-lg px-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300"
+                                    placeholder="Dusseldorf, Germany">
                             </label>
                         </div>
 
@@ -188,16 +196,19 @@
                                 </div>
                                 <div class="flex items-center space-x-4">
                                     <button type="button" onclick="decreaseQuantity()"
-                                            class="w-12 h-12 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-all duration-200">
+                                        class="w-12 h-12 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-all duration-200">
                                         <i class="fas fa-minus text-gray-600"></i>
                                     </button>
-                                    <input id="quantity" type="number" name="quantity" value="1" min="1"
-                                           class="input-focus w-20 h-12 text-xl font-semibold text-center border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
-                                           onchange="updateSubtotalOnly()">
+                                    <input id="quantity" type="number" name="quantity" value="1" min="1" max="{{ $product->stock }}"
+                                        class="input-focus w-20 h-12 text-xl font-semibold text-center border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+                                        onchange="updateSubtotalOnly()">
                                     <button type="button" onclick="increaseQuantity()"
-                                            class="w-12 h-12 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-all duration-200">
+                                        class="w-12 h-12 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-all duration-200">
                                         <i class="fas fa-plus text-gray-600"></i>
                                     </button>
+                                </div>
+                                <div class="mt-4">
+                                    <p class="text-m">Stock : {{ $product->stock }}</p>
                                 </div>
                             </label>
                         </div>
@@ -265,8 +276,8 @@
                         </div>
 
                         <button type="submit" id="checkoutBtn"
-                                class="btn-hover w-full h-16 font-bold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-xl text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
-                                disabled>
+                            class="btn-hover w-full h-16 font-bold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-xl text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                            disabled>
                             <i class="fas fa-lock"></i>
                             <span>Place Order</span>
                         </button>
@@ -291,7 +302,7 @@
                             <div class="flex items-start space-x-4 mb-6">
                                 <div class="w-24 h-24 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
                                     <img src="{{ asset('images/' . $product->image) }}" alt="{{ $product->product_name }}"
-                                         class="w-full h-full object-cover">
+                                        class="w-full h-full object-cover">
                                 </div>
                                 <div class="flex-1">
                                     <h4 class="font-bold text-lg text-gray-900">{{ $product->product_name }}</h4>
@@ -364,8 +375,13 @@
 
         function increaseQuantity() {
             const quantityInput = document.getElementById('quantity');
-            quantityInput.value = parseInt(quantityInput.value) + 1;
-            updateSubtotalOnly();
+            const max = parseInt(quantityInput.max);
+            let current = parseInt(quantityInput.value);
+
+            if (current < max) {
+                quantityInput.value = current + 1;
+                updateSubtotalOnly();
+            }
         }
 
         function decreaseQuantity() {

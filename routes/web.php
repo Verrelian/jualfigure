@@ -15,7 +15,10 @@ use App\Http\Controllers\{
     CheckoutController,
     PaymentController,
     BankController,
-    WishlistController
+    WishlistController,
+    SellerOrderController,
+    BuyerHistoryController,
+    ShippingProgressController
 };
 
 /*
@@ -23,6 +26,7 @@ use App\Http\Controllers\{
 | AUTH ROUTES (Login/Register/Logout)
 |--------------------------------------------------------------------------
 */
+
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::get('/register', fn() => view('register'))->name('register');
 Route::get('/forgot_password', fn() => view('forgot_password'))->name('forgot_password');
@@ -64,11 +68,8 @@ Route::middleware(['web', 'auth.check'])->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
     Route::get('/payment-receipt/{payment_id}', [PaymentController::class, 'showReceipt'])->name('payment.receipt');
     Route::get('/payment-receipt/{payment_id}/download', [PaymentController::class, 'downloadReceipt'])->name('payment.receipt.download');
-    // Tampilkan halaman bank (BNI, BRI, Mandiri, BCA)
     Route::get('/bank/{bank}', [BankController::class, 'showPaymentPage'])->name('bank.payment');
-    // Proses validasi VA number (payment_code)
     Route::post('/bank/validate-va', [BankController::class, 'validateVA'])->name('bank.validate.va');
-    // Proses pembayaran (setelah VA valid dan user klik "Pay")
     Route::post('/bank/pay', [BankController::class, 'processPayment'])->name('bank.process.payment');
 });
 
@@ -77,9 +78,13 @@ Route::middleware(['web', 'auth.check'])->group(function () {
 | BUYER ROUTES (Protected - Buyer Only)
 |--------------------------------------------------------------------------
 */
+Route::prefix('order')->group(function () {
+        Route::get('/status/{id?}', [OrderController::class, 'status'])->name('order.status');
+    });
+
 Route::middleware(['web', 'buyer.auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
+    Route::get('/history/{id?}', [OrderController::class, 'history'])->name('order.history');
     Route::prefix('user')->group(function () {
         Route::get('/profile', [ProfileController::class, 'show'])->name('user.profile');
         Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('user.profile.edit');
@@ -89,7 +94,7 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
     });
 
     // PINDAHKAN WISHLIST ROUTES KE SINI (bukan nested)
-    Route::prefix('wishlist')->group(function() {
+    Route::prefix('wishlist')->group(function () {
         Route::post('/add', [WishlistController::class, 'add'])->name('wishlist.add');
         Route::post('/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
         Route::post('/clear', [WishlistController::class, 'clear'])->name('wishlist.clear');
@@ -97,13 +102,26 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
         Route::get('/', [WishlistController::class, 'index'])->name('wishlist.index');
     });
 
-
-
-    Route::prefix('order')->group(function () {
-        Route::view('/detail', 'pages.order-detail')->name('order.detail');
-        Route::get('/status/{id?}', [OrderController::class, 'status'])->name('order.status');
-        Route::get('/history/{id?}', [OrderController::class, 'history'])->name('order.history');
+    // History
+    Route::prefix('pages/history')->name('history.')->group(function () {
+        Route::get('/placed', [BuyerHistoryController::class, 'placed'])->name('placed');
+        Route::get('/process', [BuyerHistoryController::class, 'process'])->name('process');
+        Route::get('/shipping', [BuyerHistoryController::class, 'shipping'])->name('shipping');
+        Route::get('/delivered', [BuyerHistoryController::class, 'delivered'])->name('delivered');
+        Route::get('/canceled', [BuyerHistoryController::class, 'canceled'])->name('canceled');
+        Route::get('/completed', [BuyerHistoryController::class, 'completed'])->name('completed');
+        Route::get('/placed/{payment_id}', [BuyerHistoryController::class, 'showPlaced'])->name('placed.detail');
+        Route::get('/process/{payment_id}', [BuyerHistoryController::class, 'showProcess'])->name('process.detail');
+        Route::get('/shipping/{payment_id}', [BuyerHistoryController::class, 'showShipping'])->name('shipping.detail');
+        Route::get('/delivered/{payment_id}', [BuyerHistoryController::class, 'showDelivered'])->name('delivered.detail');
+        Route::get('/canceled/{payment_id}', [BuyerHistoryController::class, 'showCanceled'])->name('canceled.detail');
+        Route::get('/completed/{payment_id}', [BuyerHistoryController::class, 'showCompleted'])->name('completed.detail');
+        Route::post('/{payment_id}/done', [BuyerHistoryController::class, 'done'])->name('done');
+        Route::post('/{payment_id}/rate', [BuyerHistoryController::class, 'rate'])->name('rate');
     });
+
+    Route::get('/shipping/progress-data/{payment_id}', [ShippingProgressController::class, 'getProgress'])->name('shipping.progress');
+    Route::post('/shipping/next-stage/{payment_id}', [ShippingProgressController::class, 'nextStage'])->name('shipping.nextStage');
 
     Route::prefix('feed')->group(function () {
         Route::get('/', [PostController::class, 'index'])->name('posts.index');
@@ -142,6 +160,14 @@ Route::middleware(['web', 'seller.auth'])->prefix('seller')->group(function () {
     });
 
     // Orders and reports
-    Route::view('/order', 'pages.seller.order')->name('seller.order');
+    Route::prefix('/')->name('seller.order.')->group(function () {
+        Route::get('/order', [SellerOrderController::class, 'index'])->name('index');
+        Route::get('/order-detail/{id}', [SellerOrderController::class, 'fetch'])->name('fetch');
+        Route::post('/order/{id}/process', [SellerOrderController::class, 'process'])->name('process');
+        Route::post('/order/{id}/cancel', [SellerOrderController::class, 'cancel'])->name('cancel');
+        Route::get('/order/{id}', [SellerOrderController::class, 'show'])->name('show');
+    });
+
+    Route::post('/to-shipping/{payment_id}', [ShippingProgressController::class, 'ToShipping'])->name('shipping.check');
     Route::view('/laporan', 'pages.seller.laporan')->name('seller.laporan');
 });

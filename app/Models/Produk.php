@@ -20,7 +20,7 @@ class Produk extends Model
         'stock',
         'sold',
         'rating_total',
-        'image', // ← pastikan ini sesuai dengan nama kolom di database
+        'image',
         'seller_id'
     ];
 

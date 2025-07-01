@@ -77,7 +77,7 @@ class CheckoutController extends Controller
             'order_id' => $orderId,
             'payment_code' => $paymentCode,
             'phone_number' => $request->phone_number,
-            'expired_at' => now()->addMinutes(1),
+            'expired_at' => now()->addMinutes(1440),
         ]);
 
         // Redirect atau kirim notifikasi sukses

@@ -96,7 +96,7 @@ class BankController extends Controller
         // Update status pembayaran di tabel payments
         $payment->update([
             'payment_status'     => 'PAID',
-            'transaction_status' => 'PROCESSED',
+            //'transaction_status' => 'PROCESSED',
         ]);
 
         // Hapus session agar tidak tampil terus

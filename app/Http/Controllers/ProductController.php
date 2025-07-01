@@ -26,12 +26,13 @@ class ProductController extends Controller
             ->map(function ($relatedProduct) {
                 return [
                     'product_id' => $relatedProduct->product_id,
-                    'image' => $relatedProduct->gambar_url, // Using the accessor
-                    'title' => $relatedProduct->product_name, // Fixed: use product_name
+                    'image' => $relatedProduct->gambar_url,
+                    'title' => $relatedProduct->product_name,
                     'type' => $relatedProduct->type,
-                    'price' => $relatedProduct->formatted_harga, // Using the accessor
+                    'price' => $relatedProduct->formatted_harga,
                     'description' => $relatedProduct->description,
                     'stock' => $relatedProduct->stock,
+                    'rating_total' => $relatedProduct->rating_total,
                     'specifications' => $relatedProduct->specification ? [
                         'Scale' => $relatedProduct->specification->scale ?? 'N/A',
                         'Material' => $relatedProduct->specification->material ?? 'N/A',
@@ -52,6 +53,7 @@ class ProductController extends Controller
                 'price' => $product->formatted_harga, // Using the accessor
                 'description' => $product->description,
                 'stock' => $product->stock,
+                'rating_total' => $product->rating_total,
                 'specifications' => $product->specification ? [
                     'Scale' => $product->specification->scale ?? 'N/A',
                     'Material' => $product->specification->material ?? 'N/A',

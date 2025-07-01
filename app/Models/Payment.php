@@ -28,11 +28,24 @@ class Payment extends Model
         'payment_date',
         'payment_status',
         'expired_at',
+        'completed_at',
+        'shipping_ready_at',
+        'rating'
     ];
     public $timestamps = false;
 
     public function receipt()
     {
         return $this->hasOne(PaymentReceipt::class, 'payment_id');
+    }
+
+    public function shipping()
+    {
+        return $this->hasMany(Shipping::class, 'payment_id', 'payment_id');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Produk::class, 'product_id');
     }
 }

@@ -48,198 +48,220 @@
             @php
             $now = now();
             $isExpired = $payment->payment_status === 'UNPAID' && $payment->expired_at <= $now;
+                $isCanceled=$payment->payment_status === 'PAID' && $payment->transaction_status === 'CANCELED';
+                @endphp
+
+                @php
+                $isCompleted = $payment->transaction_status === 'COMPLETED';
                 @endphp
 
                 <div class="w-16 h-16 rounded-full border-4 flex items-center justify-center
-    @if ($payment->payment_status === 'PAID')
-        border-green-600 text-green-600
-    @elseif ($isExpired)
-        border-red-600 text-red-600
-    @else
-        border-yellow-500 text-yellow-500
-    @endif
+@if ($isCompleted)
+    border-blue-600 text-blue-600
+@elseif ($isExpired || $isCanceled)
+    border-red-600 text-red-600
+@elseif ($payment->payment_status === 'PAID')
+    border-green-600 text-green-600
+@else
+    border-yellow-500 text-yellow-500
+@endif
 ">
-                @if ($payment->payment_status === 'PAID')
-                <!-- Ikon centang -->
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                @elseif ($isExpired)
-                <!-- Ikon silang -->
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                @else
-                <!-- Ikon jam pasir -->
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 2h12M6 22h12M8 2v3a6 6 0 0012 0V2M8 22v-3a6 6 0 0112 0v3" />
-                </svg>
-                @endif
-        </div>
+                    @if ($isCompleted)
+                    <!-- Ikon bintang atau centang premium -->
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                    @elseif ($isExpired || $isCanceled)
+                    <!-- Ikon silang -->
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    @elseif ($payment->payment_status === 'PAID')
+                    <!-- Ikon centang -->
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="4" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    @else
+                    <!-- Ikon jam pasir -->
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 2h12M6 22h12M8 2v3a6 6 0 0012 0V2M8 22v-3a6 6 0 0112 0v3" />
+                    </svg>
+                    @endif
+                </div>
 
-        <div class="mt-2 font-semibold
-    @if ($payment->payment_status === 'PAID')
-        text-green-700
-    @elseif ($isExpired)
-        text-red-600
-    @else
-        text-yellow-600
-    @endif
+                <div class="mt-2 font-semibold
+@if ($isCompleted)
+    text-blue-700
+@elseif ($isExpired || $isCanceled)
+    text-red-600
+@elseif ($payment->payment_status === 'PAID')
+    text-green-700
+@else
+    text-yellow-600
+@endif
 ">
-            @if ($payment->payment_status === 'PAID')
-            <p class="text-center">Your order has been processed !</p>
-            @elseif ($isExpired)
-            This payment has expired
-            @else
-            Waiting for payment..
-            <p class="text-center" id="countdown"></p>
-            @endif
-        </div>
-
-        <!-- Left panel -->
-        <div class="w-full mt-10 text-xs text-black">
-            <div class="flex justify-between mb-3">
-                <span>Order ID:</span>
-                <span class="font-bold">{{ $payment->order_id }}</span>
-            </div>
-            <div class="flex justify-between mb-3">
-                <span>Date:</span>
-                <span>{{ $payment->payment_date }}</span>
-            </div>
-            <div class="flex justify-between mb-3">
-                <span>Name:</span>
-                <span>{{ $payment->name }}</span>
-            </div>
-            <div class="flex justify-between mb-3">
-                <span>Phone:</span>
-                <span>{{ $payment->phone_number }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span>Address:</span>
-                <span class="text-right">{{ $payment->address }}</span>
-            </div>
-        </div>
-        @php
-        $bankMap = [
-        'BANK BNI' => 'bni',
-        'BANK BRI' => 'bri',
-        'BANK BCA' => 'bca',
-        'BANK MANDIRI' => 'mandiri',
-        ];
-
-        $bank = $bankMap[$payment->payment_method] ?? 'bni';
-        @endphp
-
-        @php
-        $now = now();
-        $isExpired = $payment->payment_status === 'UNPAID' && $payment->expired_at <= $now;
-            @endphp
-
-            @if ($payment->payment_status === 'UNPAID' && !$isExpired)
-            <a href="{{ route('bank.payment', ['bank' => $bank]) }}"
-                class="mt-auto w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-center block">
-                Pay Now
-            </a>
-            @endif
-
-
-    </div>
-    <!-- Right panel -->
-    <div class="flex-1 bg-white p-8 flex flex-col gap-6">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="font-semibold text-gray-900 text-xl">
-                Payment Receipt
-            </h2>
-            <a href="{{ route('checkout.form', ['product_id' => $payment->product_id]) }}"
-                aria-label="Close"
-                class="text-gray-400 hover:text-gray-600 focus:outline-none">
-                <i class="fas fa-times"></i>
-            </a>
-        </div>
-        <div class="border border-gray-300 rounded-md p-6 mb-8">
-            <div class="flex flex-col items-center mb-4">
-                <p class="text-green-700 mb-3 font-semibold text-base">
-                    Payment Info!
-                </p>
-                <p class="text-gray-500 text-xs text-center w-full">
-                    Your order has been Add to order status, please check !
-                    <br>
-                    Info : If you done for payment please check your order list
-                </p>
-            </div>
-            <!-- Right panel: Payment Method & Status -->
-            <div class="text-xs text-black w-full">
-                <div class="flex justify-between mb-2">
-                    <span>Name Store:</span>
-                    <span>Market Place of Legends</span>
+                    @if ($isCompleted)
+                    <p class="text-center">Order completed successfully!</p>
+                    @elseif ($isExpired)
+                    This payment has expired !
+                    @elseif ($isCanceled)
+                    <p class="text-center">Your order has been canceled !</p>
+                    @elseif ($payment->payment_status === 'PAID')
+                    <p class="text-center">Your order has been processed !</p>
+                    @else
+                    Waiting for payment..
+                    <p class="text-center" id="countdown"></p>
+                    @endif
                 </div>
-                <div class="flex justify-between mb-2">
-                    <span>Payment Method:</span>
-                    <span>{{ $payment->payment_method }}</span>
-                </div>
-                <div class="flex justify-between items-center font-semibold mb-2">
-                    <span>Virtual Account Number:</span>
-                    <div class="flex items-center gap-2">
-                        <span id="va-number" class="font-mono text-sm">{{ $payment->payment_code }}</span>
-                        <button onclick="copyVANumber()" class="hover:opacity-75 transition" title="Copy">
-                            <img src="{{ asset('images/copy-icon.png') }}" alt="Copy" class="w-5 h-5">
-                        </button>
+
+
+                <!-- Left panel -->
+                <div class="w-full mt-10 text-xs text-black">
+                    <div class="flex justify-between mb-3">
+                        <span>Order ID:</span>
+                        <span class="font-bold">{{ $payment->order_id }}</span>
+                    </div>
+                    <div class="flex justify-between mb-3">
+                        <span>Date:</span>
+                        <span>{{ $payment->payment_date }}</span>
+                    </div>
+                    <div class="flex justify-between mb-3">
+                        <span>Name:</span>
+                        <span>{{ $payment->name }}</span>
+                    </div>
+                    <div class="flex justify-between mb-3">
+                        <span>Phone:</span>
+                        <span>{{ $payment->phone_number }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Address:</span>
+                        <span class="text-right">{{ $payment->address }}</span>
                     </div>
                 </div>
-                <div class="flex justify-between mb-2">
-                    <span>Payment Status:</span>
-                    <span>{{ $payment->payment_status }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span>Transaction Status:</span>
-                    <span>{{ $payment->transaction_status }}</span>
-                </div>
-            </div>
+                @php
+                $bankMap = [
+                'BANK BNI' => 'bni',
+                'BANK BRI' => 'bri',
+                'BANK BCA' => 'bca',
+                'BANK MANDIRI' => 'mandiri',
+                ];
+
+                $bank = $bankMap[$payment->payment_method] ?? 'bni';
+                @endphp
+
+                @php
+                $now = now();
+                $isExpired = $payment->payment_status === 'UNPAID' && $payment->expired_at <= $now;
+                    $isCanceled=$payment->payment_status === 'PAID' && $payment->transaction_status === 'CANCELED';
+                    @endphp
+
+                    @if ($payment->payment_status === 'UNPAID' && !$isExpired && !$isCanceled)
+                    <a href="{{ route('bank.payment', ['bank' => $bank]) }}"
+                        class="mt-auto w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-center block">
+                        Pay Now
+                    </a>
+                    @endif
+
+
         </div>
-        <div class="border border-transparent rounded-md p-4 mb-7 w-full text-xs text-black">
-            <p class="font-semibold mb-3 text-base text-black">
-                Order Details
-            </p>
-            <!-- Order Details -->
-            <div class="flex justify-between mb-2">
-                <span>Product:</span>
-                <span>{{ $payment->product_name }}</span>
-            </div>
-            <div class="flex justify-between mb-2 border-t border-gray-300 pt-2">
-                <span>Quantity:</span>
-                <span>{{ $payment->quantity }}</span>
-            </div>
-            <div class="flex justify-between mb-2 border-t border-gray-300 pt-2">
-                <span>Subtotal:</span>
-                <span>IDR {{ number_format($payment->price) }}</span>
-            </div>
-            <div class="flex justify-between font-bold border-t border-gray-300 pt-2 text-gray-900">
-                <span>Total (Tax + Shipping):</span>
-                <span>IDR {{ number_format($payment->price_total, 2, ',', '.') }}</span>
-            </div>
-        </div>
-        <div>
-            <p class="text-gray-500 text-xs text-left w-full mb-6 leading-relaxed">
-                Please complete your payment by transferring to the virtual account
-                number shown above. Your order will be processed once payment is
-                verified.
-                <br>
-                Estimated delivery:
-                <span class="font-semibold">
-                    3-5 business days
-                </span>
-                after payment
-                verification.
-            </p>
-        </div>
-        <div class="mt-1 pt-3 pb-3">
-            <div class="flex items-center justify-end gap-2">
-                <a href="{{ route('dashboard') }}" class="bg-blue-600 text-white text-center text-sm font-semibold w-1/2 px-5 py-2 rounded-md hover:bg-blue-700 transition">
-                    Done
+        <!-- Right panel -->
+        <div class="flex-1 bg-white p-8 flex flex-col gap-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-semibold text-gray-900 text-xl">
+                    Payment Receipt
+                </h2>
+                <a href="{{ url('/history') }}"
+                    aria-label="Close"
+                    class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <i class="fas fa-times"></i>
                 </a>
             </div>
+            <div class="border border-gray-300 rounded-md p-6 mb-8">
+                <div class="flex flex-col items-center mb-4">
+                    <p class="text-green-700 mb-3 font-semibold text-base">
+                        Payment Info!
+                    </p>
+                    <p class="text-gray-500 text-xs text-center w-full">
+                        Your order has been Add to order status, please check !
+                        <br>
+                        Info : If you done for payment please check your order list
+                    </p>
+                </div>
+                <!-- Right panel: Payment Method & Status -->
+                <div class="text-xs text-black w-full">
+                    <div class="flex justify-between mb-2">
+                        <span>Name Store:</span>
+                        <span>Market Place of Legends</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span>Payment Method:</span>
+                        <span>{{ $payment->payment_method }}</span>
+                    </div>
+                    <div class="flex justify-between items-center font-semibold mb-2">
+                        @if ($payment->payment_status === 'UNPAID' && !$isExpired && !$isCanceled)
+                        <span>Virtual Account Number:</span>
+                        <div class="flex items-center gap-2">
+                            <span id="va-number" class="font-mono text-sm">{{ $payment->payment_code }}</span>
+                            <button onclick="copyVANumber()" class="hover:opacity-75 transition" title="Copy">
+                                <img src="{{ asset('images/copy-icon.png') }}" alt="Copy" class="w-5 h-5">
+                            </button>
+                        </div>
+                        @endif
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span>Payment Status:</span>
+                        <span>{{ $payment->payment_status }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Transaction Status:</span>
+                        <span>{{ $payment->transaction_status }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="border border-transparent rounded-md p-4 mb-7 w-full text-xs text-black">
+                <p class="font-semibold mb-3 text-base text-black">
+                    Order Details
+                </p>
+                <!-- Order Details -->
+                <div class="flex justify-between mb-2">
+                    <span>Product:</span>
+                    <span>{{ $payment->product_name }}</span>
+                </div>
+                <div class="flex justify-between mb-2 border-t border-gray-300 pt-2">
+                    <span>Quantity:</span>
+                    <span>{{ $payment->quantity }}</span>
+                </div>
+                <div class="flex justify-between mb-2 border-t border-gray-300 pt-2">
+                    <span>Subtotal:</span>
+                    <span>IDR {{ number_format($payment->price) }}</span>
+                </div>
+                <div class="flex justify-between font-bold border-t border-gray-300 pt-2 text-gray-900">
+                    <span>Total (Tax + Shipping):</span>
+                    <span>IDR {{ number_format($payment->price_total, 2, ',', '.') }}</span>
+                </div>
+            </div>
+            <div>
+                <p class="text-gray-500 text-xs text-left w-full mb-6 leading-relaxed">
+                    Please complete your payment by transferring to the virtual account
+                    number shown above. Your order will be processed once payment is
+                    verified.
+                    <br>
+                    Estimated delivery:
+                    <span class="font-semibold">
+                        3-5 business days
+                    </span>
+                    after payment
+                    verification.
+                </p>
+            </div>
+            <div class="mt-1 pt-3 pb-3">
+                <div class="flex items-center justify-end gap-2">
+                    <a href="{{ url('/history') }}" class="bg-blue-600 text-white text-center text-sm font-semibold w-1/2 px-5 py-2 rounded-md hover:bg-blue-700 transition">
+                        Done
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
     </div>
     @if ($payment->payment_status === 'UNPAID')
     <script>

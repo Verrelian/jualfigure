@@ -65,8 +65,9 @@
                         'product_id' => $product->product_id,
                         'image' => $product->image,
                         'type' => $product->type,
-                        'title' => $product->nama,
-                        'price' => $product->formatted_harga
+                        'title' => $product->name,
+                        'price' => $product->formatted_harga,
+                        'rating' => $product->rating_total
                     ])
                 </div>
             @endforeach
