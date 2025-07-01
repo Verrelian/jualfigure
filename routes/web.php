@@ -33,6 +33,7 @@ Route::get('/forgot_password', fn() => view('forgot_password'))->name('forgot_pa
 Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/auth/register', [AuthController::class, 'register'])->name('auth.register');
 Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+Route::get('/product/{product_id}', [ProductController::class, 'show'])->name('product.detail');
 
 /*
 |--------------------------------------------------------------------------
