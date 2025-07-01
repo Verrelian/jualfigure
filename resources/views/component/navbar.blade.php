@@ -39,8 +39,8 @@
            class="{{ Request::is('wishlist') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
           Wishlist
         </a>
-        <a href="{{ url('/history') }}"
-          class="{{ Request::is('history') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
+        <a href="{{ url('/history.placed') }}"
+          class="{{ Request::is('history.placed') ? 'text-blue-600 font-medium border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600' }} py-2">
           History
         </a>
         <a href="{{ url('/leaderboard') }}"

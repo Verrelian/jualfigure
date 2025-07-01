@@ -45,7 +45,7 @@ Route::get('/product/{product_id}', [ProductController::class, 'show'])->name('p
 |--------------------------------------------------------------------------
 */
 Route::view('/', 'welcome')->name('home');
-Route::view('/history', 'pages.product.order-history')->name('order-history');
+//Route::view('/history', 'pages.product.order-history')->name('order-history');
 Route::view('/filter', 'filter')->name('filter');
 Route::view('/webs', 'welcome')->name('webs');
 Route::view('/contact-us', 'pages.general.contact-us')->name('contact-us');
