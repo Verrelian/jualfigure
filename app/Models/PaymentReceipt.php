@@ -20,7 +20,9 @@ class PaymentReceipt extends Model
         'payment_method',
         'payment_code',
         'price_total',
+        'qty', // tambahkan ini
     ];
+
     public $timestamps = false;
 
     // Relasi ke Payment (jika dibutuhkan)

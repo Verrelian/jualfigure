@@ -10,9 +10,7 @@ class UpdateSellersTable extends Migration
     {
         Schema::table('sellers', function (Blueprint $table) {
             $table->string('name')->after('seller_id');
-            $table->string('nickname')->nullable()->after('name');
-            $table->string('country')->nullable()->after('nickname');
-            $table->date('birthdate')->nullable()->after('country');
+            $table->date('birthdate')->nullable()->after('name');
             $table->string('phone_number')->nullable()->after('birthdate');
             $table->string('address')->nullable()->after('phone_number');
             $table->text('bio')->nullable()->after('address');
@@ -24,7 +22,7 @@ class UpdateSellersTable extends Migration
     {
         Schema::table('sellers', function (Blueprint $table) {
             $table->dropColumn([
-                'name', 'nickname', 'country', 'birthdate',
+                'name', 'birthdate',
                 'phone_number', 'address', 'bio', 'avatar'
             ]);
         });

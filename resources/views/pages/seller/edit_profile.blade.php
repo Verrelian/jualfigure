@@ -51,9 +51,9 @@
                 <input type="email" name="email" value="{{ $user->email }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
               </div>
               <div class="mb-3">
-  <label class="block text-gray-600 text-xs mb-1">Birthdate:</label>
-  <input type="date" name="birthdate" value="{{ $user->birthdate }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
-</div>
+                <label class="block text-gray-600 text-xs mb-1">Birthdate:</label>
+                <input type="date" name="birthdate" value="{{ $user->birthdate }}" class="w-full border border-gray-300 rounded p-1.5 text-sm">
+              </div>
 
               <div class="mb-3">
                 <label class="block text-gray-600 text-xs mb-1">Phone Number:</label>

@@ -17,6 +17,7 @@ use App\Http\Controllers\{
     BankController,
     WishlistController,
     InvoiceController,
+    CartController,
     LeaderboardController
 };
 
@@ -39,6 +40,7 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 |--------------------------------------------------------------------------
 */
 Route::view('/', 'welcome')->name('home');
+Route::view('/history', 'pages.product.order-history')->name('order-history');
 Route::view('/filter', 'filter')->name('filter');
 Route::view('/webs', 'welcome')->name('webs');
 Route::view('/contact-us', 'pages.general.contact-us')->name('contact-us');
@@ -95,6 +97,18 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
         Route::view('/posts', 'pages.user.user_posts')->name('user.posts');
         Route::view('/toys', 'pages.user.user_toys')->name('user.toys');
     });
+    // Cart routes
+    Route::prefix('cart')->group(function () {
+        Route::get('/', [CartController::class, 'showCartPage'])->name('cart.index');
+        Route::get('/data', [CartController::class, 'index'])->name('cart.data');
+        Route::post('/add', [CartController::class, 'add'])->name('cart.add');
+        Route::post('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+        Route::put('/update/{id}', [CartController::class, 'update'])->name('cart.update');
+        Route::post('/update/{id}', [CartController::class, 'update']); // Alternative for method spoofing
+        Route::get('/count', [CartController::class, 'getCount'])->name('cart.count');
+        Route::get('/total', [CartController::class, 'getTotal'])->name('cart.total');
+        Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear');
+    });
 
     // PINDAHKAN WISHLIST ROUTES KE SINI (bukan nested)
     Route::prefix('wishlist')->group(function() {
@@ -110,7 +124,6 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
     Route::prefix('order')->group(function () {
         Route::view('/detail', 'pages.order-detail')->name('order.detail');
         Route::get('/status/{id?}', [OrderController::class, 'status'])->name('order.status');
-        Route::get('/history/{id?}', [OrderController::class, 'history'])->name('order.history');
     });
 
     Route::prefix('feed')->group(function () {

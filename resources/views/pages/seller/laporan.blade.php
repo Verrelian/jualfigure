@@ -11,6 +11,27 @@
       <p class="text-gray-600 mt-1">Pantau performa penjualan Anda</p>
     </div>
 
+    <!-- Filter Bulan & Tahun -->
+    <form method="GET" action="{{ route('seller.laporan') }}" class="mb-6 flex items-center gap-2">
+      <select name="bulan" class="border px-3 py-2 rounded">
+        @foreach(range(1, 12) as $b)
+          <option value="{{ sprintf('%02d', $b) }}" {{ $bulan == sprintf('%02d', $b) ? 'selected' : '' }}>
+            {{ DateTime::createFromFormat('!m', $b)->format('F') }}
+          </option>
+        @endforeach
+      </select>
+
+      <select name="tahun" class="border px-3 py-2 rounded">
+        @for($y = now()->year; $y >= 2020; $y--)
+          <option value="{{ $y }}" {{ $tahun == $y ? 'selected' : '' }}>{{ $y }}</option>
+        @endfor
+      </select>
+
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        Filter
+      </button>
+    </form>
+
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl shadow-lg">
@@ -83,28 +104,8 @@
               </td>
             </tr>
             @empty
-            <!-- Sample Data -->
             <tr class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">30 Apr 2025</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#1024</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">John Doe</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">Rp250.000</td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                  ✅ Selesai
-                </span>
-              </td>
-            </tr>
-            <tr class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">29 Apr 2025</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#1023</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Jane Smith</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">Rp180.000</td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                  ⏳ Pending
-                </span>
-              </td>
+              <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada transaksi di bulan ini.</td>
             </tr>
             @endforelse
           </tbody>

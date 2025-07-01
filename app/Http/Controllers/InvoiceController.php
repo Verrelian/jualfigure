@@ -2,40 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\PaymentReceipt;
 use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil data dari tabel PaymentReceipt
+        $bulan = $request->input('bulan', now()->format('m'));
+        $tahun = $request->input('tahun', now()->format('Y'));
+
+        // Ambil data penjualan berdasarkan bulan & tahun
         $sales_history = PaymentReceipt::with(['buyer', 'product'])
+            ->whereYear('payment_date', $tahun)
+            ->whereMonth('payment_date', $bulan)
             ->latest('payment_date')
             ->paginate(10);
 
-        // Hitung statistik - handle kalau kosong
-        $total_revenue = PaymentReceipt::sum('price_total') ?: 0;
-        $total_transactions = PaymentReceipt::count() ?: 0;
-        $total_products_sold = PaymentReceipt::count() ?: 0;
+        // Hitung statistik
+        $total_revenue = PaymentReceipt::whereYear('payment_date', $tahun)
+            ->whereMonth('payment_date', $bulan)
+            ->sum('price_total');
 
-        // Kalau data kosong, buat collection kosong
-        if($sales_history->isEmpty()) {
-            $sales_history = new \Illuminate\Pagination\LengthAwarePaginator(
-                collect([]),
-                0,
-                10,
-                1,
-                ['path' => request()->url()]
-            );
-        }
+        $total_transactions = PaymentReceipt::whereYear('payment_date', $tahun)
+            ->whereMonth('payment_date', $bulan)
+            ->count();
+
+        $total_products_sold = PaymentReceipt::whereYear('payment_date', $tahun)
+            ->whereMonth('payment_date', $bulan)
+            ->sum('qty'); // Pastikan kolom qty ada
 
         return view('pages.seller.laporan', compact(
             'sales_history',
             'total_revenue',
             'total_transactions',
-            'total_products_sold'
+            'total_products_sold',
+            'bulan',
+            'tahun'
         ));
     }
 }

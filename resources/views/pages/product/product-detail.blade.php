@@ -103,27 +103,41 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    <!-- Action Buttons -->
                     <div class="flex space-x-3">
+                        <!-- Add to Cart Button -->
+                        <button id="addToCartBtn"
+                                class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-md font-medium transition-colors flex items-center justify-center space-x-2"
+                                data-product-id="{{ $product['product_id'] }}"
+                                data-product-name="{{ $product['title'] }}"
+                                data-product-price="{{ str_replace(['Rp ', '.'], ['', ''], $product['price']) }}"                                data-product-image="{{ $product['image'] }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4m1.6 8L5 3H3m4 10v6a1 1 0 001 1h10a1 1 0 001-1v-6M9 19v2m6-2v2"/>
+                            </svg>
+                            <span>Add to Cart</span>
+                        </button>
+
+                        <!-- Buy Now Button -->
                         <a href="{{ route('checkout.form', $product['product_id']) }}"
                         class="flex-1 bg-blue-600 hover:bg-blue-700 text-center text-white py-3 px-6 rounded-md font-medium transition-colors">
                             Buy Now
                         </a>
+
+                        <!-- Wishlist Button -->
                         <button id="wishlistBtn"
                                 class="border border-gray-300 hover:border-gray-400 p-3 rounded-md transition-colors group"
                                 data-product-id="{{ $product['product_id'] }}"
                                 title="Add to Wishlist">
                             <svg class="w-5 h-5 text-gray-600 group-hover:text-red-500 transition-colors"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                             </svg>
                         </button>
                     </div>
+
+                    <!-- Success/Error Message -->
+                    <div id="cartMessage" class="hidden mt-4 p-3 rounded-md"></div>
                     <!-- Trust Indicators -->
                     <div class="flex items-center space-x-6 pt-6 border-t border-gray-100">
                         <div class="flex items-center space-x-2">
@@ -200,14 +214,50 @@
             overflow: hidden;
         }
     </style>
-<!-- DEBUG LOGIN STATUS -->
-<script>
-console.log('=== DEBUG LOGIN STATUS ===');
-console.log('User ID:', @json(session('user_id')));
-console.log('Role:', @json(session('role')));
-console.log('Is Logged In:', @json(session('user_id') ? true : false));
-console.log('All Session:', @json(session()->all()));
-console.log('===============================');
-</script>
+
     <script src="{{ asset('js/product-detail.js') }}"></script>
+    <script>
+    const addToCartUrl = "{{ route('cart.add') }}";
+    </script>
+    <!--cart js -->
+    <script>
+        document.getElementById('addToCartBtn').addEventListener('click', function () {
+            const productId = this.dataset.productId;
+
+            fetch("{{ url('/cart/add') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    quantity: 1
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ ' + data.message);
+                    // opsional: update badge keranjang
+                    updateCartBadge();
+                } else {
+                    alert('❌ ' + data.message);
+                }
+            });
+        });
+
+        // Opsional: update badge jumlah item di cart
+        function updateCartBadge() {
+            fetch("{{ url('/cart/count') }}")
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const badge = document.getElementById('cart-badge');
+                        if (badge) badge.innerText = data.count;
+                    }
+                });
+        }
+    </script>
+
 @endsection
