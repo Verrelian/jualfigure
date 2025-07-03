@@ -21,6 +21,7 @@ use App\Http\Controllers\{
     ShippingProgressController,
     InvoiceController,
     CartController,
+    WebController,
     LeaderboardController
 };
 
@@ -44,8 +45,8 @@ Route::get('/product/{product_id}', [ProductController::class, 'show'])->name('p
 | PUBLIC ROUTES
 |--------------------------------------------------------------------------
 */
-Route::view('/', 'welcome')->name('home');
-//Route::view('/history', 'pages.product.order-history')->name('order-history');
+Route::get('/', [WebController::class, 'index'])->name('home');
+Route::view('/history', 'pages.product.order-history')->name('order-history');
 Route::view('/filter', 'filter')->name('filter');
 Route::view('/webs', 'welcome')->name('webs');
 Route::view('/contact-us', 'pages.general.contact-us')->name('contact-us');
@@ -53,6 +54,13 @@ Route::view('/ambabot', 'pages.general.ambabot')->name('ambabot');
 Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
 Route::get('/api/leaderboard', [LeaderboardController::class, 'getLeaderboardData'])->name('leaderboard.api');
 Route::post('/contact-submit', [ContactController::class, 'submit'])->name('contact.submit');
+Route::get('/products', fn() => view('pages.products'))->name('products');
+Route::get('/products/by-category', [ProductController::class, 'getProductsByCategory'])->name('products.by-category');
+Route::get('/product-detail', [ProductController::class, 'index'])->name('product-detail');
+Route::get('/product/{product_id}', [ProductController::class, 'show'])->name('product.detail');
+Route::get('/explore', [ProductController::class, 'explore'])->name('explore');
+Route::get('/products/filter', [ProductController::class, 'filter'])->name('products.filter');
+Route::get('/api/filter-options', [ProductController::class, 'getFilterOptions']);
 
 // --- RUTE PROFIL PENGGUNA LAIN (PUBLIC) ---
 // Rute ini harus di luar middleware otentikasi agar bisa diakses oleh siapa saja
