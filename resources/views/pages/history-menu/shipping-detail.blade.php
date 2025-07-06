@@ -187,7 +187,7 @@
                 fetch(`/mole/shipping/progress-data/${paymentId}`)
                     .then(res => res.json())
                     .then(data => {
-                        if (data.diff >= 10) {
+                        if (data.diff >= 5) {
                             fetch(`/mole/shipping/next-stage/${paymentId}`, {
                                     method: 'POST',
                                     headers: {

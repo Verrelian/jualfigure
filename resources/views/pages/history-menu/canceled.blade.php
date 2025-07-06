@@ -20,9 +20,15 @@
                 <td class="text-sm text-left py-2 px-4">{{ $order->product_name }}</td>
                 <td class="text-sm text-left py-2 px-4">{{ \Carbon\Carbon::parse($order->payment_date)->format('d M Y H:i') }}</td>
                 <td class="text-sm text-left py-2 px-4">
+                    @if ($order->transaction_status === 'EXPIRED')
+                    <span class="inline-block px-2 py-1 text-xs font-medium bg-red-200 text-red-800 rounded">
+                        Expired
+                    </span>
+                    @else
                     <span class="inline-block px-2 py-1 text-xs font-medium bg-red-200 text-red-800 rounded">
                         Canceled
                     </span>
+                    @endif
                 </td>
                 <td class="py-2 px-4 space-x-2">
                     <a href="{{ route('payment.receipt', ['payment_id' => $order->payment_id, 'back' => request()->fullUrl()]) }}"

@@ -97,8 +97,11 @@
             </div>
 
             <!-- Quantity & Actions -->
+             <!--
             <div class="space-y-6">
+            -->
                 <!-- Quantity Selector -->
+                 <!--
                 <div class="flex items-center space-x-4">
                     <label class="text-sm font-medium text-gray-900">Quantity</label>
                     <div class="flex items-center border border-gray-300 rounded-md">
@@ -117,6 +120,7 @@
                     </div>
                     <span class="text-sm text-gray-500">{{ $product['stock'] }} in stock</span>
                 </div>
+                -->
 
                 <!-- Action Buttons -->
                 <div class="flex space-x-3">

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Payment;
 use App\Models\PaymentReceipt;
 use App\Services\ExpService;
+use Illuminate\Support\Facades\Log;
 
 class BankController extends Controller
 {
@@ -43,11 +44,19 @@ class BankController extends Controller
             return back()->with('error', 'Virtual Account Number tidak valid, sudah digunakan, atau tidak sesuai bank.');
         }
 
-        // Simpan flag untuk satu kali redirect
-        session()->flash('just_inquired', true);
+        session()->flash('inquired', true);
+        $bankCharge = match ($payment->payment_method) {
+            'BANK BCA' => 350000,
+            'BANK MANDIRI' => 300000,
+            'BANK BNI' => 260000,
+            'BANK BRI' => 250000,
+            default => 0,
+        };
 
-        // Fix syntax error
-        $priceqty = $payment->price * $payment->quantity;
+        $shipping = 100000;
+        $tax = 50000;
+        $priceqty = $payment->price;
+        $price_total = $priceqty + $shipping + $tax + $bankCharge;
 
         session([
             'inquired' => true,
@@ -61,9 +70,10 @@ class BankController extends Controller
                 'product_name' => $payment->product_name,
                 'quantity' => $payment->quantity,
                 'price' => $priceqty,
-                'price_total' => $payment->price_total,
-                'shipping' => 50000,
-                'tax' => 100000,
+                'price_total' => $price_total,
+                'bank_charge' => $bankCharge,
+                'shipping' => 100000,
+                'tax' => 50000,
             ]
         ]);
 
@@ -84,10 +94,19 @@ class BankController extends Controller
             return back()->with('error', 'Payment already completed.');
         }
 
-        // Hitung shipping dan tax (disesuaikan jika nanti dinamis)
-        $shipping = 50000;
-        $tax = 100000;
-        $price_total = $payment->price + $shipping + $tax;
+        // Tentukan biaya bank berdasarkan metode pembayaran
+        $bankCharge = match ($payment->payment_method) {
+            'BANK BCA' => 350000,
+            'BANK MANDIRI' => 300000,
+            'BANK BNI' => 260000,
+            'BANK BRI' => 250000,
+            default => 0,
+        };
+        
+        $shipping = 100000;
+        $tax = 50000;
+        $priceqty = $payment->price;
+        $price_total = $priceqty + $shipping + $tax + $bankCharge;
 
         // Simpan ke tabel payment_receipt
         PaymentReceipt::create([
@@ -104,15 +123,15 @@ class BankController extends Controller
         // Update status pembayaran di tabel payments
         $payment->update([
             'payment_status' => 'PAID',
-            'transaction_status' => 'PROCESSED',
+            //'transaction_status' => 'PROCESSED',
         ]);
 
-        // 🎯 TRIGGER EXP UPDATE
+        // TRIGGER EXP UPDATE
         try {
             $this->expService->updateUserExp($payment);
         } catch (\Exception $e) {
-            // Log error tapi jangan break payment flow
-            \Log::error('EXP Update Error: ' . $e->getMessage());
+            // Log error tapi tidak break payment flow
+            Log::error('EXP Update Error: ' . $e->getMessage());
         }
 
         // Hapus session agar tidak tampil terus

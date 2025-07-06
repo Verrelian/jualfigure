@@ -52,7 +52,7 @@ class SellerOrderController extends Controller
 
         // Update status transaksi
         $order->transaction_status = 'PROCESSED';
-        $order->shipping_ready_at = Carbon::now()->addSecond(10);
+        $order->shipping_ready_at = Carbon::now()->addSecond(5);
         $order->save();
 
         return response()->json(['success' => true]);
@@ -104,7 +104,7 @@ class SellerOrderController extends Controller
                     'name'     => $order->product_name,
                     'qty'      => $order->quantity,
                     'price'    => number_format($order->price, 0, ',', '.'),
-                    'subtotal' => number_format($order->price * $order->quantity, 0, ',', '.'),
+                    'subtotal' => number_format($order->price, 0, ',', '.'),
                 ]
             ],
             'raw_status'  => $order->transaction_status,

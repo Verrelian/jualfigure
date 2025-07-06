@@ -13,7 +13,7 @@
                 <th class="py-2 px-4 font-medium w-56">Status</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="process-fetch">
             @forelse($orders as $order)
             <tr class="text-center border-b hover:bg-gray-50">
                 <td class="text-sm text-left py-2 px-4">{{ $order->order_id }}</td>
@@ -41,5 +41,65 @@
         </tbody>
     </table>
 </div>
+<script>
+    function fetchProcessOrders() {
+        const container = document.getElementById('process-fetch');
+
+        fetch('{{ route("process.fetch") }}', {
+                credentials: 'same-origin',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.warn('Fetch failed:', response.status);
+                    return '';
+                }
+                return response.text();
+            })
+            .then(data => {
+                if (data) {
+                    container.innerHTML = data;
+
+                    const hasOrders = container.querySelectorAll('tr').length > 1;
+                    if (!hasOrders && window.fetchProcessInterval) {
+                        clearInterval(window.fetchProcessInterval);
+                        window.fetchProcessInterval = null;
+                        console.log("Auto-fetch stopped — no more orders.");
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+            });
+    }
+
+    function autoConvertProcessedToShipping() {
+        fetch('/mole/process/auto-shipping', {
+                credentials: 'same-origin',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.updated > 0) {
+                    console.log(`Moved ${data.updated} orders to SHIPPING`);
+                }
+            })
+            .catch(err => {
+                console.error("Failed to auto convert to shipping:", err);
+            });
+    }
+
+    // Mulai interval
+    document.addEventListener('DOMContentLoaded', function() {
+        window.fetchProcessInterval = setInterval(() => {
+            autoConvertProcessedToShipping(); // NEW
+            fetchProcessOrders();
+        }, 3000);
+    });
+</script>
 
 @endsection

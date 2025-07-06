@@ -58,16 +58,20 @@
               <span class="bg-red-200 text-red-800 px-2 py-1 rounded text-xs">Canceled</span>
               @break
 
+              @case('EXPIRED')
+              <span class="bg-red-200 text-red-800 px-2 py-1 rounded text-xs">Expired</span>
+              @break
+
               @default
               <span class="bg-gray-200 text-gray-800 px-2 py-1 rounded text-xs">Unknown</span>
               @endswitch
               @endif
             </td>
             <td class="py-2 px-4 space-x-2">
-              <button class="text-blue-600 hover:underline view-order" data-id="{{ $order->payment_id }}">Lihat Detail</button>
+              <button class="text-blue-600 hover:underline view-order" data-id="{{ $order->payment_id }}">View Detail</button>
               @if($order->payment_status === 'PAID' && $order->transaction_status === 'NOT YET PROCESSED')
-              <button class="text-green-600 hover:underline confirm-order" data-id="{{ $order->payment_id }}">Konfirmasi</button>
-              <button class="text-red-600 hover:underline cancel-order" data-id="{{ $order->payment_id }}">Batalkan</button>
+              <button class="text-green-600 hover:underline confirm-order" data-id="{{ $order->payment_id }}">Confirm</button>
+              <button class="text-red-600 hover:underline cancel-order" data-id="{{ $order->payment_id }}">Cancel</button>
               @endif
             </td>
           </tr>
@@ -186,7 +190,7 @@
     <!-- Modal Konfirmasi -->
     <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-        <h2 class="text-xl font-semibold mb-4">Konfirmasi Tindakan</h2>
+        <h2 class="text-xl font-semibold mb-4">Confirm Action</h2>
         <p id="confirmationMessage" class="mb-4"></p>
         <div class="flex justify-end gap-2">
           <button id="cancelConfirmation" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Batal</button>
@@ -219,7 +223,7 @@
       case 'Canceled':
         return 'bg-red-200 text-red-800';
       case 'Expired':
-        return 'bg-red-400 text-red-800';
+        return 'bg-red-200 text-red-800';
       default:
         return 'bg-gray-200 text-gray-800';
     }
@@ -319,8 +323,8 @@
             if (!res.ok) {
               return Swal.fire({
                 icon: 'error',
-                title: 'Gagal Konfirmasi',
-                text: data.error || 'Terjadi kesalahan saat memproses pesanan.',
+                title: 'Failed to confirm',
+                text: data.error || 'An error occurred when processing the order.',
                 customClass: {
                   confirmButton: 'bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded'
                 }
@@ -329,8 +333,8 @@
 
             Swal.fire({
               icon: 'success',
-              title: 'Berhasil',
-              text: 'Pesanan berhasil dikonfirmasi.',
+              title: 'Success',
+              text: 'Order successfully confirmed !',
               customClass: {
                 confirmButton: 'bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded'
               }
@@ -342,7 +346,7 @@
             Swal.fire({
               icon: 'error',
               title: 'Oops!',
-              text: 'Gagal terhubung ke server.'
+              text: 'Failed to connect to server.'
             });
           });
       }
@@ -376,8 +380,8 @@
             if (!res.ok) {
               return Swal.fire({
                 icon: 'error',
-                title: 'Gagal Membatalkan',
-                text: data.error || 'Terjadi kesalahan saat membatalkan pesanan.',
+                title: 'Failed to cancel',
+                text: data.error || 'An error occurred when canceling the order.',
                 customClass: {
                   confirmButton: 'bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded'
                 }
@@ -386,8 +390,8 @@
 
             Swal.fire({
               icon: 'success',
-              title: 'Pesanan Dibatalkan',
-              text: 'Pesanan berhasil dibatalkan.',
+              title: 'Order canceled',
+              text: 'Order canceled successfully.',
               customClass: {
                 confirmButton: 'bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded'
               }
@@ -399,7 +403,7 @@
             Swal.fire({
               icon: 'error',
               title: 'Oops!',
-              text: 'Gagal terhubung ke server.'
+              text: 'Failed to connect to server.'
             });
           });
       }

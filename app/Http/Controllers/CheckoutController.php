@@ -15,20 +15,20 @@ class CheckoutController extends Controller
     public function showForm($product_id)
     {
         $product = produk::findOrFail($product_id);
-        return view('checkout', compact('product'));
+        $buyer = Buyer::find(session('user_id'));
+
+        return view('checkout', compact('product', 'buyer'));
     }
 
     public function processCheckout(Request $request)
     {
         // Validasi input
-        //$request->validate([
-        //    'product_id' => 'required|exists:products,id',
-        //    'phone_number' => 'required|string|max:20',
-        //    'name' => 'required|string|max:255',
-        //    'address' => 'required|string|max:255',
-        //    'quantity' => 'required|integer|min:1',
-        //    'payment_method' => 'required|string',
-        //]);
+        $request->validate([
+            'phone_number' => 'required|numeric|digits_between:8,20',
+            'name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'payment_method' => 'required|string',
+        ]);
 
         // Cek apakah user sudah login
         //if (!Auth::check()) {
@@ -56,9 +56,20 @@ class CheckoutController extends Controller
         // Ambil data produk dari database (untuk keperluan payment)
         $product = produk::findOrFail($request->product_id);
 
+        // Tentukan biaya bank berdasarkan metode pembayaran
+        $bankCharge = match ($request->payment_method) {
+            'BANK BCA' => 350000,
+            'BANK MANDIRI' => 300000,
+            'BANK BNI' => 260000,
+            'BANK BRI' => 250000,
+            default => 0,
+        };
+
         // Hitung total harga
-        $price_total = ($product->price * $request->quantity) + 50000 + 100000;
         $priceqty = $product->price * $request->quantity;
+        $tax = 50000;
+        $shipping = 100000;
+        $price_total = $priceqty + $tax + $shipping + $bankCharge;
 
         // Simpan ke tabel payments
         $payment = Payment::create([
@@ -77,7 +88,7 @@ class CheckoutController extends Controller
             'order_id' => $orderId,
             'payment_code' => $paymentCode,
             'phone_number' => $request->phone_number,
-            'expired_at' => now()->addMinutes(1440),
+            'expired_at' => now()->addMinutes(1),
         ]);
 
         // Redirect atau kirim notifikasi sukses

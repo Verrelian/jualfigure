@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Payment;
 use App\Models\Buyer;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class BuyerHistoryController extends Controller
 {
@@ -69,16 +70,16 @@ class BuyerHistoryController extends Controller
         session(['history_last_tab' => 'history.canceled']);
         $buyer = AuthController::getAuthenticatedUser();
 
+        Payment::where('payment_status', 'UNPAID')
+            ->where('transaction_status', 'NOT YET PROCESSED')
+            ->where('expired_at', '<', now())
+            ->update(['transaction_status' => 'EXPIRED']);
+
         $orders = Payment::where('buyer_id', $buyer->buyer_id)
-            ->where(function ($query) {
-                $query->where('transaction_status', 'CANCELED')
-                    ->orWhere(function ($q) {
-                        $q->where('payment_status', 'PAID')
-                            ->where('expired_at', '<', now());
-                    });
-            })
+            ->whereIn('transaction_status', ['CANCELED', 'EXPIRED'])
             ->orderBy('payment_date', 'desc')
             ->get();
+
 
         return view('pages.history-menu.canceled', compact('orders'));
     }
@@ -194,5 +195,22 @@ class BuyerHistoryController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    public function fetchProcess()
+    {
+        Log::info('FETCH: ', session()->all());
+        $buyer = AuthController::getAuthenticatedUser();
+        if (!$buyer) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
+        $orders = Payment::where('buyer_id', $buyer->buyer_id)
+            ->where('payment_status', 'PAID')
+            ->where('transaction_status', ['NOT YET PROCESSED', 'PROCESSED'])
+            ->orderBy('payment_date', 'desc')
+            ->get();
+
+        return view('pages.partials.process-fetch', compact('orders'));
     }
 }

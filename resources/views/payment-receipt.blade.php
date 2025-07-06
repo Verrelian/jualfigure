@@ -256,7 +256,7 @@
             </div>
             <div class="mt-1 pt-3 pb-3">
                 <div class="flex items-center justify-end gap-2">
-                    <a href="{{ url('/history') }}" class="bg-blue-600 text-white text-center text-sm font-semibold w-1/2 px-5 py-2 rounded-md hover:bg-blue-700 transition">
+                    <a href="{{ url('/pages/history/placed') }}" class="bg-blue-600 text-white text-center text-sm font-semibold w-1/2 px-5 py-2 rounded-md hover:bg-blue-700 transition">
                         Done
                     </a>
                 </div>

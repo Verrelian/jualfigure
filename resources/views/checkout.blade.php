@@ -155,9 +155,27 @@
                                     <i class="fas fa-phone text-blue-500"></i>
                                     <span class="text-lg font-semibold text-gray-700">Phone Number</span>
                                 </div>
-                                <input type="text" name="phone_number" required
+                                @if ($errors->has('phone_number'))
+                                <p class="text-red-500 text-sm mb-2">{{ $errors->first('phone_number') }}</p>
+                                @endif
+                                @if(isset($buyer) && $buyer->phone_number)
+                                <input
+                                    type="text"
+                                    name="phone_number"
+                                    value="{{ $buyer->phone_number }}"
+                                    readonly
+                                    required
+                                    class="block w-full h-14 text-lg px-4 border-2 border-gray-200 rounded-xl bg-gray-100 text-gray-500 focus:outline-none cursor-not-allowed"
+                                    placeholder="08123456789">
+                                @else
+                                <input
+                                    type="text"
+                                    name="phone_number"
+                                    value="{{ old('phone_number') }}"
+                                    required
                                     class="input-focus block w-full h-14 text-lg px-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300"
                                     placeholder="08123456789">
+                                @endif
                             </label>
                         </div>
 
@@ -168,9 +186,23 @@
                                     <i class="fas fa-user text-blue-500"></i>
                                     <span class="text-lg font-semibold text-gray-700">Full Name</span>
                                 </div>
-                                <input type="text" name="name" required
+                                @if(!empty($buyer?->name))
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value="{{ old('name', $buyer->name ?? '') }}"
+                                    readonly
+                                    class="block w-full h-14 text-lg px-4 border-2 border-gray-200 rounded-xl bg-gray-100 text-gray-500 focus:outline-none cursor-not-allowed"
+                                    placeholder="John Doe">
+                                @else
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value="{{ old('name') }}"
+                                    required
                                     class="input-focus block w-full h-14 text-lg px-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300"
                                     placeholder="John Doe">
+                                @endif
                             </label>
                         </div>
 
@@ -181,7 +213,11 @@
                                     <i class="fas fa-map-marker-alt text-blue-500"></i>
                                     <span class="text-lg font-semibold text-gray-700">Shipping Address</span>
                                 </div>
-                                <input type="text" name="address" required
+                                <input
+                                    type="text"
+                                    name="address"
+                                    value="{{ old('address', $buyer->address ?? '') }}"
+                                    required
                                     class="input-focus block w-full h-14 text-lg px-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300"
                                     placeholder="Dusseldorf, Germany">
                             </label>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +20,7 @@
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
         }
+
         .scrollbar-hide {
             -ms-overflow-style: none;
             scrollbar-width: none;
@@ -36,6 +38,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 </head>
+
 <body class="font-[Poppins] min-h-screen bg-gradient-to-b from-gray-100 via-gray-100 to-gray-230">
 
     <!-- Navbar -->
@@ -43,13 +46,13 @@
 
     <!-- Banner (only shown if the child view has a @section('banner')) -->
 
-        @hasSection('banner')
-            <div class="relative w-full h-64 md:h-96 lg:h-[28rem]">
-                <div class="w-full bg-white shadow-md mb-10 relative h-full">
-                        @yield('banner')
-                    </div>
-                </div>
-         @endif
+    @hasSection('banner')
+    <div class="relative w-full h-64 md:h-96 lg:h-[28rem]">
+        <div class="w-full bg-white shadow-md mb-10 relative h-full">
+            @yield('banner')
+        </div>
+    </div>
+    @endif
 
     <!-- Main Content -->
     <main class="w-full max-w-7xl mx-auto px-4 md:px-8">
@@ -64,7 +67,7 @@
 
     <!-- Wishlist Count Logic -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             function updateWishlistCount() {
                 const el = document.getElementById('wishlistCount');
                 if (el) {
@@ -77,10 +80,52 @@
 
             updateWishlistCount();
 
-            window.addEventListener('storage', function (e) {
+            window.addEventListener('storage', function(e) {
                 if (e.key === 'wishlist') updateWishlistCount();
             });
         });
+
+        // Shipping
+        document.addEventListener('DOMContentLoaded', function() {
+            const csrfToken = @json(csrf_token());
+
+            function fetchActiveShippingOrders() {
+                fetch('/mole/shipping/active')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.shipping_orders && data.shipping_orders.length > 0) {
+                            data.shipping_orders.forEach(order => {
+                                const paymentId = order.payment_id;
+
+                                fetch(`/mole/shipping/progress-data/${paymentId}`)
+                                    .then(res => res.json())
+                                    .then(progress => {
+                                        if (progress.diff >= 5) {
+                                            fetch(`/mole/shipping/next-stage/${paymentId}`, {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'X-CSRF-TOKEN': csrfToken
+                                                    }
+                                                })
+                                                .then(res => res.json())
+                                                .then(updated => {
+                                                    console.log(`Updated shipping for ${paymentId}:`, updated);
+
+                                                    // ✅ Tambahkan ini untuk force refresh kalau sudah delivered
+                                                    if (updated.delivered === true) {
+                                                        location.reload();
+                                                    }
+                                                });
+                                        }
+                                    });
+                            });
+                        }
+                    });
+            }
+
+            setInterval(fetchActiveShippingOrders, 3000);
+        });
     </script>
 </body>
+
 </html>

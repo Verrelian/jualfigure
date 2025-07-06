@@ -46,7 +46,6 @@ Route::get('/product/{product_id}', [ProductController::class, 'show'])->name('p
 |--------------------------------------------------------------------------
 */
 Route::get('/', [WebController::class, 'index'])->name('home');
-Route::view('/history', 'pages.product.order-history')->name('order-history');
 Route::view('/filter', 'filter')->name('filter');
 Route::view('/webs', 'welcome')->name('webs');
 Route::view('/contact-us', 'pages.general.contact-us')->name('contact-us');
@@ -140,9 +139,12 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
         Route::post('/{payment_id}/done', [BuyerHistoryController::class, 'done'])->name('done');
         Route::post('/{payment_id}/rate', [BuyerHistoryController::class, 'rate'])->name('rate');
     });
+    Route::get('/pages/partials/process/fetch', [BuyerHistoryController::class, 'fetchProcess'])->name('process.fetch');
 
     Route::get('/shipping/progress-data/{payment_id}', [ShippingProgressController::class, 'getProgress'])->name('shipping.progress');
     Route::post('/shipping/next-stage/{payment_id}', [ShippingProgressController::class, 'nextStage'])->name('shipping.nextStage');
+    Route::get('/shipping/active', [ShippingProgressController::class, 'getActiveShipping']);
+    Route::get('/process/auto-shipping', [ShippingProgressController::class, 'autoToShipping']);
 
     Route::prefix('feed')->group(function () {
         Route::get('/', [PostController::class, 'index'])->name('posts.index');

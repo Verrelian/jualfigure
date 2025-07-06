@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="p-6">
-    <h2 class="text-2xl font-semibold mb-4">Detail Pesanan</h2>
+    <h2 class="text-2xl font-semibold mb-4">Order Detail</h2>
 
     <p><strong>Order ID:</strong> {{ $payment->order_id }}</p>
     <p><strong>Nama Pembeli:</strong> {{ $payment->name }}</p>
