@@ -1,147 +1,406 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <title>
-        Payment Receipt
-    </title>
-    <script src="https://cdn.tailwindcss.com">
-    </script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Payment Receipt</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
+            margin: 0;
             font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: #1a1a1a;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        strong {
+            font-weight: 700;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            display: table;
+            width: 100%;
+            min-height: 600px;
+            table-layout: fixed;
+        }
+
+        /* Left panel */
+        .left-panel {
+            display: table-cell;
+            width: 33.3333%;
+            border-right: 1px solid #e5e7eb;
+            padding: 32px 32px 32px 32px;
+            vertical-align: top;
+        }
+
+        .check-image-wrapper {
+            text-align: center;
+        }
+
+        .check-image {
+            width: 130px;
+            height: 100px;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .order-processed-text {
+            color: #166534;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.3;
+            margin: 0 0 32px 0;
+        }
+
+        .status-text {
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.3;
+            margin: 0 0 32px 0;
+        }
+
+        .status-blue {
+            color: #1e40af;
+        }
+
+        .status-red {
+            color: #dc2626;
+        }
+
+        .status-green {
+            color: #15803d;
+        }
+
+        .order-info {
+            width: 100%;
+            padding: 0 12px;
+        }
+
+        .info-row {
+            display: table;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .info-label,
+        .info-value {
+            display: table-cell;
+            white-space: nowrap;
+            vertical-align: middle;
+            font-size: 12px;
+        }
+
+        .info-label {
+            text-align: left;
+            padding-right: 10px;
+        }
+
+        .info-value {
+            text-align: right;
+            width: 1%;
+        }
+
+        .order-info div:last-child {
+            margin-bottom: 0;
+        }
+
+        .order-info strong {
+            font-weight: 700;
+        }
+
+        .btn-download {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 0;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 400;
+        }
+
+        .btn-download:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Right panel */
+        .right-panel {
+            display: table-cell;
+            width: 66.6667%;
+            padding: 32px 32px 32px 32px;
+            vertical-align: top;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .header h2 {
+            font-weight: 700;
+            font-size: 16px;
+            margin: 0;
+            color: #111827;
+        }
+
+        .close-btn {
+            font-size: 16px;
+            color: #6b7280;
+            border: none;
+            background: none;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .close-btn:hover {
+            color: #374151;
+        }
+
+        .payment-info-box {
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 16px 20px 20px 20px;
+            font-size: 12px;
+            color: #4b5563;
+            margin-bottom: 32px;
+        }
+
+        .payment-info-box p.title {
+            color: #166534;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            margin: 0 0 8px 0;
+        }
+
+        .payment-info-box p.desc {
+            text-align: center;
+            margin: 0 0 16px 0;
+            line-height: 1.3;
+        }
+
+        .info-row {
+            display: table;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .info-label,
+        .info-value {
+            display: table-cell;
+            white-space: nowrap;
+            vertical-align: middle;
+            font-size: 12px;
+            color: #111827;
+        }
+
+        .info-label {
+            text-align: left;
+            padding-right: 10px;
+        }
+
+        .info-value {
+            text-align: right;
+            width: 1%;
+        }
+
+        .detail-row {
+            display: table;
+            width: 100%;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #d1d5db;
+            padding: 4px 0;
+        }
+
+        .detail-label,
+        .detail-value {
+            display: table-cell;
+            white-space: nowrap;
+            vertical-align: middle;
+            font-size: 13px;
+        }
+
+        .detail-label {
+            text-align: left;
+            padding-right: 10px;
+        }
+
+        .detail-value {
+            text-align: right;
+            width: 1%;
+        }
+
+        .detail-row.total {
+            border-bottom: none;
+            font-weight: bold;
+        }
+
+        /* Footer text */
+        .footer-text {
+            font-size: 12px;
+            color: #6b7280;
+            line-height: 1.3;
+            max-width: 480px;
+        }
+
+        .footer-text strong {
+            font-weight: 700;
+        }
+
+        /* Done button */
+        .btn-done {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 0;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .btn-done:hover {
+            background-color: #1d4ed8;
         }
     </style>
 </head>
 
-<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
-    <div class="max-w-4xl w-full bg-white rounded-md shadow-lg flex flex-col md:flex-row overflow-hidden" style="min-height: 480px">
-        <!-- Left panel -->
-        <div class="bg-white w-full md:w-72 flex flex-col items-center justify-center gap-4 p-8 border-r border-gray-200">
-            <img alt="Green check mark icon inside a circle representing payment success" class="w-16 h-16" height="64" src="https://storage.googleapis.com/a1aa/image/2099399e-07b6-4db3-deab-f00430368fd9.jpg" width="64" />
-            <div class="text-center">
-                <p class="text-green-700 font-semibold text-sm">
-                    Payment info!
-                </p>
-                <p class="text-xs text-gray-600 mt-1 leading-tight">
-                    Your order has been processed..
-                </p>
-            </div>
-            <!-- Left panel -->
-            <div class="w-full mt-6 text-xs text-gray-700">
-                <div class="flex justify-between mb-1">
-                    <span>Order ID:</span>
-                    <span class="font-bold">{{ $payment->order_id }}</span>
-                </div>
-                <div class="flex justify-between mb-1">
-                    <span>Date:</span>
-                    <span>{{ $payment->payment_date }}</span>
-                </div>
-                <div class="flex justify-between mb-1">
-                    <span>Name:</span>
-                    <span>{{ $payment->name }}</span>
-                </div>
-                <div class="flex justify-between mb-1">
-                    <span>Phone:</span>
-                    <span>{{ $payment->phone_number }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span>Address:</span>
-                    <span class="text-right">{{ $payment->address }}</span>
-                </div>
-                <!-- Right panel -->
-                <div class="flex-1 bg-white p-8 flex flex-col">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="font-semibold text-gray-900 text-base">
-                            Payment Receipt
-                        </h2>
-                        <button aria-label="Close" class="text-gray-400 hover:text-gray-600 focus:outline-none">
-                            <i class="fas fa-times">
-                            </i>
-                        </button>
+<body>
+    <div class="container" role="main" aria-label="Payment Receipt">
+        <section class="left-panel" aria-label="Order summary and status">
+            <div>
+                @php
+                $now = now();
+                $isExpired = $payment->payment_status === 'UNPAID' && $payment->expired_at <= $now;
+                    $isCanceled=$payment->payment_status === 'PAID' && $payment->transaction_status === 'CANCELED';
+                    $isCompleted = $payment->transaction_status === 'COMPLETED';
+                    @endphp
+
+                    <div class="check-image-wrapper" aria-hidden="true">
+                        @if ($isCompleted)
+                        <img src="{{ public_path('images/completed.png') }}" alt="Completed Icon" class="check-image" />
+                        @elseif ($isExpired)
+                        <img src="{{ public_path('images/canceled-expired.png') }}" alt="Expired Icon" class="check-image" />
+                        @elseif ($isCanceled)
+                        <img src="{{ public_path('images/canceled-expired.png') }}" alt="Canceled Icon" class="check-image" />
+                        @elseif ($payment->payment_status === 'PAID')
+                        <img src="{{ public_path('images/checklist.png') }}" alt="Checklist Icon" class="check-image" />
+                        @endif
                     </div>
-                    <div class="border border-gray-100 rounded-md p-6 mb-6">
-                        <div class="flex flex-col items-center mb-4">
-                            <img alt="Green check mark icon inside a circle representing payment success" class="w-12 h-12 mb-2" height="48" src="https://storage.googleapis.com/a1aa/image/2099399e-07b6-4db3-deab-f00430368fd9.jpg" width="48" />
-                            <p class="text-green-700 font-semibold text-sm">
-                                Payment!
-                            </p>
-                            <p class="text-gray-700 text-xs text-center max-w-[320px]">
-                                Your order has been Add to order status please check.
-                            </p>
-                        </div>
-                        <p class="text-gray-700 text-xs mb-4 max-w-[320px]">
-                            Info:If you done for payment please check your order list
-                            <br />
-                            Name Store:Market Place of Legends
-                        </p>
-                        <!-- Right panel: Payment Method & Status -->
-                        <div class="text-xs text-gray-700 max-w-[320px]">
-                            <div class="flex justify-between mb-1">
-                                <span>Payment Method:</span>
-                                <span>{{ $payment->payment_method }}</span>
-                            </div>
-                            <div class="flex justify-between font-semibold mb-1">
-                                <span>Virtual Account Number:</span>
-                                <span>{{ $payment->payment_code }}</span>
-                            </div>
-                            <div class="flex justify-between mb-1">
-                                <span>Payment Status:</span>
-                                <span>{{ $payment->payment_status }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Transaction Status:</span>
-                                <span>{{ $payment->transaction_status }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border border-gray-100 rounded-md p-4 mb-6 max-w-[320px] text-xs text-gray-700">
-                        <p class="font-semibold mb-3 text-gray-900">
-                            Order Details
-                        </p>
-                        <!-- Order Details -->
-                        <div class="flex justify-between mb-1">
-                            <span>Product:</span>
-                            <span>{{ $payment->product_name }}</span>
-                        </div>
-                        <div class="flex justify-between mb-1">
-                            <span>Quantity:</span>
-                            <span>{{ $payment->quantity }}</span>
-                        </div>
-                        <div class="flex justify-between mb-1 border-t border-gray-200 pt-2">
-                            <span>Subtotal:</span>
-                            <span>IDR {{ number_format($payment->price, 2, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between mb-1">
-                            <span>Shipping:</span>
-                            <span>IDR 8,000.00</span> <!-- Placeholder tetap -->
-                        </div>
-                        <div class="flex justify-between mb-1">
-                            <span>Tax:</span>
-                            <span>IDR 0.00</span> <!-- Placeholder tetap -->
-                        </div>
-                        <div class="flex justify-between font-bold border-t border-gray-200 pt-2 text-gray-900">
-                            <span>Total:</span>
-                            <span>IDR {{ number_format($payment->price_total, 2, ',', '.') }}</span>
-                        </div>
-                    </div>
-                    <p class="text-gray-500 text-xs max-w-[320px] mb-6 leading-relaxed">
-                        Please complete your payment by transferring to the virtual account
-                        number shown above. Your order will be processed once payment is
-                        verified.
-                        <br />
-                        Estimated delivery:
-                        <span class="font-semibold">
-                            3-5 business days
-                        </span>
-                        after payment
-                        verification.
+                    <p class="status-text
+@if ($isCompleted)
+    status-blue
+@elseif ($isExpired || $isCanceled)
+    status-red
+@elseif ($payment->payment_status === 'PAID')
+    status-green
+@endif
+">
+                        @if ($isCompleted)
+                        Order completed successfully!
+                        @elseif ($isExpired)
+                        This payment has expired!
+                        @elseif ($isCanceled)
+                        Your order has been canceled!
+                        @elseif ($payment->payment_status === 'PAID')
+                        Your order has been processed!
+                        @endif
                     </p>
+            </div>
+            <div class="order-info">
+                <div class="info-row">
+                    <div class="info-label">Order ID:</div>
+                    <div class="info-value"><strong>{{ $payment->order_id }}</strong></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Date:</div>
+                    <div class="info-value">{{ $payment->payment_date }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Name:</div>
+                    <div class="info-value">{{ $payment->name }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Phone:</div>
+                    <div class="info-value">{{ $payment->phone_number }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Address:</div>
+                    <div class="info-value">{{ $payment->address }}</div>
                 </div>
             </div>
+        </section>
+        <section class="right-panel" aria-label="Payment details and order details">
+            <header class="header">
+                <h2>Payment Receipt</h2>
+            </header>
+            <div class="payment-info-box" aria-label="Payment information">
+                <p class="title">Payment Info!</p>
+                <p class="desc">Your order has been Add to order status, please check !<br />Info : If you done for payment please check your order list</p>
+                <div class="payment-info-details">
+                    <div class="info-row">
+                        <div class="info-label">Name Store:</div>
+                        <div class="info-value">Market Place of Legends</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Payment Method:</div>
+                        <div class="info-value">{{ $payment->payment_method }}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Payment Status:</div>
+                        <div class="info-value">{{ $payment->payment_status }}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Transaction Status:</div>
+                        <div class="info-value">{{ $payment->transaction_status }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="order-details" aria-label="Order details">
+                <p class="title">Order Details</p>
+                <div class="detail-row">
+                    <div class="detail-label">Product:</div>
+                    <div class="detail-value">{{ $payment->product_name }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Quantity:</div>
+                    <div class="detail-value">{{ $payment->quantity }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Subtotal:</div>
+                    <div class="detail-value">IDR {{ number_format($payment->price) }}</div>
+                </div>
+                <div class="detail-row total">
+                    <div class="detail-label"><strong>Total (Tax + Shipping):</strong></div>
+                    <div class="detail-value"><strong>IDR {{ number_format($payment->price_total, 2, ',', '.') }}</strong></div>
+                </div>
+            </div>
+
+            <p class="footer-text" aria-label="Payment instructions and delivery estimate">
+                Please complete your payment by transferring to the virtual account number shown above. Your order will be processed once payment is verified.<br />
+                Estimated delivery: <strong>3-5 business days</strong> after payment verification.
+            </p>
+        </section>
+    </div>
 </body>
 
 </html>

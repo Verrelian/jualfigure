@@ -155,13 +155,19 @@
                     $isCanceled=$payment->payment_status === 'PAID' && $payment->transaction_status === 'CANCELED';
                     @endphp
 
-                    @if ($payment->payment_status === 'UNPAID' && !$isExpired && !$isCanceled)
-                    <a href="{{ route('bank.payment', ['bank' => $bank]) }}"
-                        class="mt-auto w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-center block">
-                        Pay Now
-                    </a>
-                    @endif
-
+                    <div class="mt-auto pt-6">
+                        @if ($payment->payment_status === 'UNPAID' && !$isExpired && !$isCanceled)
+                        <a href="{{ route('bank.payment', ['bank' => $bank]) }}"
+                            class="mt-auto w-44 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-center block">
+                            Pay Now
+                        </a>
+                        @elseif ($payment->payment_status === 'PAID')
+                        <a href="{{ route('payment.receipt.download', $payment->payment_id) }}"
+                            class="mt-auto w-44 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-center block">
+                            Download Receipt
+                        </a>
+                        @endif
+                    </div>
 
         </div>
         <!-- Right panel -->
@@ -254,12 +260,10 @@
                     verification.
                 </p>
             </div>
-            <div class="mt-1 pt-3 pb-3">
-                <div class="flex items-center justify-end gap-2">
-                    <a href="{{ url('/pages/history/placed') }}" class="bg-blue-600 text-white text-center text-sm font-semibold w-1/2 px-5 py-2 rounded-md hover:bg-blue-700 transition">
-                        Done
-                    </a>
-                </div>
+            <div class="mt-auto pt-6 flex justify-end">
+                <a href="{{ url('/pages/history/placed') }}" class="bg-blue-600 text-white text-center text-sm font-semibold w-1/4 px-5 py-2 rounded-md hover:bg-blue-700 transition">
+                    Done
+                </a>
             </div>
         </div>
     </div>
