@@ -40,6 +40,6 @@ class PaymentReceipt extends Model
     // (Opsional) Relasi ke Produk
     public function product()
     {
-        return $this->belongsTo(Produk::class, 'product_id');
+        return $this->belongsTo(Produk::class, 'product_id')->withDefault();
     }
 }

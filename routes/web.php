@@ -22,6 +22,7 @@ use App\Http\Controllers\{
     InvoiceController,
     CartController,
     WebController,
+    DashboardSellerController,
     LeaderboardController
 };
 
@@ -164,7 +165,7 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['web', 'seller.auth'])->prefix('seller')->group(function () {
-    Route::get('/dashboard', [ListProdukController::class, 'index'])->name('seller.dashboard');
+    Route::get('/dashboard', [DashboardSellerController::class, 'index'])->name('seller.dashboard');
 
     // Profile routes
     Route::get('/profile', [SellerProfileController::class, 'show'])->name('seller.profile');
@@ -197,4 +198,6 @@ Route::middleware(['web', 'seller.auth'])->prefix('seller')->group(function () {
 
     Route::post('/to-shipping/{payment_id}', [ShippingProgressController::class, 'ToShipping'])->name('shipping.check');
     Route::view('/laporan', 'pages.seller.laporan')->name('seller.laporan');
+        Route::get('/laporan', [InvoiceController::class, 'index'])->name('seller.laporan');
+
 });

@@ -1,17 +1,4 @@
-<aside class="w-64 h-screen bg-white text-gray-800 border-r border-gray-200 shadow-sm flex flex-col p-5 space-y-6 font-medium">
-
-  <!-- Seller Profile -->
-<div class="flex items-center bg-gray-100 p-4 rounded-lg">
-  <img src="{{ session('user')->avatar ? asset('storage/' . session('user')->avatar) : asset('images/muka.jpg') }}"
-       alt="Avatar"
-       class="h-12 w-12 rounded-full border mr-3">
-
-  <div>
-    <p class="text-base font-semibold">{{ session('user')->name }}</p>
-    <p class="text-sm text-gray-500">{{ session('user')->email }}</p>
-  </div>
-</div>
-
+<aside class="w-55 h-screen bg-white text-gray-800 border-r border-gray-200 shadow-sm flex flex-col p-5 space-y-6 font-medium">
 
   <!-- Navigation -->
   <nav class="flex flex-col space-y-1">
