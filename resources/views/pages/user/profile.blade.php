@@ -8,7 +8,6 @@
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans">
 
-    <!-- Top Bar -->
     <div class="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
         <h1 class="text-xl font-bold">MOLE</h1>
         <div class="flex items-center gap-4">
@@ -17,21 +16,16 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="max-w-7xl mx-auto mt-6 px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        <!-- Sidebar -->
         <div class="md:col-span-1">
             <div class="bg-white rounded-lg p-6 shadow-sm flex flex-col items-center">
                 <div class="w-40 h-40 rounded-full overflow-hidden mb-4 border-4 border-gray-200">
-                    {{-- PERBAIKAN: Gunakan $user->avatar_url --}}
                     <img src="{{ $user->avatar_url }}"
                          alt="{{ $user->username ?? 'Profile' }}"
                          class="w-full h-full object-cover rounded-full">
                 </div>
-                {{-- PERBAIKAN: Gunakan $user->name --}}
                 <h2 class="text-lg font-bold">{{ $user->name }}</h2>
-                {{-- PERBAIKAN: Gunakan $user->username --}}
                 <p class="text-gray-600 text-sm mb-4">{{ $user->username }}</p>
 
                 <div class="w-full text-sm text-gray-600 space-y-1 text-left mt-2">
@@ -51,7 +45,6 @@
             </div>
         </div>
 
-        <!-- Main Section -->
         <div class="md:col-span-2 space-y-6">
             <div class="bg-white rounded-lg shadow-sm p-6">
                 <h3 class="text-xl font-semibold mb-4">Posts by {{ $user->username }}</h3>
@@ -60,12 +53,11 @@
                         <div class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100">
                             <h4 class="text-lg font-semibold">{{ $post->title }}</h4>
                             <p class="text-gray-700 text-sm mt-1">{{ Str::limit($post->description, 100) }}</p>
-                            @if($post->image_url) {{-- Gunakan image_url dari accessor Post --}}
+                            @if($post->image_url)
                                 <img src="{{ $post->image_url }}" alt="Post Image" class="mt-2 rounded-lg max-h-60 object-cover w-full">
                             @endif
                             <div class="text-xs text-gray-500 mt-2">
                                 {{ $post->created_at->diffForHumans() }}
-                                {{-- Pastikan relasi likes dan comments ada di Post model untuk ini --}}
                                 @if(isset($post->likes_count))
                                 <span class="ml-4">Likes: {{ $post->likes_count }}</span>
                                 @else
@@ -111,15 +103,20 @@
     </div>
 
     <script>
+        // ***** PERBAIKAN PENTING DI SINI *****
+        // Pastikan script untuk tombol edit hanya dijalankan jika tombol itu ada di DOM
+        @if (session()->has('user_id') && (int)session('user_id') === (int)$user->buyer_id)
         document.getElementById('edit-profile-btn').addEventListener('click', function () {
             window.location.href = "{{ route('user.profile.edit') }}";
         });
+        @endif
+
+        // Ubah tombol back agar selalu kembali ke halaman feed
         document.getElementById('back-btn').addEventListener('click', function () {
-            window.location.href = "{{ route('dashboard') }}";
+            window.location.href = "{{ route('posts.index') }}"; // Mengarahkan ke halaman feed
         });
+
         document.getElementById('view-post-btn').addEventListener('click', function () {
-            // Ini akan mengarahkan ke halaman dengan semua postingan user ini
-            // Anda mungkin perlu membuat route dan controller baru untuk ini
             alert('Fungsionalitas "View All Posts" belum diimplementasikan.');
         });
         document.getElementById('view-toys-btn').addEventListener('click', function () {

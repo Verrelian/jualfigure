@@ -6,14 +6,11 @@ use App\Models\Post;
 use App\Models\PostLike;
 use App\Models\PostComment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage; // PERBAIKAN: Menggunakan backslash ( \ )
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
-    /**
-     * Menampilkan semua postingan dengan like & comment count,
-     * serta memuat relasi buyer dan komentator (buyer).
-     */
+
     public function index()
     {
         $posts = Post::withCount(['likes', 'comments'])
