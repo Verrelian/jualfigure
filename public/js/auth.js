@@ -4,6 +4,8 @@
  */
 
 // Toast Notification System
+console.log('[auth.js] Loaded!');
+
 class ToastManager {
   constructor() {
     this.container = document.getElementById('toast-container');
@@ -298,39 +300,34 @@ class AuthFormManager {
   }
 
   setupForgotPassword() {
-    const forgotPasswordForm = document.getElementById('forgot-password-form-element');
+  const forgotPasswordForm = document.getElementById('forgot-password-form-element');
 
-    if (forgotPasswordForm) {
-      forgotPasswordForm.addEventListener('submit', (e) => {
-        e.preventDefault();
+  if (forgotPasswordForm) {
+    forgotPasswordForm.addEventListener('submit', (e) => {
+      const identityInput = document.getElementById('reset-identity');
+      const identity = identityInput ? identityInput.value.trim() : '';
 
-        const emailInput = document.getElementById('reset-email');
-        const email = emailInput ? emailInput.value.trim() : '';
+      if (identity === '') {
+        e.preventDefault(); // ❗ Cegah hanya jika kosong
+        this.toastManager.show('Please enter your email or username', 'error');
+        return;
+      }
 
-        if (email === '') {
-          this.toastManager.show('Please enter your email address', 'error');
-          return;
-        }
-
-        // Email validation
+      if (identity.includes('@')) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
+        if (!emailRegex.test(identity)) {
+          e.preventDefault(); // ❗ Cegah hanya jika format salah
           this.toastManager.show('Please enter a valid email address', 'error');
           return;
         }
+      }
 
-        // Simulate sending reset email (replace with actual API call)
-        this.toastManager.show('Password reset instructions sent to your email!', 'success');
-
-        // Clear form and switch back to login
-        if (emailInput) emailInput.value = '';
-        setTimeout(() => {
-          const backToLoginBtn = document.getElementById('back-to-login');
-          if (backToLoginBtn) backToLoginBtn.click();
-        }, 1500);
-      });
-    }
+      // ✅ Jangan preventDefault kalau semua valid
+      // Biarkan Laravel yang handle di backend
+    });
   }
+}
+
 
   setupRealTimeValidation() {
     const inputs = document.querySelectorAll('input');

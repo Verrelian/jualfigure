@@ -23,7 +23,9 @@ use App\Http\Controllers\{
     CartController,
     WebController,
     DashboardSellerController,
-    LeaderboardController
+    LeaderboardController,
+    ForgotPasswordController,
+    OTPController,
 };
 
 /*
@@ -35,6 +37,14 @@ use App\Http\Controllers\{
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::get('/register', fn() => view('register'))->name('register');
 Route::get('/forgot_password', fn() => view('forgot_password'))->name('forgot_password');
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotForm'])->name('forgot.form');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'submitForgot'])->name('forgot.submit');
+
+Route::get('/verify-token', [ForgotPasswordController::class, 'showVerifyForm'])->name('verify.form');
+Route::post('/verify-token', [ForgotPasswordController::class, 'submitVerify'])->name('verify.submit');
+
+Route::get('/reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('reset.form');
+Route::post('/reset-password', [ForgotPasswordController::class, 'submitReset'])->name('reset.submit');
 
 Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/auth/register', [AuthController::class, 'register'])->name('auth.register');

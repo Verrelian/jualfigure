@@ -10,6 +10,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+  
 </head>
 <body class="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-300 to-gray-100">
 
@@ -57,6 +58,11 @@
 
     <div class="form-container">
       @include('component.forms.login')
+      @if (session('status'))
+  <div class="mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded text-sm">
+    {{ session('status') }}
+  </div>
+@endif
       @include('component.forms.register')
       @include('component.forms.forgot-password')
     </div>
