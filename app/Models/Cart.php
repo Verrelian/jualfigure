@@ -54,8 +54,17 @@ class Cart extends Model
     public function getTotalPriceAttribute()
     {
         if ($this->product) {
-            // Assuming price is stored as string like "Rp 1.000.000"
-            $price = (int) str_replace(['Rp ', '.'], ['', ''], $this->product->price);
+            // Handle different price formats
+            $price = $this->product->price;
+
+            // If price is string with "Rp" format
+            if (is_string($price) && strpos($price, 'Rp') !== false) {
+                $price = (int) str_replace(['Rp ', '.', ','], ['', '', ''], $price);
+            } else {
+                // If price is already numeric
+                $price = (int) $price;
+            }
+
             return $price * $this->quantity;
         }
         return 0;
@@ -76,11 +85,15 @@ class Cart extends Model
     {
         $cartItems = static::with('product')->where('buyer_id', $buyerId)->get();
         return $cartItems->sum(function($item) {
-            if ($item->product) {
-                $price = (int) str_replace(['Rp ', '.'], ['', ''], $item->product->price);
-                return $price * $item->quantity;
-            }
-            return 0;
+            return $item->total_price;
         });
+    }
+
+    /**
+     * Static method untuk clear cart setelah checkout
+     */
+    public static function clearCartForBuyer($buyerId)
+    {
+        return static::where('buyer_id', $buyerId)->delete();
     }
 }

@@ -5,14 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Produk;
 use App\Models\Cart;
-use App\Http\Controllers\AuthController;
 
 class CartController extends Controller
 {
     public function index()
     {
         $buyerId = $this->getBuyerID();
-
         if (!$buyerId) {
             return response()->json([
                 'success' => false,
@@ -39,7 +37,6 @@ class CartController extends Controller
     public function add(Request $request)
     {
         $buyerId = $this->getBuyerID();
-
         if (!$buyerId) {
             return response()->json([
                 'success' => false,
@@ -55,45 +52,35 @@ class CartController extends Controller
         $productId = $request->product_id;
         $quantity = $request->quantity ?? 1;
 
-        try {
-            $existingCartItem = Cart::where('buyer_id', $buyerId)
-                                   ->where('product_id', $productId)
-                                   ->first();
+        $existingCartItem = Cart::where('buyer_id', $buyerId)
+                               ->where('product_id', $productId)
+                               ->first();
 
-            if ($existingCartItem) {
-                $existingCartItem->quantity += $quantity;
-                $existingCartItem->save();
-                $cartItem = $existingCartItem;
-                $message = 'Product quantity updated in cart';
-            } else {
-                $cartItem = Cart::create([
-                    'buyer_id' => $buyerId,
-                    'product_id' => $productId,
-                    'quantity' => $quantity
-                ]);
-                $message = 'Product added to cart successfully';
-            }
-
-            $cartItem->load('product');
-
-            return response()->json([
-                'success' => true,
-                'data' => $cartItem,
-                'message' => $message
+        if ($existingCartItem) {
+            $existingCartItem->quantity += $quantity;
+            $existingCartItem->save();
+            $cartItem = $existingCartItem;
+            $message = 'Product quantity updated in cart';
+        } else {
+            $cartItem = Cart::create([
+                'buyer_id' => $buyerId,
+                'product_id' => $productId,
+                'quantity' => $quantity
             ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to add product to cart: ' . $e->getMessage()
-            ], 500);
+            $message = 'Product added to cart successfully';
         }
+
+        $cartItem->load('product');
+        return response()->json([
+            'success' => true,
+            'data' => $cartItem,
+            'message' => $message
+        ]);
     }
 
     public function update(Request $request, $id)
     {
         $buyerId = $this->getBuyerID();
-
         if (!$buyerId) {
             return response()->json([
                 'success' => false,
@@ -105,41 +92,31 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1|max:99'
         ]);
 
-        try {
-            $cartItem = Cart::where('cart_id', $id)
-                           ->where('buyer_id', $buyerId)
-                           ->first();
+        $cartItem = Cart::where('cart_id', $id)
+                       ->where('buyer_id', $buyerId)
+                       ->first();
 
-            if (!$cartItem) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Cart item not found'
-                ], 404);
-            }
-
-            $cartItem->quantity = $request->quantity;
-            $cartItem->save();
-
-            $cartItem->load('product');
-
-            return response()->json([
-                'success' => true,
-                'data' => $cartItem,
-                'message' => 'Cart item updated successfully'
-            ]);
-
-        } catch (\Exception $e) {
+        if (!$cartItem) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update cart item: ' . $e->getMessage()
-            ], 500);
+                'message' => 'Cart item not found'
+            ], 404);
         }
+
+        $cartItem->quantity = $request->quantity;
+        $cartItem->save();
+        $cartItem->load('product');
+
+        return response()->json([
+            'success' => true,
+            'data' => $cartItem,
+            'message' => 'Cart item updated successfully'
+        ]);
     }
 
     public function destroy($id)
     {
         $buyerId = $this->getBuyerID();
-
         if (!$buyerId) {
             return response()->json([
                 'success' => false,
@@ -147,85 +124,69 @@ class CartController extends Controller
             ], 401);
         }
 
-        try {
-            $cartItem = Cart::where('cart_id', $id)
-                           ->where('buyer_id', $buyerId)
-                           ->first();
+        $cartItem = Cart::where('cart_id', $id)
+                       ->where('buyer_id', $buyerId)
+                       ->first();
 
-            if (!$cartItem) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Cart item not found'
-                ], 404);
-            }
-
-            $cartItem->delete();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Cart item removed successfully'
-            ]);
-
-        } catch (\Exception $e) {
+        if (!$cartItem) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to remove cart item: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function count()
-    {
-        $buyerId = $this->getBuyerID();
-
-        if (!$buyerId) {
-            return response()->json([
-                'success' => true,
-                'count' => 0
-            ]);
+                'message' => 'Cart item not found'
+            ], 404);
         }
 
-        $count = Cart::getTotalItemsForBuyer($buyerId);
-
+        $cartItem->delete();
         return response()->json([
             'success' => true,
-            'count' => $count
+            'message' => 'Cart item removed successfully'
         ]);
     }
 
+    /**
+     * Get cart count for specific buyer
+     */
+    public function getCount()
+    {
+        $buyerId = $this->getBuyerID();
+        if (!$buyerId) {
+            return response()->json(['success' => false, 'count' => 0], 401);
+        }
+
+        $count = Cart::getTotalItemsForBuyer($buyerId);
+        return response()->json(['success' => true, 'count' => $count]);
+    }
+
+    /**
+     * Get cart total for specific buyer
+     */
+    public function getTotal()
+    {
+        $buyerId = $this->getBuyerID();
+        if (!$buyerId) {
+            return response()->json(['success' => false, 'total' => 0], 401);
+        }
+
+        $total = Cart::getSubtotalForBuyer($buyerId);
+        return response()->json(['success' => true, 'total' => $total]);
+    }
+
+    /**
+     * Clear entire cart for buyer
+     */
     public function clear()
     {
         $buyerId = $this->getBuyerID();
-
         if (!$buyerId) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User not authenticated'
-            ], 401);
+            return response()->json(['success' => false, 'message' => 'User not authenticated'], 401);
         }
 
-        try {
-            Cart::where('buyer_id', $buyerId)->delete();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Cart cleared successfully'
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to clear cart: ' . $e->getMessage()
-            ], 500);
-        }
+        Cart::clearCartForBuyer($buyerId);
+        return response()->json(['success' => true, 'message' => 'Cart cleared successfully']);
     }
 
     private function getBuyerID()
     {
-        if (session('role') === 'buyer' && session('user_id')) {
-            return session('user_id');
-        }
-        return null;
+        return (session('role') === 'buyer') ? session('user_id') : null;
     }
 
     private function formatCartResponse($cartItems)
@@ -234,12 +195,11 @@ class CartController extends Controller
             return [
                 'id' => $item->cart_id,
                 'product_id' => $item->product_id,
-                'name' => $item->product->product_name ?? 'Unknown Product',
-                'price' => $item->product->price ?? 'Rp 0',
+                'name' => $item->product->product_name ?? 'Unknown',
+                'price' => (int) $item->product->price ?? 0,
                 'image' => $item->product->image ?? '',
                 'quantity' => $item->quantity,
-                'total_price' => $item->total_price,
-                'product' => $item->product
+                'total_price' => $item->total_price
             ];
         });
     }

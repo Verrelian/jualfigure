@@ -35,21 +35,32 @@
             <p class="text-sm text-gray-600 mt-1">Special offers</p>
         </div>
     </div>
-
-    <!-- Promo Banner -->
+    <!-- Search Banner -->
     <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-8 mb-12 text-white">
-        <div class="flex flex-col md:flex-row items-center justify-between">
-            <div>
-                <h2 class="text-2xl md:text-3xl font-bold mb-2">Special Offer!</h2>
-                <p class="text-lg opacity-90">Get up to 30% off on selected figures</p>
-                <p class="text-sm opacity-75">Limited time only - Don't miss out!</p>
-            </div>
-            <div class="mt-4 md:mt-0">
-                <button class="bg-white text-purple-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors">
-                    Shop Now
+        <form action="{{ route('search') }}" method="GET">
+            <h2 class="text-2xl font-bold mb-4">Cari Produk Favoritmu</h2>
+
+            <div class="flex flex-col md:flex-row items-center gap-4">
+                {{-- Input --}}
+                <div class="relative w-full md:flex-1">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
+                    </div>
+                    <input type="search" name="search_keyword" required
+                        class="w-full py-3 pl-10 pr-4 rounded-lg text-gray-900 focus:outline-none"
+                        placeholder="Cari produk, pelanggan, pesanan..." />
+                </div>
+
+                {{-- Tombol --}}
+                <button type="submit"
+                    class="bg-white text-purple-600 font-bold px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors">
+                    Cari
                 </button>
             </div>
-        </div>
+        </form>
     </div>
 
     <!-- Trending Products -->
