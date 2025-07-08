@@ -288,6 +288,8 @@
                             customClass: {
                                 confirmButton: 'bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded'
                             }
+                        }).then(() => {
+                            window.location.href = '/mole/pages/history/completed';
                         });
                     } else {
                         Swal.fire({

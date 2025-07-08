@@ -8,6 +8,12 @@
   <div class="bg-red-100 text-red-700 border border-red-400 px-4 py-3 rounded mb-4">
     {{ session('error') }}
   </div>
+  @if (session('status'))
+  <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-sm">
+    {{ session('status') }}
+  </div>
+@endif
+
 @endif
 
   <form action="{{ route('auth.login') }}" method="POST" class="space-y-4">

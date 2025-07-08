@@ -241,7 +241,7 @@
                         return Swal.fire({
                             icon: 'error',
                             title: 'Gagal',
-                            text: data.error || 'Terjadi kesalahan.',
+                            text: data.error || 'Something went wrong.',
                             customClass: {
                                 confirmButton: 'bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded'
                             }
@@ -259,13 +259,15 @@
                         confirmButtonText: 'OK',
                         timer: 2000,
                         timerProgressBar: true
-                    }).then(() => location.reload());
+                    }).then(() => {
+                        window.location.href = `/mole/pages/history/completed/${paymentId}`;
+                    });
                 })
                 .catch(err => {
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops!',
-                        text: 'Gagal terhubung ke server.'
+                        text: 'Failed to connect to server.'
                     });
                 });
         });
