@@ -23,6 +23,7 @@ use App\Http\Controllers\{
     CartController,
     WebController,
     DashboardSellerController,
+    SearchController,
     LeaderboardController
 };
 
@@ -94,6 +95,8 @@ Route::prefix('order')->group(function () {
 Route::middleware(['web', 'buyer.auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/history/{id?}', [OrderController::class, 'history'])->name('order.history');
+    Route::get('/search', [SearchController::class, 'index'])->name('search');
+    Route::get('/search/result', [SearchController::class, 'result'])->name('search.result');
     Route::prefix('user')->group(function () {
         Route::get('/profile', [ProfileController::class, 'show'])->name('user.profile');
         Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('user.profile.edit');

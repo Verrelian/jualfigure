@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('type', 'Home - Figure Collection Store')
+@section('title', 'Home Page | Marketplace of Legends')
 @section('banner')
     <img src="{{ asset('images/banner3.jpg') }}" alt="Dashboard Banner" class="absolute inset-0 w-full h-full object-cover z-0">
 @endsection

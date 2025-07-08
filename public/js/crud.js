@@ -2,12 +2,53 @@
 let isEditMode = false;
 let currentEditId = null;
 
+// Base URL sesuai dengan route structure - PERBAIKAN
+const BASE_URL = '/seller/product';
+
+// Helper function untuk handle response
+function handleResponse(response) {
+  // Jika response tidak ok, throw error dengan status
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+
+  // Cek content type
+  const contentType = response.headers.get('content-type');
+  if (!contentType || !contentType.includes('application/json')) {
+    throw new Error('Server tidak mengembalikan JSON response');
+  }
+
+  return response.json();
+}
+
+// Function untuk handle fetch errors
+function handleFetchError(error) {
+  console.error('Fetch error:', error);
+
+  if (error.message.includes('HTTP 405')) {
+    return 'Method tidak diizinkan. Periksa konfigurasi server.';
+  } else if (error.message.includes('HTTP 404')) {
+    return 'Endpoint tidak ditemukan. Periksa URL.';
+  } else if (error.message.includes('HTTP 419')) {
+    return 'CSRF token expired. Refresh halaman.';
+  } else if (error.message.includes('tidak mengembalikan JSON')) {
+    return 'Server error. Periksa log server.';
+  } else {
+    return 'Terjadi kesalahan koneksi!';
+  }
+}
+
 function openAddModal() {
   resetModalState();
   document.getElementById('modalTitle').textContent = 'Tambah Produk Baru';
   document.getElementById('saveButtonText').textContent = 'Simpan';
-  document.getElementById('productForm').action = document.getElementById('productForm').getAttribute('action').replace(/\/\d+$/, '');
+
+  // Gunakan base URL yang konsisten untuk add
+  document.getElementById('productForm').action = BASE_URL;
   document.getElementById('formMethod').value = 'POST';
+
+  console.log('Add modal opened, form action:', document.getElementById('productForm').action);
+
   showModal('productModal');
 }
 
@@ -26,9 +67,10 @@ function openEditModal(product) {
   document.getElementById('productStock').value = product.stock;
 
   // Set form action dan method dengan benar
-  const baseAction = document.getElementById('productForm').getAttribute('action');
-  document.getElementById('productForm').action = baseAction.replace('store', `update/${product.product_id}`);
+  document.getElementById('productForm').action = `${BASE_URL}/${product.product_id}`;
   document.getElementById('formMethod').value = 'PUT';
+
+  console.log('Edit modal opened, form action:', document.getElementById('productForm').action);
 
   // Reset semua field spesifikasi terlebih dahulu
   document.getElementById('scale').value = '';
@@ -49,6 +91,7 @@ function openEditModal(product) {
 
   showModal('productModal');
 }
+
 function previewImage(src) {
   const modal = document.getElementById('imagePreviewModal');
   const image = document.getElementById('imagePreviewSrc');
@@ -67,8 +110,8 @@ function closeImagePreview() {
 
 function showSpecModal(productId) {
   // Fetch specification data
-  fetch(`/mole/seller/product/${productId}/specification`)
-    .then(response => response.json())
+  fetch(`${BASE_URL}/${productId}/specification`)
+    .then(handleResponse)
     .then(data => {
       const specContent = document.getElementById('specContent');
       specContent.innerHTML = '';
@@ -122,10 +165,13 @@ function closeSpecModal() {
 
 function openDeleteModal(productId, productName) {
   document.getElementById('deleteProductName').textContent = productName;
-  // Set delete form action
+
+  // Set delete form action dengan base URL yang konsisten
   const deleteForm = document.getElementById('deleteForm');
-  const baseAction = deleteForm.getAttribute('action');
-  deleteForm.action = `/seller/product/${productId}`;
+  deleteForm.action = `${BASE_URL}/${productId}`;
+
+  console.log('Delete modal opened, form action:', deleteForm.action);
+
   showModal('deleteModal');
 }
 
@@ -278,20 +324,26 @@ document.addEventListener('DOMContentLoaded', function() {
     submitButton.disabled = true;
     document.getElementById('saveButtonText').textContent = 'Menyimpan...';
 
+    // Debug: Log form action dan method
+    console.log('Form action:', this.action);
+    console.log('Is edit mode:', isEditMode);
+    console.log('Current edit ID:', currentEditId);
+
+    // Untuk PUT request, tambahkan _method field
+    if (isEditMode) {
+      formData.append('_method', 'PUT');
+    }
+
     fetch(this.action, {
-      method: 'POST',
+      method: 'POST', // Selalu gunakan POST, Laravel akan handle _method
       body: formData,
       headers: {
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         'Accept': 'application/json'
       }
     })
-    .then(response => {
-      return response.json().then(data => {
-        return { status: response.status, data: data };
-      });
-    })
-    .then(({ status, data }) => {
+    .then(handleResponse)
+    .then(data => {
       if (data.success) {
         showToast(data.message || (isEditMode ? 'Produk berhasil diupdate!' : 'Produk berhasil ditambahkan!'));
         closeProductModal();
@@ -311,8 +363,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     })
     .catch(error => {
-      console.error('Error:', error);
-      showToast('Terjadi kesalahan koneksi!', 'error');
+      const errorMessage = handleFetchError(error);
+      showToast(errorMessage, 'error');
     })
     .finally(() => {
       // Re-enable button
@@ -331,14 +383,22 @@ document.addEventListener('DOMContentLoaded', function() {
     submitButton.disabled = true;
     submitButton.textContent = 'Menghapus...';
 
+    // Debug: Log delete action
+    console.log('Delete action:', this.action);
+
+    // Gunakan FormData untuk mengirim _method
+    const formData = new FormData();
+    formData.append('_method', 'DELETE');
+
     fetch(this.action, {
-      method: 'DELETE',
+      method: 'POST', // Gunakan POST dengan _method DELETE
+      body: formData,
       headers: {
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         'Accept': 'application/json'
       }
     })
-    .then(response => response.json())
+    .then(handleResponse)
     .then(data => {
       if (data.success) {
         showToast(data.message || 'Produk berhasil dihapus!');
@@ -351,8 +411,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     })
     .catch(error => {
-      console.error('Error:', error);
-      showToast('Terjadi kesalahan saat menghapus data!', 'error');
+      const errorMessage = handleFetchError(error);
+      showToast(errorMessage, 'error');
     })
     .finally(() => {
       submitButton.disabled = false;
