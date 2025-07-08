@@ -24,7 +24,7 @@ use App\Http\Controllers\{
     WebController,
     DashboardSellerController,
     SearchController,
-    LeaderboardController
+    LeaderboardController,
     ForgotPasswordController,
     OTPController,
 };
