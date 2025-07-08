@@ -11,7 +11,8 @@ class DashboardSellerController extends Controller
 {
     public function index()
     {
-        $sellerId = session('user')->id;
+        // Salah penamaan id, seharusnya seller_id bukan id
+        $sellerId = session('user')->seller_id;
 
         $revenueStats = $this->getRevenueStats($sellerId);
         $productPerformance = $this->getProductPerformance($sellerId);

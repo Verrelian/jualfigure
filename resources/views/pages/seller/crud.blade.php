@@ -289,7 +289,8 @@
           </div>
         </div>
         <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
-          <form id="deleteForm" action="#" method="POST">
+          <!-- Kesalahan pada method, sebelumnya POST harusnya DELETE -->
+          <form id="deleteForm" action="#" method="DELETE">
             @csrf
             @method('DELETE')
             <div class="flex justify-end space-x-3">

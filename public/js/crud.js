@@ -3,7 +3,8 @@ let isEditMode = false;
 let currentEditId = null;
 
 // Base URL sesuai dengan route structure - PERBAIKAN
-const BASE_URL = '/seller/product';
+//Kerusakan pada delete, salah URL "Mole"
+const BASE_URL = '/mole/seller/product';
 
 // Helper function untuk handle response
 function handleResponse(response) {

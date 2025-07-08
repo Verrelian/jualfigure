@@ -21,11 +21,6 @@
       </div>
     </div>
 {{-- Debug Data --}}
-<pre>
-  Revenue: @json($revenueStats)
-  Product: @json($productPerformance)
-  Target: @json($targetProgress)
-</pre>
     <!-- Revenue & Performance Stats -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
       <!-- Revenue Today -->
