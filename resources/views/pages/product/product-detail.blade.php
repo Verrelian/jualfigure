@@ -3,9 +3,8 @@
 @section('title', $product['title'] . ' - Figure Collection Store')
 
 @section('content')
-
 <div class="container mx-auto p-4">
-    <!-- Breadcrumb -->
+    {{-- Breadcrumb --}}
     <nav class="flex items-center space-x-2 text-sm text-gray-500 mb-8">
         <a href="{{ route('home') }}" class="hover:text-gray-900 transition-colors">Home</a>
         <span>/</span>
@@ -14,9 +13,9 @@
         <span class="text-gray-900">{{ $product['title'] }}</span>
     </nav>
 
-    <!-- Product Detail -->
+    {{-- Product Detail Section --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-        <!-- Product Image -->
+        {{-- Product Image --}}
         <div class="relative">
             <div class="aspect-square bg-gray-50 rounded-lg overflow-hidden group">
                 <img src="{{ asset($product['image']) }}" alt="{{ $product['title'] }}"
@@ -24,44 +23,35 @@
                     onerror="this.src='https://via.placeholder.com/600x600/f8fafc/94a3b8?text=No+Image'">
             </div>
 
-            <!-- Thumbnail Gallery -->
+            {{-- Thumbnail --}}
             <div class="flex space-x-2 mt-4">
-                <div class="w-16 h-16 bg-gray-50 rounded-md border-2 border-gray-300 flex items-center justify-center">
+                <div class="w-16 h-16 bg-gray-50 border-2 border-gray-300 rounded-md flex items-center justify-center">
                     <img src="{{ asset($product['image']) }}" alt="Thumbnail"
                         class="w-full h-full object-contain rounded-sm">
                 </div>
             </div>
         </div>
 
-        <!-- Product Info -->
+        {{-- Product Info --}}
         <div class="lg:pl-8">
-            <!-- Product Category & Rating -->
+            {{-- Category and Rating --}}
             <div class="flex items-center space-x-3 mb-4">
                 <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $product['type'] }}</span>
             </div>
 
+            {{-- Star Rating --}}
             @php
-            $rating = $product['rating_total'] ?? 0;
-            $fullStars = floor($rating);
-            $hasHalfStar = ($rating - $fullStars) >= 0.25 && ($rating - $fullStars) < 0.75;
-                $emptyStars=5 - $fullStars - ($hasHalfStar ? 1 : 0);
-                @endphp
-
-                <div class="mb-4 flex items-center gap-0.5 text-yellow-400 text-lg">
-                @for ($i = 0; $i < $fullStars; $i++)
-                    <i class="fas fa-star"></i>
-                    @endfor
-
-                    @if ($hasHalfStar)
-                    <i class="fas fa-star-half-alt"></i>
-                    @endif
-
-                    @for ($i = 0; $i < $emptyStars; $i++)
-                        <i class="far fa-star"></i>
-                        @endfor
-
-                        <span class="ml-1 text-gray-600 text-[10px]">({{ number_format($rating, 1) }})</span>
-        </div>
+                $rating = $product['rating_total'] ?? 0;
+                $fullStars = floor($rating);
+                $hasHalfStar = ($rating - $fullStars) >= 0.25 && ($rating - $fullStars) < 0.75;
+                $emptyStars = 5 - $fullStars - ($hasHalfStar ? 1 : 0);
+            @endphp
+            <div class="mb-4 flex items-center gap-0.5 text-yellow-400 text-lg">
+                @for ($i = 0; $i < $fullStars; $i++) <i class="fas fa-star"></i> @endfor
+                @if ($hasHalfStar) <i class="fas fa-star-half-alt"></i> @endif
+                @for ($i = 0; $i < $emptyStars; $i++) <i class="far fa-star"></i> @endfor
+                <span class="ml-1 text-gray-600 text-xs">({{ number_format($rating, 1) }})</span>
+            </div>
 
         <!-- Product Title -->
         <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-6 leading-tight">
@@ -83,12 +73,12 @@
             <p class="text-gray-600 leading-relaxed">{{ $product['description'] }}</p>
         </div>
 
-        <!-- Specifications -->
+        {{-- Specifications --}}
         <div class="mb-8">
             <h3 class="font-semibold text-gray-900 mb-4">Specifications</h3>
             <div class="space-y-3">
                 @foreach($product['specifications'] as $key => $value)
-                <div class="flex justify-between py-2 border-b border-gray-100 last:border-b-0">
+                <div class="flex justify-between border-b py-2">
                     <span class="text-sm text-gray-600">{{ $key }}</span>
                     <span class="text-sm font-medium text-gray-900">{{ $value }}</span>
                 </div>
@@ -96,31 +86,27 @@
             </div>
         </div>
 
-        <!-- Quantity & Actions -->
-        <!--
+            {{-- Quantity & Action --}}
             <div class="space-y-6">
-            -->
-        <!-- Quantity Selector -->
-        <!--
                 <div class="flex items-center space-x-4">
                     <label class="text-sm font-medium text-gray-900">Quantity</label>
                     <div class="flex items-center border border-gray-300 rounded-md">
-                        <button id="decrementQuantity" class="px-3 py-1 hover:bg-gray-50 transition-colors">
+                        <button id="decrementQuantity" class="px-3 py-1 hover:bg-gray-50">
                             <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
                             </svg>
                         </button>
-                        <input type="number" id="quantity" name="quantity" min="1" value="1"
+                        <input type="number" id="quantity" value="1" min="1"
                             class="w-16 text-center py-1 border-0 focus:ring-0 text-sm">
-                        <button id="incrementQuantity" class="px-3 py-1 hover:bg-gray-50 transition-colors">
+                        <button id="incrementQuantity" class="px-3 py-1 hover:bg-gray-50">
                             <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4" />
                             </svg>
                         </button>
                     </div>
                     <span class="text-sm text-gray-500">{{ $product['stock'] }} in stock</span>
                 </div>
-                -->
 
         <!-- Action Buttons -->
         <div class="flex space-x-3">
@@ -229,6 +215,70 @@
 @endif
 </div>
 
+{{-- Related products, etc --}}
+{{-- ... --}}
+
+{{-- Quantity + Cart Script --}}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const addToCartBtn = document.getElementById('addToCartBtn');
+        const incrementBtn = document.getElementById('incrementQuantity');
+        const decrementBtn = document.getElementById('decrementQuantity');
+        const quantityInput = document.getElementById('quantity');
+        const maxStock = {{ $product['stock'] }};
+
+        if (addToCartBtn && quantityInput) {
+            addToCartBtn.addEventListener('click',() => {
+                const productId = addToCartBtn.dataset.productId;
+                const quantity = parseInt(quantityInput.value);
+
+                fetch("{{ route('cart.add') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ product_id: productId, quantity })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.success ? '✅ ' + data.message : '❌ ' + data.message);
+                    if (data.success) updateCartBadge();
+                })
+                .catch(err => {
+                    console.error('Add to cart error:', err);
+                    alert('❌ Terjadi kesalahan saat menambahkan ke keranjang');
+                });
+            });
+        }
+
+        if (incrementBtn && quantityInput) {
+            incrementBtn.addEventListener('click', () => {
+                let current = parseInt(quantityInput.value);
+                if (current < maxStock) quantityInput.value = current + 1;
+            });
+        }
+
+        if (decrementBtn && quantityInput) {
+            decrementBtn.addEventListener('click', () => {
+                let current = parseInt(quantityInput.value);
+                if (current > 1) quantityInput.value = current - 1;
+            });
+        }
+
+        function updateCartBadge() {
+            fetch("{{ route('cart.count') }}")
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const badge = document.getElementById('cart-badge');
+                        if (badge) badge.innerText = data.count;
+                    }
+                });
+        }
+    });
+</script>
+
 <style>
     .line-clamp-2 {
         display: -webkit-box;
@@ -237,88 +287,4 @@
         overflow: hidden;
     }
 </style>
-
-<script>
-    console.log('=== DEBUG LOGIN STATUS ===');
-    console.log('User ID:', @json(session('user_id')));
-    console.log('Role:', @json(session('role')));
-    console.log('Is Logged In:', @json(session('user_id') ? true : false));
-    console.log('All Session:', @json(session()->all()));
-    console.log('===============================');
-
-    const addToCartUrl = "{{ route('cart.add') }}";
-</script>
-
-<script src="{{ asset('js/product-detail.js') }}"></script>
-
-<!-- Cart functionality -->
-<script>
-    document.getElementById('addToCartBtn').addEventListener('click', function() {
-        const productId = this.dataset.productId;
-        const quantity = document.getElementById('quantity').value;
-
-        fetch("{{ url('/cart/add') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    product_id: productId,
-                    quantity: parseInt(quantity)
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert('✅ ' + data.message);
-                    updateCartBadge();
-                } else {
-                    alert('❌ ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('❌ Terjadi kesalahan saat menambahkan ke keranjang');
-            });
-    });
-
-    // Update cart badge
-    function updateCartBadge() {
-        fetch("{{ url('/cart/count') }}")
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    const badge = document.getElementById('cart-badge');
-                    if (badge) badge.innerText = data.count;
-                }
-            })
-            .catch(error => console.error('Error updating cart badge:', error));
-    }
-
-    // Quantity increment/decrement
-    document.getElementById('incrementQuantity').addEventListener('click', function() {
-        const quantityInput = document.getElementById('quantity');
-        const currentValue = parseInt(quantityInput.value);
-        const maxStock = {
-            {
-                $product['stock']
-            }
-        };
-
-        if (currentValue < maxStock) {
-            quantityInput.value = currentValue + 1;
-        }
-    });
-
-    document.getElementById('decrementQuantity').addEventListener('click', function() {
-        const quantityInput = document.getElementById('quantity');
-        const currentValue = parseInt(quantityInput.value);
-
-        if (currentValue > 1) {
-            quantityInput.value = currentValue - 1;
-        }
-    });
-</script>
-
 @endsection

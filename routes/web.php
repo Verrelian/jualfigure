@@ -119,9 +119,8 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
         Route::get('/', [CartController::class, 'showCartPage'])->name('cart.index');
         Route::get('/data', [CartController::class, 'index'])->name('cart.data');
         Route::post('/add', [CartController::class, 'add'])->name('cart.add');
-        Route::post('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+        Route::delete('/remove/{id}', [CartController::class, 'destroy'])->name('cart.remove');
         Route::put('/update/{id}', [CartController::class, 'update'])->name('cart.update');
-        Route::post('/update/{id}', [CartController::class, 'update']); // Alternative for method spoofing
         Route::get('/count', [CartController::class, 'getCount'])->name('cart.count');
         Route::get('/total', [CartController::class, 'getTotal'])->name('cart.total');
         Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear');

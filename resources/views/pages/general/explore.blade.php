@@ -5,31 +5,38 @@
 @section('content')
     <!-- Search & Filter Bar -->
     <div id="explore-root" data-fetch-url="{{ route('products.by-category') }}">
-    <div class="bg-white p-6 rounded-lg shadow-md mb-8 mt-6">
-        <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div class="flex-1 max-w-md">
-                <div class="relative">
-                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    <input type="text" id="search-input" placeholder="Search figures, characters, series..."
-                           class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8 mt-6">
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+
+                {{-- ✅ Search Form dengan fungsi working --}}
+                <form action="{{ route('search') }}" method="GET" class="flex-1 max-w-md w-full">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" name="search_keyword" placeholder="Search figures, characters, series..."
+                            class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
+                            required />
+                    </div>
+                </form>
+
+                {{-- ✅ Filter Section tetap sama --}}
+                <div class="flex gap-3">
+                    <select id="category-filter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">All Categories</option>
+                        <option value="nendoroid" {{ $initialCategory == 'nendoroid' ? 'selected' : '' }}>Nendoroid</option>
+                        <option value="popup" {{ $initialCategory == 'popup' ? 'selected' : '' }}>Pop Up Parade</option>
+                        <option value="hottoys" {{ $initialCategory == 'hottoys' ? 'selected' : '' }}>Hot Toys</option>
+                    </select>
+                    <select id="price-filter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">Price: All</option>
+                        <option value="0-30">Under $30</option>
+                        <option value="30-60">$30 - $60</option>
+                        <option value="60-999">$60+</option>
+                    </select>
+                    <button id="apply-filters" type="button"
+                        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-filter mr-2"></i>Filter
+                    </button>
                 </div>
-            </div>
-            <div class="flex gap-3">
-                <select id="category-filter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option value="">All Categories</option>
-                    <option value="nendoroid" {{ $initialCategory == 'nendoroid' ? 'selected' : '' }}>Nendoroid</option>
-                    <option value="popup" {{ $initialCategory == 'popup' ? 'selected' : '' }}>Pop Up Parade</option>
-                    <option value="hottoys" {{ $initialCategory == 'hottoys' ? 'selected' : '' }}>Hot Toys</option>
-                </select>
-                <select id="price-filter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option value="">Price: All</option>
-                    <option value="0-30">Under $30</option>
-                    <option value="30-60">$30 - $60</option>
-                    <option value="60-999">$60+</option>
-                </select>
-                <button id="apply-filters" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                    <i class="fas fa-filter mr-2"></i>Filter
-                </button>
             </div>
         </div>
     </div>
