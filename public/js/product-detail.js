@@ -2,182 +2,50 @@ document.addEventListener('DOMContentLoaded', function () {
     // ENHANCED DEBUG WISHLIST FUNCTIONALITY
     const wishlistBtn = document.getElementById('wishlistBtn');
 
-    if (wishlistBtn) {
-        wishlistBtn.addEventListener('click', function(e) {
-            e.preventDefault();
+    wishlistBtn.addEventListener('click', function(e) {
+    e.preventDefault();
 
-            const productId = this.getAttribute('data-product-id');
-            const button = this;
+    const productId = this.getAttribute('data-product-id');
+    const button = this;
+    const isWishlisted = button.classList.contains('wishlist-active');
 
-            console.log('=== WISHLIST DEBUG START ===');
-            console.log('Product ID:', productId);
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            // Validasi product ID
-            if (!productId || productId === 'null' || productId === 'undefined') {
-                console.error('❌ Invalid Product ID:', productId);
-                showNotification('Product ID tidak valid', 'error');
-                return;
-            }
+    // Disable button sementara
+    button.disabled = true;
+    button.style.opacity = '0.7';
 
-            // Validasi CSRF token
-            const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
-            if (!csrfTokenElement) {
-                console.error('❌ CSRF token meta tag not found');
-                showNotification('CSRF token tidak ditemukan. Pastikan <meta name="csrf-token"> ada di <head>', 'error');
-                return;
-            }
+    const url = isWishlisted ? '/mole/wishlist/remove' : '/mole/wishlist/add';
+    const actionText = isWishlisted ? 'menghapus dari' : 'menambahkan ke';
 
-            const csrfToken = csrfTokenElement.getAttribute('content');
-            if (!csrfToken) {
-                console.error('❌ CSRF token is empty');
-                showNotification('CSRF token kosong', 'error');
-                return;
-            }
-
-            console.log('✅ Product ID:', productId);
-            console.log('✅ CSRF Token (first 10 chars):', csrfToken.substring(0, 10) + '...');
-
-            // Disable button sementara
-            button.disabled = true;
-            button.style.opacity = '0.7';
-
-            const requestData = {
-                product_id: productId
-            };
-
-            console.log('📤 Request data:', requestData);
-            console.log('📤 Request URL:', window.location.origin + '/mole/wishlist/add');
-
-            // Kirim request AJAX dengan debugging lengkap
-            fetch('/mole/wishlist/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                credentials: 'same-origin',
-                body: JSON.stringify(requestData)
-
-            })
-            .then(response => {
-                console.log('📥 Response status:', response.status);
-                console.log('📥 Response ok:', response.ok);
-                console.log('📥 Response headers:');
-
-                // Log semua response headers
-                for (let [key, value] of response.headers.entries()) {
-                    console.log(`   ${key}: ${value}`);
-                }
-
-                // Ambil response sebagai text dulu untuk debugging
-                return response.text().then(text => {
-                    console.log('📥 Raw response body:', text);
-                    console.log('📥 Response length:', text.length);
-
-                    // Cek apakah response kosong
-                    if (!text || text.trim() === '') {
-                        throw new Error('Empty response from server');
-                    }
-
-                    // Cek apakah response adalah HTML (error page)
-                    if (text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html')) {
-                        console.error('❌ Received HTML instead of JSON (likely an error page)');
-                        console.log('HTML content preview:', text.substring(0, 500) + '...');
-                        throw new Error('Server returned HTML error page instead of JSON');
-                    }
-
-                    // Coba parse sebagai JSON
-                    try {
-                        const data = JSON.parse(text);
-                        console.log('✅ Parsed JSON data:', data);
-                        return { data, status: response.status, ok: response.ok };
-                    } catch (e) {
-                        console.error('❌ JSON parse error:', e);
-                        console.error('❌ Failed to parse text:', text);
-
-                        // Coba lihat apakah ada karakter aneh
-                        console.log('Text char codes:', Array.from(text.substring(0, 50)).map(c => c.charCodeAt(0)));
-
-                        throw new Error(`Invalid JSON response. Server returned: "${text.substring(0, 200)}..."`);
-                    }
-                });
-            })
-            .then(({ data, status, ok }) => {
-                console.log('📊 Processing response:', { data, status, ok });
-
-                if (!ok) {
-                    console.error('❌ Response not OK:', status);
-
-                    if (status === 401) {
-                        throw new Error('UNAUTHORIZED');
-                    } else if (status === 422) {
-                        const errorMessage = data.message || data.error || 'Validation error';
-                        console.error('❌ Validation error:', data);
-                        throw new Error(`VALIDATION_ERROR: ${errorMessage}`);
-                    } else if (status === 404) {
-                        throw new Error('ROUTE_NOT_FOUND: Route /mole/wishlist/add tidak ditemukan');
-                    } else if (status === 500) {
-                        console.error('❌ Server error:', data);
-                        throw new Error('SERVER_ERROR');
-                    } else {
-                        throw new Error(`HTTP_ERROR_${status}: ${data.message || 'Unknown error'}`);
-                    }
-                }
-
-                if (data.success) {
-                    console.log('🎉 Wishlist success!');
-                    updateWishlistButton(button, true);
-                    showNotification(data.message || 'Produk berhasil ditambahkan ke wishlist!', 'success');
-                    updateWishlistCounter();
-                } else {
-                    console.error('❌ Operation failed:', data);
-                    showNotification(data.message || 'Gagal menambahkan ke wishlist', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('💥 Wishlist Error:', error);
-                console.error('💥 Error stack:', error.stack);
-
-                let errorMessage = 'Terjadi kesalahan. Silakan coba lagi.';
-
-                if (error.message === 'UNAUTHORIZED') {
-                    errorMessage = 'Silakan login terlebih dahulu';
-                    setTimeout(() => {
-                        if (confirm('Anda perlu login. Redirect ke halaman login?')) {
-                            window.location.href = '/login';
-                        }
-                    }, 2000);
-                } else if (error.message.startsWith('VALIDATION_ERROR:')) {
-                    errorMessage = error.message.replace('VALIDATION_ERROR: ', '');
-                } else if (error.message.startsWith('ROUTE_NOT_FOUND:')) {
-                    errorMessage = 'Route tidak ditemukan. Periksa konfigurasi route.';
-                } else if (error.message === 'SERVER_ERROR') {
-                    errorMessage = 'Server error. Periksa log server.';
-                } else if (error.message.includes('Invalid JSON')) {
-                    errorMessage = 'Server mengirim response yang tidak valid.';
-                } else if (error.message.includes('HTML error page')) {
-                    errorMessage = 'Server mengirim halaman error. Periksa route dan controller.';
-                } else if (error.message.includes('Empty response')) {
-                    errorMessage = 'Server mengirim response kosong.';
-                } else if (error.message.includes('Failed to fetch')) {
-                    errorMessage = 'Koneksi gagal. Periksa koneksi internet.';
-                }
-
-                showNotification(errorMessage, 'error');
-            })
-            .finally(() => {
-                console.log('🏁 Request finished');
-                // Re-enable button
-                button.disabled = false;
-                button.style.opacity = '1';
-                console.log('=== WISHLIST DEBUG END ===');
-            });
-        });
-    } else {
-        console.error('❌ Wishlist button not found!');
-    }
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ product_id: productId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateWishlistButton(button, !isWishlisted);
+            showNotification(data.message || `Berhasil ${actionText} wishlist`, 'success');
+            updateWishlistCounter();
+        } else {
+            showNotification(data.message || `Gagal ${actionText} wishlist`, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Wishlist error:', error);
+        showNotification('Terjadi kesalahan. Coba lagi nanti.', 'error');
+    })
+    .finally(() => {
+        button.disabled = false;
+        button.style.opacity = '1';
+    });
+});
 });
 
 // Enhanced notification function

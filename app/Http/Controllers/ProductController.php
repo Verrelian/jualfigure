@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Produk;
 use App\Services\FilterService;
+use App\Models\Wishlist;
 
 
 class ProductController extends Controller
@@ -15,13 +17,13 @@ class ProductController extends Controller
 
     public function show($product_id)
     {
-        // Eager load the specification relationship
+        // Ambil produk
         $product = Produk::with('specification')->findOrFail($product_id);
 
-        // Get related products (3 random products of the same type, excluding current product)
+        // Ambil produk terkait
         $relatedProducts = Produk::where('product_id', '!=', $product_id)
-            ->byType($product->type) // Using the scope from the model
-            ->inStock() // Using the scope from the model
+            ->byType($product->type)
+            ->inStock()
             ->inRandomOrder()
             ->take(3)
             ->get()
@@ -46,13 +48,22 @@ class ProductController extends Controller
             })
             ->toArray();
 
+        // Cek apakah user sudah wishlist produk ini
+        $wishlisted = false;
+        if (session('user_id') && session('role') === 'buyer') {
+            $wishlisted = Wishlist::where('buyer_id', session('user_id'))
+                ->where('product_id', $product->product_id)
+                ->exists();
+        }
+
+        // Kembalikan ke view
         return view('pages.product.product-detail', [
             'product' => [
                 'product_id' => $product->product_id,
-                'image' => $product->gambar_url, // Using the accessor
-                'title' => $product->product_name, // Fixed: use product_name
+                'image' => $product->gambar_url,
+                'title' => $product->product_name,
                 'type' => $product->type,
-                'price' => $product->formatted_harga, // Using the accessor
+                'price' => $product->formatted_harga,
                 'description' => $product->description,
                 'stock' => $product->stock,
                 'rating_total' => $product->rating_total,
@@ -64,7 +75,8 @@ class ProductController extends Controller
                     'Series' => $product->specification->series ?? 'N/A'
                 ] : []
             ],
-            'relatedProducts' => $relatedProducts
+            'relatedProducts' => $relatedProducts,
+            'wishlisted' => $wishlisted
         ]);
     }
 
@@ -72,10 +84,10 @@ class ProductController extends Controller
     {
         // Ambil semua type unik dari database
         $categories = Produk::select('type')
-                          ->distinct()
-                          ->orderBy('type')
-                          ->pluck('type')
-                          ->toArray();
+            ->distinct()
+            ->orderBy('type')
+            ->pluck('type')
+            ->toArray();
 
         // Format untuk tampilan dengan slug mapping
         $categorySlugs = [
@@ -119,9 +131,9 @@ class ProductController extends Controller
 
         // Step 2: Build query dasar
         $query = Produk::with(['specification', 'seller'])
-                    ->where('type', $type)
-                    ->inStock()
-                    ->orderBy('created_at', 'desc');
+            ->where('type', $type)
+            ->inStock()
+            ->orderBy('created_at', 'desc');
 
         // Step 3: Apply filters via service
         $filters = array_merge($request->all(), ['type' => $type]);
@@ -132,7 +144,7 @@ class ProductController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'products' => $products->map(function($product) {
+                'products' => $products->map(function ($product) {
                     return [
                         'product_id'  => $product->product_id,
                         'name'        => $product->product_name,
@@ -161,7 +173,7 @@ class ProductController extends Controller
         // Return JSON response aja
         return response()->json([
             'success' => true,
-            'products' => $products->map(function($product) {
+            'products' => $products->map(function ($product) {
                 return [
                     'product_id' => $product->product_id,
                     'name' => $product->product_name,
@@ -179,10 +191,9 @@ class ProductController extends Controller
             })
         ]);
     }
-        public function getFilterOptions()
+    public function getFilterOptions()
     {
         $filterService = new \App\Services\FilterService();
         return response()->json($filterService->getFilterOptions());
     }
-
 }
