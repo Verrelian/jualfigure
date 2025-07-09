@@ -41,17 +41,17 @@
 
             {{-- Star Rating --}}
             @php
-                $rating = $product['rating_total'] ?? 0;
-                $fullStars = floor($rating);
-                $hasHalfStar = ($rating - $fullStars) >= 0.25 && ($rating - $fullStars) < 0.75;
-                $emptyStars = 5 - $fullStars - ($hasHalfStar ? 1 : 0);
-            @endphp
-            <div class="mb-4 flex items-center gap-0.5 text-yellow-400 text-lg">
+            $rating = $product['rating_total'] ?? 0;
+            $fullStars = floor($rating);
+            $hasHalfStar = ($rating - $fullStars) >= 0.25 && ($rating - $fullStars) < 0.75;
+                $emptyStars=5 - $fullStars - ($hasHalfStar ? 1 : 0);
+                @endphp
+                <div class="mb-4 flex items-center gap-0.5 text-yellow-400 text-lg">
                 @for ($i = 0; $i < $fullStars; $i++) <i class="fas fa-star"></i> @endfor
-                @if ($hasHalfStar) <i class="fas fa-star-half-alt"></i> @endif
-                @for ($i = 0; $i < $emptyStars; $i++) <i class="far fa-star"></i> @endfor
-                <span class="ml-1 text-gray-600 text-xs">({{ number_format($rating, 1) }})</span>
-            </div>
+                    @if ($hasHalfStar) <i class="fas fa-star-half-alt"></i> @endif
+                    @for ($i = 0; $i < $emptyStars; $i++) <i class="far fa-star"></i> @endfor
+                        <span class="ml-1 text-gray-600 text-xs">({{ number_format($rating, 1) }})</span>
+        </div>
 
         <!-- Product Title -->
         <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-6 leading-tight">
@@ -86,27 +86,10 @@
             </div>
         </div>
 
-            {{-- Quantity & Action --}}
-            <div class="space-y-6">
-                <div class="flex items-center space-x-4">
-                    <label class="text-sm font-medium text-gray-900">Quantity</label>
-                    <div class="flex items-center border border-gray-300 rounded-md">
-                        <button id="decrementQuantity" class="px-3 py-1 hover:bg-gray-50">
-                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
-                            </svg>
-                        </button>
-                        <input type="number" id="quantity" value="1" min="1"
-                            class="w-16 text-center py-1 border-0 focus:ring-0 text-sm">
-                        <button id="incrementQuantity" class="px-3 py-1 hover:bg-gray-50">
-                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4" />
-                            </svg>
-                        </button>
-                    </div>
-                    <span class="text-sm text-gray-500">{{ $product['stock'] }} in stock</span>
-                </div>
+        {{-- Quantity & Action --}}
+        <div class="space-y-6">
+            <input type="hidden" id="quantity" value="1" min="1">
+        </div>
 
         <!-- Action Buttons -->
         <div class="flex space-x-3">
@@ -216,53 +199,39 @@
 </div>
 
 {{-- Related products, etc --}}
-{{-- ... --}}
 
 {{-- Quantity + Cart Script --}}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const addToCartBtn = document.getElementById('addToCartBtn');
-        const incrementBtn = document.getElementById('incrementQuantity');
-        const decrementBtn = document.getElementById('decrementQuantity');
         const quantityInput = document.getElementById('quantity');
         const maxStock = {{ $product['stock'] }};
 
         if (addToCartBtn && quantityInput) {
-            addToCartBtn.addEventListener('click',() => {
+            addToCartBtn.addEventListener('click', () => {
                 const productId = addToCartBtn.dataset.productId;
                 const quantity = parseInt(quantityInput.value);
 
                 fetch("{{ route('cart.add') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({ product_id: productId, quantity })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    alert(data.success ? '✅ ' + data.message : '❌ ' + data.message);
-                    if (data.success) updateCartBadge();
-                })
-                .catch(err => {
-                    console.error('Add to cart error:', err);
-                    alert('❌ Terjadi kesalahan saat menambahkan ke keranjang');
-                });
-            });
-        }
-
-        if (incrementBtn && quantityInput) {
-            incrementBtn.addEventListener('click', () => {
-                let current = parseInt(quantityInput.value);
-                if (current < maxStock) quantityInput.value = current + 1;
-            });
-        }
-
-        if (decrementBtn && quantityInput) {
-            decrementBtn.addEventListener('click', () => {
-                let current = parseInt(quantityInput.value);
-                if (current > 1) quantityInput.value = current - 1;
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            product_id: productId,
+                            quantity
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        alert(data.success ? '✅ ' + data.message : '❌ ' + data.message);
+                        if (data.success) updateCartBadge();
+                    })
+                    .catch(err => {
+                        console.error('Add to cart error:', err);
+                        alert('❌ Terjadi kesalahan saat menambahkan ke keranjang');
+                    });
             });
         }
 
@@ -287,4 +256,6 @@
         overflow: hidden;
     }
 </style>
+
+<script src="{{ asset('js/product-detail.js') }}"></script>
 @endsection
