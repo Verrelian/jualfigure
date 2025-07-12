@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Wishlist;
 use App\Models\Buyer;
-use App\Models\Produk; // TAMBAHKAN INI
+use App\Models\Produk;
 
 class WishlistController extends Controller
 {

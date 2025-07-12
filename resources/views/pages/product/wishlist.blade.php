@@ -185,7 +185,7 @@
                     button.style.opacity = '0.5';
                     button.style.pointerEvents = 'none';
 
-                    fetch('/wishlist/remove', {
+                    fetch('/mole/wishlist/remove', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -279,7 +279,7 @@
                     if (confirm('Are you sure you want to clear your entire wishlist? This action cannot be undone.')) {
                         showLoading();
 
-                        fetch('/wishlist/clear', {
+                        fetch('/mole/wishlist/clear', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -351,7 +351,7 @@
 
             // Function to update wishlist counter
             function updateWishlistCounter() {
-                fetch('/wishlist/count')
+                fetch('/mole/wishlist/count')
                     .then(response => response.json())
                     .then(data => {
                         const wishlistCountElement = document.getElementById('wishlistCount');
