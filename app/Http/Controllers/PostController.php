@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\PostLike;
 use App\Models\PostComment;
+use App\Models\PostImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -36,39 +37,32 @@ class PostController extends Controller
     /**
      * Menyimpan postingan baru
      */
-    public function store(Request $request)
-    {
-        if (session('role') !== 'buyer' || !session('user_id')) {
-            return redirect()->route('login')->with('error', 'Silakan login sebagai buyer untuk membuat post.');
+        public function store(Request $request)
+        {
+            $request->validate([
+                'title' => 'required|max:255',
+                'description' => 'required',
+                'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+
+            $userId = session('user_id');
+
+            $post = Post::create([
+                'title' => $request->title,
+                'description' => $request->description,
+                'status' => 'active',
+                'user_id' => $userId,
+            ]);
+
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $imageFile) {
+                    $path = $imageFile->store('post_images', 'public');
+                    $post->images()->create(['image' => $path]);
+                }
+            }
+
+            return redirect()->route('posts.index')->with('success', 'Post berhasil dibuat!');
         }
-
-        $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('post_images', 'public');
-        }
-
-        $userId = session('user_id');
-
-        if (!$userId) {
-            return back()->with('error', 'ID pengguna tidak ditemukan di sesi. Silakan login kembali.');
-        }
-
-        Post::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'image' => $imagePath,
-            'status' => 'active',
-            'user_id' => $userId,
-        ]);
-
-        return redirect()->route('posts.index')->with('success', 'Post berhasil dibuat!');
-    }
 
     /**
      * Menyukai atau batal menyukai postingan
@@ -118,4 +112,6 @@ class PostController extends Controller
 
         return back()->with('success', 'Komentar ditambahkan!');
     }
+
+
 }

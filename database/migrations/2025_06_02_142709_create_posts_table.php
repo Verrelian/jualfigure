@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema; // Hati-hati di sini, ini harusnya `use Illuminate\Support\Facades\Schema;`
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -12,19 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->id(); // Ini akan membuat kolom 'id' sebagai primary key
+            $table->id();
             $table->string('title');
             $table->text('description');
             $table->string('image')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
 
-            // *** INI KODE BARU UNTUK user_id (Bukan buyer_id) ***
-            $table->unsignedBigInteger('user_id'); // Kolom foreign key baru
+            // Foreign key ke buyer
+            $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')
-                  ->references('buyer_id') // Merujuk ke kolom 'buyer_id' di tabel 'buyers'
-                  ->on('buyers')
-                  ->onDelete('cascade');
-            // ****************************************************
+                ->references('buyer_id')
+                ->on('buyers')
+                ->onDelete('cascade');
 
             $table->timestamps();
         });
@@ -35,6 +34,12 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('posts', function (Blueprint $table) {
+            // Drop foreign key terlebih dahulu
+            $table->dropForeign(['user_id']);
+        });
+
+        // Drop tabel setelah foreign key dilepas
         Schema::dropIfExists('posts');
     }
 };
