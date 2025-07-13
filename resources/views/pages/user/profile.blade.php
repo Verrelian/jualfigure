@@ -88,24 +88,7 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-{{-- DEBUG INFO - HAPUS SETELAH SELESAI --}}
-<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 2px solid red;">
-    <h3>DEBUG INFO:</h3>
-    <p><strong>$user->buyer_id:</strong> {{ $user->buyer_id ?? 'NULL' }}</p>
-    <p><strong>$user->name:</strong> {{ $user->name ?? 'NULL' }}</p>
-    <p><strong>$user->username:</strong> {{ $user->username ?? 'NULL' }}</p>
-    <p><strong>$user->email:</strong> {{ $user->email ?? 'NULL' }}</p>
-    <p><strong>session('user_id'):</strong> {{ session('user_id') ?? 'NULL' }}</p>
-    <p><strong>session('username'):</strong> {{ session('username') ?? 'NULL' }}</p>
-    <p><strong>$isOwnProfile:</strong> {{ $isOwnProfile ?? 'NOT_SET' ? 'TRUE' : 'FALSE' }}</p>
-    <p><strong>Posts count:</strong> {{ $posts->count() ?? 'NULL' }}</p>
-    <p><strong>Posts user_id check:</strong>
-        @if($posts->count() > 0)
-            First post user_id: {{ $posts->first()->user_id }}
-        @else
-            No posts
-        @endif
-    </p>
+
 </div>
 
     <!-- Header -->
@@ -134,6 +117,16 @@
                 <div class="card rounded-xl p-6 animate-fade-in">
                     <!-- Profile Image & Basic Info -->
                     <div class="text-center mb-6">
+                        @if(isset($topTitle))
+                            <div class="mb-4 text-center">
+                                <div class="inline-block px-4 py-2 rounded-full shadow-md bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500 text-white font-semibold text-sm animate-pulse border border-yellow-500">
+                                    <svg class="inline w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927C9.372 2.08 10.628 2.08 10.951 2.927l1.07 2.858a1 1 0 00.95.69h3a1 1 0 01.593 1.806l-2.43 1.91a1 1 0 00-.364 1.118l1.07 2.857a1 1 0 01-1.538 1.118l-2.43-1.91a1 1 0 00-1.236 0l-2.43 1.91a1 1 0 01-1.538-1.118l1.07-2.857a1 1 0 00-.364-1.118l-2.43-1.91A1 1 0 014.03 6.475h3a1 1 0 00.95-.69l1.07-2.858z"/>
+                                    </svg>
+                                    {{ $topTitle }}
+                                </div>
+                            </div>
+                        @endif
                         <div class="relative inline-block">
                             <img src="{{ $user->avatar_url }}"
                                  alt="{{ $user->username ?? 'Profile' }}"
@@ -162,6 +155,7 @@
                         <p class="text-gray-700 text-sm leading-relaxed">{{ $user->bio }}</p>
                     </div>
                     @endif
+
 
                     <!-- Contact Info -->
                     <div class="space-y-3 mb-6">
@@ -217,23 +211,28 @@
 
             <!-- Stats & Activity -->
             <div class="lg:col-span-2 space-y-6">
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-3 gap-4">
-                    <div class="stat-card p-4 rounded-lg text-center">
-                        <div class="text-2xl font-bold text-blue-600">{{ $stats['total_posts'] }}</div>
-                        <div class="text-sm text-gray-600">Posts</div>
-                    </div>
-                    <div class="stat-card p-4 rounded-lg text-center">
-                        <div class="text-2xl font-bold text-green-600">{{ $stats['total_likes'] }}</div>
-                        <div class="text-sm text-gray-600">Likes</div>
-                    </div>
-                    <div class="stat-card p-4 rounded-lg text-center">
-                        <div class="text-2xl font-bold text-purple-600">
-                            {{ $stats['total_comments'] }}
+                <!-- EXP by Category -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    @foreach ([
+                        'loyal_hunter' => 'Loyal Hunter',
+                        'bulk_buyer' => 'Bulk Buyer',
+                        'premium_collector' => 'Premium Collector'
+                    ] as $key => $label)
+                        @php $info = $categoryLevels[$key]; @endphp
+                        <div class="stat-card p-4 rounded-lg">
+                            <h4 class="font-semibold text-sm text-gray-700 mb-1">{{ $label }}</h4>
+                            <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden shadow-inner mb-1">
+                                <div class="h-full bg-blue-500 transition-all duration-300" style="width: {{ $info['progress'] }}%"></div>
+                            </div>
+                            <div class="text-xs text-gray-500 flex justify-between">
+                                <span>Lvl {{ $info['level'] }}</span>
+                                <span>
+                                    {{ $info['current_exp'] }} /
+                                    {{ $info['next_exp'] ?? 'MAX' }} EXP
+                                </span>
+                            </div>
                         </div>
-
-                        <div class="text-sm text-gray-600">Comments</div>
-                    </div>
+                    @endforeach
                 </div>
 
                 <!-- Recent Activity -->

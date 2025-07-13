@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Buyer;
 use App\Models\Post;
+use App\Models\Leaderboard;
+use App\Services\ExpService;
 
 class ProfileController extends Controller
 {
@@ -93,6 +95,20 @@ class ProfileController extends Controller
             $debug['Posts user_id check'] = 'First post user_id: ' . $posts->first()->user_id;
         }
 
+        $expInfo = ExpService::getLevelInfo($buyer->exp); // total exp
+        $title = ExpService::getTopTitle($buyer->buyer_id);
+
+
+        // Ambil level per kategori
+        $leaderboards = Leaderboard::where('buyer_id', $buyer->buyer_id)->get()->keyBy('type');
+        $categoryLevels = [];
+
+        foreach (['loyal_hunter', 'bulk_buyer', 'premium_collector'] as $type) {
+            $exp = $leaderboards[$type]->exp ?? 0;
+            $categoryLevels[$type] = ExpService::getLevelInfo($exp);
+        }
+
+
         // Uncomment untuk debugging
         // dd($debug);
 
@@ -101,7 +117,11 @@ class ProfileController extends Controller
             'posts' => $posts,
             'stats' => $stats,
             'isOwnProfile' => $isOwnProfile,
+            'expInfo' => $expInfo, // 👈 ini penting
+            'categoryLevels' => $categoryLevels, // <- penting
+            'topTitle' => $title, // <== Tambah ini
             'isFollowing' => $isFollowing // Kirim ke view
+
 
         ]);
     }

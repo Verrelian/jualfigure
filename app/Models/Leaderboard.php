@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Leaderboard extends Model
 {
+    protected $table = 'leaderboards';
+
     protected $primaryKey = 'leaderboard_id';
     protected $fillable = [
         'buyer_id', 'type', 'exp', 'total_items',
