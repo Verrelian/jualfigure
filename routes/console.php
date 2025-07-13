@@ -2,10 +2,9 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Console\Scheduling\Schedule;
 
-Schedule::command('leaderboard:update')
-    ->dailyAt('23:00'); // atau ->everyMinute() untuk testing
+// ❌ Jangan jadwalkan Schedule di sini!
+// ✅ Ini hanya untuk membuat command Artisan langsung di CLI
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
