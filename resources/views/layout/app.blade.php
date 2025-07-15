@@ -87,6 +87,8 @@
         });
 
         // Shipping
+        let shippingInterval = null;
+
         document.addEventListener('DOMContentLoaded', function() {
             const csrfToken = @json(csrf_token());
 
@@ -94,37 +96,47 @@
                 fetch('/mole/shipping/active')
                     .then(res => res.json())
                     .then(data => {
-                        if (data.shipping_orders && data.shipping_orders.length > 0) {
-                            data.shipping_orders.forEach(order => {
-                                const paymentId = order.payment_id;
-
-                                fetch(`/mole/shipping/progress-data/${paymentId}`)
-                                    .then(res => res.json())
-                                    .then(progress => {
-                                        if (progress.diff >= 5) {
-                                            fetch(`/mole/shipping/next-stage/${paymentId}`, {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'X-CSRF-TOKEN': csrfToken
-                                                    }
-                                                })
-                                                .then(res => res.json())
-                                                .then(updated => {
-                                                    console.log(`Updated shipping for ${paymentId}:`, updated);
-
-                                                    // ✅ Tambahkan ini untuk force refresh kalau sudah delivered
-                                                    if (updated.delivered === true) {
-                                                        location.reload();
-                                                    }
-                                                });
-                                        }
-                                    });
-                            });
+                        // HENTIKAN INTERVAL jika tidak ada pesanan aktif
+                        if (!data.shipping_orders || data.shipping_orders.length === 0) {
+                            console.log('[Shipping] No active shipping. Stopping interval.');
+                            if (shippingInterval) {
+                                clearInterval(shippingInterval);
+                                shippingInterval = null;
+                            }
+                            return;
                         }
+
+                        data.shipping_orders.forEach(order => {
+                            const paymentId = order.payment_id;
+
+                            fetch(`/mole/shipping/progress-data/${paymentId}`)
+                                .then(res => res.json())
+                                .then(progress => {
+                                    if (progress.diff >= 5) {
+                                        fetch(`/mole/shipping/next-stage/${paymentId}`, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'X-CSRF-TOKEN': csrfToken
+                                                }
+                                            })
+                                            .then(res => res.json())
+                                            .then(updated => {
+                                                console.log(`[Shipping] Updated ${paymentId}`, updated);
+
+                                                // Reload hanya jika sudah sampai akhir
+                                                if (updated.delivered === true) {
+                                                    location.reload();
+                                                }
+                                            });
+                                    }
+                                });
+                        });
                     });
             }
-
-            setInterval(fetchActiveShippingOrders, 3000);
+            // Set interval awal hanya jika belum berjalan
+            if (!shippingInterval) {
+                shippingInterval = setInterval(fetchActiveShippingOrders, 3000);
+            }
         });
     </script>
 </body>

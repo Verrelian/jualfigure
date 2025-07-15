@@ -229,6 +229,16 @@
                     Order Details
                 </p>
                 <!-- Order Details -->
+                @if ($isCart)
+                <div class="flex justify-between mb-2">
+                    <span class="w-1/4 font-semibold">Product:</span>
+                    <div class="flex-1 text-right space-y-1">
+                        @foreach ($payments as $p)
+                        <div>{{ $p->product_name }} x{{ $p->quantity }}</div>
+                        @endforeach
+                    </div>
+                </div>
+                @else
                 <div class="flex justify-between mb-2">
                     <span>Product:</span>
                     <span>{{ $payment->product_name }}</span>
@@ -237,14 +247,26 @@
                     <span>Quantity:</span>
                     <span>{{ $payment->quantity }}</span>
                 </div>
+                @endif
+                @if ($isCart)
+                <div class="flex justify-between mb-2 border-t border-gray-300 pt-2">
+                    <span>Subtotal:</span>
+                    <span>IDR {{ number_format($subtotal) }}</span>
+                </div>
+                <div class="flex justify-between font-bold border-t border-gray-300 pt-2 text-gray-900">
+                    <span>Total (Tax + Shipping + Fee):</span>
+                    <span>IDR {{ number_format($cartTotal, 2, ',', '.') }}</span>
+                </div>
+                @else
                 <div class="flex justify-between mb-2 border-t border-gray-300 pt-2">
                     <span>Subtotal:</span>
                     <span>IDR {{ number_format($payment->price) }}</span>
                 </div>
                 <div class="flex justify-between font-bold border-t border-gray-300 pt-2 text-gray-900">
-                    <span>Total (Tax + Shipping):</span>
+                    <span>Total (Tax + Shipping + Fee):</span>
                     <span>IDR {{ number_format($payment->price_total, 2, ',', '.') }}</span>
                 </div>
+                @endif
             </div>
             <div>
                 <p class="text-gray-500 text-xs text-left w-full mb-6 leading-relaxed">
@@ -301,7 +323,7 @@
             if (distance <= 0) {
                 document.getElementById("countdown").innerHTML = "Expired";
                 // Optional: Reload or disable buttons
-                location.reload(); // Bisa diganti logika lain kalau mau
+                location.reload();
                 return;
             }
 

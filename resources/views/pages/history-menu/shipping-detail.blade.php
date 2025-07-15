@@ -1,6 +1,6 @@
 @extends('layout.history-menu')
 
-@section('title', 'Delivered')
+@section('title', 'Shipping Detail')
 
 @section('historyContent')
 <div class="container mx-auto px-4 py-6 min-w-full">
@@ -104,26 +104,42 @@
     <!-- Product Detail -->
     <div class="bg-white shadow-sm p-4 border-t border-gray-200">
         <h2 class="text-lg font-semibold mb-3">Product Detail</h2>
+        @foreach ($relatedPayments as $item)
         <div class="flex border-b border-gray-200 pb-4 mb-4 rounded-md p-2 hover:bg-gray-50">
             <div class="w-20 h-20 flex-shrink-0">
-                <img src="{{ asset('images/' . $order->image) }}" alt="Product" class="w-full h-full object-cover rounded-md">
+                <img src="{{ asset('images/' . $item->image) }}" alt="Product" class="w-full h-full object-cover rounded-md">
             </div>
             <div class="ml-4 flex-grow">
-                <h3 class="font-medium">{{ $order->product_name }}</h3>
-                <p class="text-sm text-gray-500">Type: {{ $order->type }}</p>
+                <h3 class="font-medium">{{ $item->product_name }}</h3>
+                <p class="text-sm text-gray-500">Type: {{ $item->type }}</p>
                 <div class="flex justify-between mt-2">
-                    <span class="text-sm">x{{ $order->quantity }}</span>
-                    <span class="text-sm font-semibold">Rp{{ number_format($order->price, 0, ',', '.') }}</span>
+                    <span class="text-sm">x{{ $item->quantity }}</span>
+                    <span class="text-sm font-semibold">Rp{{ number_format($item->price, 0, ',', '.') }}</span>
                 </div>
             </div>
         </div>
+        @endforeach
+        @php
+        $subtotal = $relatedPayments->sum('price');
+        $shipping = 100000;
+        $tax = 50000;
+        $bankCharge = match ($order->payment_method) {
+        'BANK BCA' => 350000,
+        'BANK MANDIRI' => 300000,
+        'BANK BNI' => 260000,
+        'BANK BRI' => 250000,
+        default => 0,
+        };
+        $total = $subtotal + $shipping + $tax + $bankCharge;
+        @endphp
+
         <div class="flex justify-between border-b border-gray-200 py-2 text-sm">
             <span>Subtotal</span>
-            <span>Rp{{ number_format($order->price, 0, ',', '.') }}</span>
+            <span>Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
         </div>
         <div class="flex justify-between font-bold border-t border-gray-200 pt-2 text-gray-900 text-sm">
-            <span>Total (Tax + Shipping):</span>
-            <span>IDR {{ number_format($order->price_total, 2, ',', '.') }}</span>
+            <span>Total (Tax + Shipping + Fee):</span>
+            <span>IDR {{ number_format($total, 2, ',', '.') }}</span>
         </div>
     </div>
 
@@ -177,7 +193,7 @@
             @endforeach
         </div>
     </div>
-    @if ($order->transaction_status === 'SHIPPING')
+    @if ($order && $order->transaction_status === 'SHIPPING')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const paymentId = @json($order->payment_id);
@@ -203,7 +219,6 @@
                         }
                     });
             }
-
             setInterval(checkAndUpdateStage, 3000);
         });
     </script>

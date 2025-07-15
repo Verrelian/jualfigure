@@ -53,8 +53,8 @@ class CartController extends Controller
         $quantity = $request->quantity ?? 1;
 
         $existingCartItem = Cart::where('buyer_id', $buyerId)
-                               ->where('product_id', $productId)
-                               ->first();
+            ->where('product_id', $productId)
+            ->first();
 
         if ($existingCartItem) {
             $existingCartItem->quantity += $quantity;
@@ -93,8 +93,8 @@ class CartController extends Controller
         ]);
 
         $cartItem = Cart::where('cart_id', $id)
-                       ->where('buyer_id', $buyerId)
-                       ->first();
+            ->where('buyer_id', $buyerId)
+            ->first();
 
         if (!$cartItem) {
             return response()->json([
@@ -125,8 +125,8 @@ class CartController extends Controller
         }
 
         $cartItem = Cart::where('cart_id', $id)
-                       ->where('buyer_id', $buyerId)
-                       ->first();
+            ->where('buyer_id', $buyerId)
+            ->first();
 
         if (!$cartItem) {
             return response()->json([
@@ -199,7 +199,8 @@ class CartController extends Controller
                 'price' => (int) $item->product->price ?? 0,
                 'image' => $item->product->image ?? '',
                 'quantity' => $item->quantity,
-                'total_price' => $item->total_price
+                'total_price' => $item->total_price,
+                'type' => $item->product->type
             ];
         });
     }

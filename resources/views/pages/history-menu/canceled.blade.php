@@ -17,15 +17,20 @@
             @forelse($orders as $order)
             <tr class="text-center border-b hover:bg-gray-50">
                 <td class="text-sm text-left py-2 px-4">{{ $order->order_id }}</td>
-                <td class="text-sm text-left py-2 px-4">{{ $order->product_name }}</td>
+                <td class="text-sm text-left py-2 px-4">
+                    {{ $order->product_name }}
+                    @if ($order->extra_count > 0)
+                    <br><span class="text-gray-500 text-sm">+{{ $order->extra_count }}</span>
+                    @endif
+                </td>
                 <td class="text-sm text-left py-2 px-4">{{ \Carbon\Carbon::parse($order->payment_date)->format('d M Y H:i') }}</td>
                 <td class="text-sm text-left py-2 px-4">
                     @if ($order->transaction_status === 'EXPIRED')
-                    <span class="inline-block px-2 py-1 text-xs font-medium bg-red-200 text-red-800 rounded">
+                    <span class="inline-block px-2 py-1 text-xs font-medium bg-red-100 text-red-700 rounded">
                         Expired
                     </span>
                     @else
-                    <span class="inline-block px-2 py-1 text-xs font-medium bg-red-200 text-red-800 rounded">
+                    <span class="inline-block px-2 py-1 text-xs font-medium bg-red-100 text-red-700 rounded">
                         Canceled
                     </span>
                     @endif
@@ -33,12 +38,12 @@
                 <td class="py-2 px-4 space-x-2">
                     <a href="{{ route('payment.receipt', ['payment_id' => $order->payment_id, 'back' => request()->fullUrl()]) }}"
                         class="ml-16 inline-block text-sm px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
-                        View Receipt
+                        View
                     </a>
                 </td>
             </tr>
+            @empty
             <tr>
-                @empty
                 <td colspan="5" class="text-center text-gray-500 py-4">
                     <p class="text-gray-500">No orders found in this section.</p>
                 </td>
@@ -47,5 +52,4 @@
         </tbody>
     </table>
 </div>
-
 @endsection

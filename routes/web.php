@@ -86,6 +86,7 @@ Route::get('/profile/{buyer_id}', [ProfileController::class, 'showOtherUser'])->
 Route::middleware(['web', 'auth.check'])->group(function () {
     Route::get('/checkout/{product_id}', [CheckoutController::class, 'showForm'])->name('checkout.form');
     Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+    Route::get('/checkout', [CheckoutController::class, 'checkoutCart'])->name('checkout.cart');
     Route::get('/payment-receipt/{payment_id}', [PaymentController::class, 'showReceipt'])->name('payment.receipt');
     Route::get('/payment-receipt/{payment_id}/download', [PaymentController::class, 'downloadReceipt'])->name('payment.receipt.download');
     Route::get('/bank/{bank}', [BankController::class, 'showPaymentPage'])->name('bank.payment');

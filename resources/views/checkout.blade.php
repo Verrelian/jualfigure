@@ -104,6 +104,10 @@
 </head>
 
 <body class="bg-gray-50 min-h-screen">
+    @php
+    $isCart = isset($checkoutFromCart) && $checkoutFromCart;
+    $product = $product ?? null;
+    @endphp
 
     <!-- Header -->
     <header class="bg-white shadow-lg sticky top-0 z-50">
@@ -145,8 +149,13 @@
                     </div>
 
                     <form id="checkoutForm" method="POST" action="{{ route('checkout.process') }}" autocomplete="off" class="space-y-6">
-                        <input type="hidden" name="product_id" value="{{ $product->product_id }}">
                         @csrf
+                        @if (!$isCart && isset($product))
+                        <input type="hidden" name="product_id" value="{{ $product->product_id }}">
+                        @endif
+                        @if ($isCart)
+                        <input type="hidden" name="is_cart_checkout" value="1">
+                        @endif
 
                         <!-- Phone Number -->
                         <div class="group">
@@ -224,6 +233,7 @@
                         </div>
 
                         <!-- Quantity -->
+                        @if (!$isCart && $product)
                         <div class="group">
                             <label class="block mb-6">
                                 <div class="flex items-center space-x-2 mb-3">
@@ -248,6 +258,7 @@
                                 </div>
                             </label>
                         </div>
+                        @endif
 
                         <!-- Payment Method -->
                         <div class="group">
@@ -335,6 +346,29 @@
 
                         <!-- Product Info -->
                         <div class="p-6">
+                            @if ($isCart)
+                            <div class="space-y-3 mb-6">
+                                @foreach ($cartItems as $item)
+                                <a href="{{ route('product.detail', $item['product_id']) }}" class="block group border border-gray-200 rounded-lg p-3 hover:shadow transition">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+                                            <img src="{{ asset('images/' . $item['image']) }}" alt="{{ $item['name'] }}" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition">
+                                                {{ $item['name'] }}
+                                            </h4>
+                                            <p class="text-xs text-gray-500">{{ $item['type'] ?? '-' }}</p>
+                                            <p class="text-xs text-gray-500">Qty: {{ $item['quantity'] }}</p>
+                                        </div>
+                                        <div class="text-sm font-bold text-gray-800">
+                                            Rp{{ number_format($item['total_price'], 0, ',', '.') }}
+                                        </div>
+                                    </div>
+                                </a>
+                                @endforeach
+                            </div>
+                            @elseif (!empty($product))
                             <div class="flex items-start space-x-4 mb-6">
                                 <div class="w-24 h-24 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
                                     <img src="{{ asset('images/' . $product->image) }}" alt="{{ $product->product_name }}"
@@ -345,12 +379,14 @@
                                     <p class="text-sm text-gray-500 mb-2">{{ $product->type }}</p>
                                 </div>
                             </div>
+                            @endif
 
                             <!-- Price Breakdown -->
                             <div class="space-y-4 border-t pt-4">
+                                @php $subtotalAmount = $isCart ? $subtotal : ($product->price ?? 0); @endphp
                                 <div class="flex justify-between items-center">
                                     <span class="text-gray-600">Subtotal</span>
-                                    <span id="subtotal" class="font-semibold">IDR {{ number_format($product->price) }}</span>
+                                    <span id="subtotal" class="font-semibold">IDR {{ number_format($subtotalAmount, 0, ',', '.') }}</span>
                                 </div>
                                 <div class="flex justify-between items-center">
                                     <span class="text-gray-600 flex items-center space-x-1">
@@ -402,15 +438,37 @@
             </div>
         </div>
     </div>
+    @if ($isCart)
+    <script>
+        const subtotalCart = {
+            {
+                $subtotal
+            }
+        };
+    </script>
+    @endif
 
     <script>
+        // Dapatkan harga produk dari backend jika bukan mode cart, jika cart maka default 0
+        const isCart = @json($isCart);
+        @if(!$isCart && isset($product))
+         const productPrice = {{ $product->price }};
+        @else
+        const productPrice = 0;
+        @endif
+
         function selectPayment(method) {
-            document.querySelector(`input[value="${method}"]`).checked = true;
-            updateTotal();
+            const radio = document.querySelector(`input[value="${method}"]`);
+            if (radio) {
+                radio.checked = true;
+                updateTotal();
+            }
         }
 
         function increaseQuantity() {
             const quantityInput = document.getElementById('quantity');
+            if (!quantityInput) return;
+
             const max = parseInt(quantityInput.max);
             let current = parseInt(quantityInput.value);
 
@@ -422,6 +480,8 @@
 
         function decreaseQuantity() {
             const quantityInput = document.getElementById('quantity');
+            if (!quantityInput) return;
+
             if (parseInt(quantityInput.value) > 1) {
                 quantityInput.value = parseInt(quantityInput.value) - 1;
                 updateSubtotalOnly();
@@ -429,18 +489,32 @@
         }
 
         function updateSubtotalOnly() {
-            const productPrice = @json($product->price);
-            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+            const quantityInput = document.getElementById('quantity');
+            const subtotalEl = document.getElementById('subtotal');
+            if (!quantityInput || !subtotalEl) return;
+
+            const quantity = parseInt(quantityInput.value) || 1;
             const subtotal = productPrice * quantity;
-            document.getElementById('subtotal').textContent = `IDR ${subtotal.toLocaleString()}`;
+            subtotalEl.textContent = `IDR ${subtotal.toLocaleString()}`;
         }
 
         function updateTotal() {
-            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+            const isCart = {
+                {
+                    $isCart ? 'true' : 'false'
+                }
+            };
+            const quantity = parseInt(document.getElementById('quantity')?.value || 1);
             const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
             const checkoutBtn = document.getElementById('checkoutBtn');
 
-            const productPrice = @json($product->price);
+            let subtotal = 0;
+            if (isCart) {
+                subtotal = subtotalCart;
+            } else {
+                subtotal = productPrice * quantity;
+            }
+
             const tax = 50000;
             const shipping = 100000;
             let bankCharge = 0;
@@ -467,33 +541,35 @@
                     return;
             }
 
-            const subtotal = productPrice * quantity;
             const total = subtotal + tax + shipping + bankCharge;
 
             document.getElementById('subtotal').innerText = `IDR ${subtotal.toLocaleString()}`;
             document.getElementById('tax').innerText = `IDR ${tax.toLocaleString()}`;
             document.getElementById('shipping').innerText = `IDR ${shipping.toLocaleString()}`;
             document.getElementById('bankCharge').innerText = `IDR ${bankCharge.toLocaleString()}`;
+            document.getElementById('total').innerText = `IDR ${total.toLocaleString()}`;
 
-            if (paymentMethod) {
-                document.getElementById('total').innerText = `IDR ${total.toLocaleString()}`;
-                checkoutBtn.disabled = false;
-            }
+            checkoutBtn.disabled = false;
         }
 
-        document.getElementById('checkoutForm').addEventListener('submit', function(event) {
+        window.addEventListener('DOMContentLoaded', function() {
             updateTotal();
-        });
 
-        // Initialize
-        window.onload = function() {
-            updateTotal();
-            // Add click listeners to payment options
+            // Event: perubahan payment method
             document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
                 radio.addEventListener('change', updateTotal);
             });
-        };
+
+            // Event: saat form dikirim
+            const form = document.getElementById('checkoutForm');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    updateTotal();
+                });
+            }
+        });
     </script>
+
 </body>
 
 </html>

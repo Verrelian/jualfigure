@@ -1,7 +1,12 @@
 @forelse($orders as $order)
 <tr class="text-center border-b hover:bg-gray-50">
     <td class="text-sm text-left py-2 px-4">{{ $order->order_id }}</td>
-    <td class="text-sm text-left py-2 px-4">{{ $order->product_name }}</td>
+    <td class="text-sm text-left py-2 px-4">
+        {{ $order->product_name }}
+        @if ($order->extra_count > 0)
+        <br><span class="text-gray-500 text-sm">+{{ $order->extra_count }}</span>
+        @endif
+    </td>
     <td class="text-sm text-left py-2 px-4">{{ \Carbon\Carbon::parse($order->payment_date)->format('d M Y H:i') }}</td>
     <td class="text-sm text-left py-2 px-4">
         <span class="inline-block px-2 py-1 text-xs font-medium bg-blue-200 text-blue-800 rounded">
