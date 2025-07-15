@@ -26,7 +26,9 @@ use App\Http\Controllers\{
     SearchController,
     LeaderboardController,
     ForgotPasswordController,
-    OTPController,
+    BuyerProfileController,
+    FollowController,
+    OTPController
 };
 
 /*
@@ -75,7 +77,7 @@ Route::get('/api/filter-options', [ProductController::class, 'getFilterOptions']
 
 // --- RUTE PROFIL PENGGUNA LAIN (PUBLIC) ---
 // Rute ini harus di luar middleware otentikasi agar bisa diakses oleh siapa saja
-Route::get('/profile/{buyer_id}', [ProfileController::class, 'showOtherUser'])->name('profile.show');
+// Tambahkan di routes/web.php
 
 
 /*
@@ -112,8 +114,8 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
         Route::get('/profile', [ProfileController::class, 'show'])->name('user.profile');
         Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('user.profile.edit');
         Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-        Route::view('/posts', 'pages.user.user_posts')->name('user.posts');
-        Route::view('/toys', 'pages.user.user_toys')->name('user.toys');
+        Route::get('/posts/{buyer_id?}', [ProfileController::class, 'userPosts'])->name('posts.profile');
+
     });
     // Cart routes
     Route::prefix('cart')->group(function () {
@@ -167,9 +169,28 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
         // Pastikan hanya ada satu route untuk comment
         Route::post('/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
     });
-    // --- PERBAIKAN: Pindahkan rute 'posts.create' ke dalam grup 'feed' jika itu memang bagian dari feed
-    // atau biarkan di luar jika ingin diakses terpisah. Untuk saat ini, asumsikan di luar.
+    // web.php - Bagian Profile Routes (Cleaned)
+
+    Route::prefix('user')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'show'])->name('user.profile');
+        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('user.profile.edit');
+        Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/posts/{buyer_id?}', [ProfileController::class, 'userPosts'])->name('posts.profile');
+    });
+
+    // Profile routes for viewing other users (dari feed)
+    Route::prefix('profile')->group(function () {
+        Route::get('/{buyer}', [BuyerProfileController::class, 'show'])->name('profile.show');
+        Route::post('/{buyer}/toggle-follow', [ProfileController::class, 'toggleFollow'])->name('profile.toggleFollow');
+
+        // Post interactions in profile
+        Route::post('/posts/{post}/like', [ProfileController::class, 'likePost'])->name('profile.posts.like');
+        Route::post('/posts/{post}/comment', [ProfileController::class, 'commentPost'])->name('profile.posts.comment');
+    });
+
+    // Posts creation (jika belum ada)
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+
 });
 
 /*

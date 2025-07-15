@@ -37,4 +37,9 @@ class Post extends Model
     {
         return $this->image ? asset('storage/' . $this->image) : asset('images/default_post.jpg');
     }
+        public function images()
+    {
+        return $this->hasMany(PostImage::class);
+    }
+
 }

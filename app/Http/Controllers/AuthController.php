@@ -51,6 +51,7 @@ class AuthController extends Controller
         'user_id' => $user->getKey(),
         'user_data' => $user->toArray(),
         'user' => $user,
+        'avatar' => $user->avatar,
         ]);
 
 return redirect()->route($request->role === 'seller' ? 'seller.dashboard' : 'dashboard');

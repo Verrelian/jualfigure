@@ -6,7 +6,6 @@
           <img src="{{ asset('images/icon.png') }}" class="h-9 md:h-12 w-auto" alt="Logo" />
           <span class="text-xl font-bold tracking-wide text-gray-800">M.O.L.E</span>
         </a>
-      </a>
 
       <!-- Menu Links (Desktop) -->
       <div class="hidden md:flex items-center space-x-6 text-sm font-medium">

@@ -1,8 +1,9 @@
 @extends('layout.app')
 
 @section('content')
+
     <div class="container mx-auto p-4">
-    <div class="bg-white border-b border-gray-200 sticky top-0 z-10 backdrop-blur-sm bg-white/95">
+    <div class="bg-white border-b border-gray-200 backdrop-blur-sm bg-white/95">
         <div class="container mx-auto max-w-4xl px-4 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
@@ -10,7 +11,7 @@
                         <span class="text-white font-bold text-lg">R</span>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-gray-900">R.Toys Feed</h1>
+                        <h1 class="text-xl font-bold text-gray-900">MoFeed</h1>
                         <p class="text-sm text-gray-500">Discover amazing content</p>
                     </div>
                 </div>
@@ -27,27 +28,165 @@
         </div>
     </div>
 
-    <div id="modal-create" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 transform transition-all">
-            <div class="flex justify-between items-center p-6 border-b border-gray-200">
-                <h2 class="text-xl font-bold text-gray-900">Create New Post</h2>
+    {{-- MODAL CREATE POST - RESPONSIVE DESIGN --}}
+    <div id="modal-create" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto transform transition-all max-h-[90vh] overflow-y-auto">
+            {{-- Header --}}
+            <div class="flex justify-between items-center p-6 lg:p-8 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl lg:text-2xl font-bold text-gray-900">Create New Post</h2>
+                        <p class="text-sm text-gray-600">Share your amazing content with the community</p>
+                    </div>
+                </div>
                 <button
                     onclick="document.getElementById('modal-create').classList.add('hidden')"
-                    class="text-gray-400 hover:text-gray-600 transition-colors">
+                    class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-all">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
-            <div class="p-6">
-                {{-- Pastikan file ini ada di resources/views/pages/posts/create.blade.php --}}
-                @include('pages.posts.create')
+
+            {{-- Form Content --}}
+            <div class="p-6 lg:p-8">
+                <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                    @csrf
+
+                    {{-- Grid Layout for Desktop --}}
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {{-- Left Column --}}
+                        <div class="space-y-6">
+                            {{-- Title --}}
+                            <div>
+                                <label for="title" class="block text-sm font-semibold text-gray-700 mb-3">
+                                    <span class="flex items-center space-x-2">
+                                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                        </svg>
+                                        <span>Post Title</span>
+                                    </span>
+                                </label>
+                                <input type="text" name="title" id="title"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all text-lg"
+                                       placeholder="Enter an engaging title..." required>
+                            </div>
+
+                            {{-- Description --}}
+                            <div>
+                                <label for="description" class="block text-sm font-semibold text-gray-700 mb-3">
+                                    <span class="flex items-center space-x-2">
+                                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        <span>Description</span>
+                                    </span>
+                                </label>
+                                <textarea name="description" id="description" rows="6"
+                                          class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm resize-none transition-all"
+                                          placeholder="Tell your story, share your experience, or describe your collection..." required></textarea>
+                                <div class="mt-2 text-sm text-gray-500">
+                                    <span id="char-count">0</span> characters
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Right Column --}}
+                        <div class="space-y-6">
+                            {{-- Upload Section --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-3">
+                                    <span class="flex items-center space-x-2">
+                                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                        <span>Upload Images</span>
+                                    </span>
+                                </label>
+
+                                {{-- Drag and Drop Area --}}
+                                <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-blue-400 transition-colors bg-gray-50 hover:bg-blue-50">
+                                    <div class="text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                        </svg>
+                                        <div class="mt-4">
+                                            <label for="images" class="cursor-pointer">
+                                                <span class="mt-2 block text-sm font-medium text-gray-900">
+                                                    Click to upload or drag and drop
+                                                </span>
+                                                <span class="mt-1 block text-sm text-gray-500">
+                                                    PNG, JPG, JPEG up to 2MB each
+                                                </span>
+                                            </label>
+                                            <input type="file" name="images[]" id="images" multiple accept="image/*"
+                                                   class="sr-only" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mt-2 text-sm text-gray-500">
+                                    <span class="flex items-center space-x-1">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span>You can select multiple images at once</span>
+                                    </span>
+                                </p>
+                            </div>
+
+                            {{-- Preview Area --}}
+                            <div id="preview-container" class="hidden">
+                                <h4 class="text-sm font-semibold text-gray-700 mb-3">Preview</h4>
+                                <div id="preview-images" class="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto"></div>
+                            </div>
+
+                            {{-- Post Settings --}}
+                            <div class="bg-gray-50 p-4 rounded-xl">
+                                <h4 class="text-sm font-semibold text-gray-700 mb-3">Post Settings</h4>
+                                <div class="space-y-3">
+                                    <label class="flex items-center space-x-3">
+                                        <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                        <span class="text-sm text-gray-600">Allow comments</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3">
+                                        <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                        <span class="text-sm text-gray-600">Public post</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Action Buttons --}}
+                    <div class="flex flex-col sm:flex-row justify-between items-center pt-6 border-t border-gray-200 space-y-3 sm:space-y-0">
+                        <button type="button"
+                                onclick="document.getElementById('modal-create').classList.add('hidden')"
+                                class="w-full sm:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-full transition-colors">
+                            Cancel
+                        </button>
+                        <div class="flex space-x-3">
+                            <button type="button"
+                                    class="px-6 py-3 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-full border border-gray-300 transition-colors">
+                                Save Draft
+                            </button>
+                            <button type="submit"
+                                    class="px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium rounded-full transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                Publish Post
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
     <div class="container mx-auto max-w-4xl px-4 py-8">
-        {{-- Success/Error Messages (opsional, bisa ditempatkan di layout utama) --}}
+        {{-- Success/Error Messages --}}
         @if (session('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                 <strong class="font-bold">Sukses!</strong>
@@ -75,17 +214,14 @@
                     <article class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
                         <div class="p-6 pb-4">
                             <div class="flex items-center space-x-3 mb-4">
-                                {{-- Link ke profil pengguna --}}
                                 <a href="{{ route('profile.show', $post->buyer->buyer_id) }}" class="flex items-center space-x-3">
                                 <div class="relative">
-                                    {{-- Menggunakan accessor avatar_url dari model Buyer --}}
                                     <img src="{{ $post->buyer->avatar_url }}"
                                          class="h-12 w-12 rounded-full ring-2 ring-gray-100"
                                          alt="{{ $post->buyer->username ?? 'Unknown' }} Avatar">
                                     <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
                                 </div>
                                 <div class="flex-1">
-                                    {{-- Menampilkan username buyer --}}
                                     <h3 class="font-semibold text-gray-900">{{ $post->buyer->username ?? 'Unknown User' }}</h3>
                                     <p class="text-sm text-gray-500 flex items-center space-x-1">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,7 +231,6 @@
                                     </p>
                                 </div>
                                 </a>
-                                {{-- Tombol ini (3 titik) tidak terkait fungsionalitas, biarkan saja --}}
                                 <div class="flex items-center space-x-2">
                                     <button class="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,24 +246,102 @@
                             </div>
                         </div>
 
-                        @if($post->image)
+                        @if($post->images->count())
                             <div class="px-6 pb-6">
-                                <div class="relative overflow-hidden rounded-xl bg-gray-100">
-                                    {{-- Menggunakan accessor getImageUrlAttribute() dari model Post --}}
-                                    <img src="{{ $post->image_url }}"
-                                         alt="{{ $post->title }}"
-                                         class="w-full h-80 object-cover hover:scale-105 transition-transform duration-500" />
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
-                                </div>
+                                @if($post->images->count() == 1)
+                                    {{-- Single Image: Full Width --}}
+                                    <div class="rounded-2xl overflow-hidden bg-gray-100 max-w-2xl mx-auto">
+                                        <img src="{{ asset('storage/' . $post->images->first()->image) }}"
+                                            class="w-full h-auto object-contain max-h-[600px]"
+                                            alt="Post Image">
+                                    </div>
+                                @elseif($post->images->count() == 2)
+                                    {{-- Two Images: Side by Side --}}
+                                    <div class="grid grid-cols-2 gap-2 max-w-3xl mx-auto">
+                                        @foreach($post->images as $img)
+                                            <div class="rounded-xl overflow-hidden bg-gray-100 aspect-[4/3]">
+                                                <img src="{{ asset('storage/' . $img->image) }}"
+                                                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                                                    alt="Post Image"
+                                                    onclick="openImageModal('{{ asset('storage/' . $img->image) }}')">
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @elseif($post->images->count() == 3)
+                                    {{-- Three Images: One large, two small --}}
+                                    <div class="grid grid-cols-2 gap-2 max-w-3xl mx-auto">
+                                        <div class="rounded-xl overflow-hidden bg-gray-100 aspect-[4/3]">
+                                            <img src="{{ asset('storage/' . $post->images->first()->image) }}"
+                                                class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                                                alt="Post Image"
+                                                onclick="openImageModal('{{ asset('storage/' . $post->images->first()->image) }}')">
+                                        </div>
+                                        <div class="grid grid-rows-2 gap-2">
+                                            @foreach($post->images->skip(1) as $img)
+                                                <div class="rounded-xl overflow-hidden bg-gray-100 aspect-[4/3]">
+                                                    <img src="{{ asset('storage/' . $img->image) }}"
+                                                        class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                                                        alt="Post Image"
+                                                        onclick="openImageModal('{{ asset('storage/' . $img->image) }}')">
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @elseif($post->images->count() == 4)
+                                    {{-- Four Images: 2x2 Grid --}}
+                                    <div class="grid grid-cols-2 gap-2 max-w-2xl mx-auto">
+                                        @foreach($post->images as $img)
+                                            <div class="rounded-xl overflow-hidden bg-gray-100 aspect-square">
+                                                <img src="{{ asset('storage/' . $img->image) }}"
+                                                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                                                    alt="Post Image"
+                                                    onclick="openImageModal('{{ asset('storage/' . $img->image) }}')">
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @elseif($post->images->count() >= 5)
+                                    {{-- Five or More Images: Complex Grid --}}
+                                    <div class="grid grid-cols-2 gap-2 max-w-3xl mx-auto">
+                                        {{-- First two images full height --}}
+                                        @foreach($post->images->take(2) as $img)
+                                            <div class="rounded-xl overflow-hidden bg-gray-100 aspect-[4/3]">
+                                                <img src="{{ asset('storage/' . $img->image) }}"
+                                                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                                                    alt="Post Image"
+                                                    onclick="openImageModal('{{ asset('storage/' . $img->image) }}')">
+                                            </div>
+                                        @endforeach
+
+                                        {{-- Remaining images in smaller grid --}}
+                                        @if($post->images->count() > 2)
+                                            <div class="col-span-2 grid grid-cols-3 gap-2 mt-2">
+                                                @foreach($post->images->skip(2)->take(3) as $index => $img)
+                                                    <div class="rounded-xl overflow-hidden bg-gray-100 aspect-square relative">
+                                                        <img src="{{ asset('storage/' . $img->image) }}"
+                                                            class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                                                            alt="Post Image"
+                                                            onclick="openImageModal('{{ asset('storage/' . $img->image) }}')">
+
+                                                        {{-- Show +X overlay for last image if more than 5 images --}}
+                                                        @if($index == 2 && $post->images->count() > 5)
+                                                            <div class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center rounded-xl cursor-pointer hover:bg-opacity-70 transition-colors"
+                                                                onclick="openImageModal('{{ asset('storage/' . $img->image) }}')">
+                                                                <span class="text-white text-2xl font-bold">+{{ $post->images->count() - 5 }}</span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endif
                             </div>
                         @endif
 
                         <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50">
                             <div class="flex items-center justify-between mb-4">
                                 <div class="flex items-center space-x-6">
-                                    {{-- Form untuk like/unlike postingan --}}
-                                   <form action="{{ route('posts.like', ['post' => $post->id]) }}" method="POST" class="inline"> {{-- PERBAIKAN: Gunakan $post->id --}}
-
+                                <form action="{{ route('posts.like', ['post' => $post->id]) }}" method="POST" class="inline">
                                         @csrf
                                         <button type="submit" class="flex items-center space-x-2 text-gray-600 hover:text-red-500 transition-colors group">
                                             <div class="p-2 rounded-full group-hover:bg-red-50 transition-colors">
@@ -140,13 +353,15 @@
                                         </button>
                                     </form>
 
-                                    <div class="flex items-center space-x-2 text-gray-600">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                        </svg>
-                                        {{-- Menggunakan comments_count dari withCount() di controller --}}
-                                        <span class="font-medium">{{ $post->comments_count }}</span>
-                                    </div>
+                                    {{-- Modified Comment Button with Popup --}}
+                                    <button onclick="openCommentModal({{ $post->id }})" class="flex items-center space-x-2 text-gray-600 hover:text-blue-500 transition-colors group">
+                                        <div class="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="font-medium">{{ $post->comments_count }} Comments</span>
+                                    </button>
                                 </div>
 
                                 <button class="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
@@ -156,50 +371,79 @@
                                 </button>
                             </div>
 
-                            {{-- Form komentar --}}
-                            <form action="{{ route('posts.comment', $post->id) }}" method="POST" class="mb-4"> {{-- PERBAIKAN: Gunakan $post->id --}}
-                                @csrf
-                                <div class="flex space-x-3">
-                                    {{-- Menggunakan avatar user yang sedang login dari session --}}
-                                    <img src="{{ session('buyer_avatar_url') }}" class="h-8 w-8 rounded-full" alt="Your Avatar">
-                                    <div class="flex-1 flex space-x-2">
-                                        <input type="text"
-                                               name="comment"
-                                               placeholder="Write a thoughtful comment..."
-                                               class="flex-1 px-4 py-2 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                               required>
-                                        <button type="submit"
-                                                class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full font-medium transition-colors flex items-center space-x-2">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            {{-- Comment Modal Popup --}}
+                            <div id="comment-modal-{{ $post->id }}" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl h-[600px] flex flex-col">
+                                    {{-- Modal Header --}}
+                                    <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                                        <h3 class="text-lg font-bold text-gray-900">Comments</h3>
+                                        <button onclick="closeCommentModal({{ $post->id }})" class="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                             </svg>
-                                            <span class="hidden sm:inline">Send</span>
                                         </button>
                                     </div>
-                                </div>
-                                @error('comment') {{-- Menampilkan error validasi komentar --}}
-                                    <p class="text-red-500 text-sm mt-1 ml-14">{{ $message }}</p>
-                                @enderror
-                            </form>
 
-                            @if($post->comments->count() > 0)
-                                <div class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar">
-                                    @foreach($post->comments as $comment)
-                                        <div class="flex space-x-3 group">
-                                            {{-- Menggunakan avatar commenter dari relasi buyer --}}
-                                            <img src="{{ $comment->buyer->avatar_url }}" class="h-8 w-8 rounded-full flex-shrink-0" alt="Commenter Avatar">
-                                            <div class="flex-1">
-                                                <div class="bg-gray-100 rounded-2xl px-4 py-3 group-hover:bg-gray-150 transition-colors">
-                                                    {{-- Menampilkan nama commenter --}}
-                                                    <p class="font-semibold text-gray-900 text-sm mb-1">{{ $comment->buyer->username ?? 'Unknown Commenter' }}</p>
-                                                    <p class="text-gray-800 text-sm leading-relaxed">{{ $comment->comment }}</p>
+                                    {{-- Comments List - Scrollable --}}
+                                    <div class="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar">
+                                        @if($post->comments->count() > 0)
+                                            <div class="space-y-4">
+                                                @foreach($post->comments as $comment)
+                                                    <div class="flex space-x-3 group">
+                                                        <img src="{{ $comment->buyer->avatar_url }}" class="h-10 w-10 rounded-full flex-shrink-0" alt="Commenter Avatar">
+                                                        <div class="flex-1">
+                                                            <div class="bg-gray-100 rounded-2xl px-4 py-3 group-hover:bg-gray-150 transition-colors">
+                                                                <p class="font-semibold text-gray-900 text-sm mb-1">{{ $comment->buyer->username ?? 'Unknown Commenter' }}</p>
+                                                                <p class="text-gray-800 text-sm leading-relaxed">{{ $comment->comment }}</p>
+                                                            </div>
+                                                            <div class="flex items-center space-x-4 mt-2 ml-4">
+                                                                <span class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</span>
+                                                                <button class="text-xs text-gray-500 hover:text-blue-600 font-medium">Like</button>
+                                                                <button class="text-xs text-gray-500 hover:text-blue-600 font-medium">Reply</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <div class="flex items-center justify-center h-full text-gray-500">
+                                                <div class="text-center">
+                                                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                                    </svg>
+                                                    <p class="text-sm">No comments yet. Be the first to comment!</p>
                                                 </div>
                                             </div>
-                                        </div>
-                                    @endforeach
+                                        @endif
+                                    </div>
+
+                                    {{-- Comment Form - Fixed at Bottom --}}
+                                    <div class="p-6 border-t border-gray-200 bg-gray-50">
+                                        <form action="{{ route('posts.comment', $post->id) }}" method="POST">
+                                            @csrf
+                                            <div class="flex space-x-3">
+                                                <img src="{{ session('buyer_avatar_url') }}" class="h-10 w-10 rounded-full flex-shrink-0" alt="Your Avatar">
+                                                <div class="flex-1 flex space-x-2">
+                                                    <input type="text"
+                                                        name="comment"
+                                                        placeholder="Write a thoughtful comment..."
+                                                        class="flex-1 px-4 py-3 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                                        required>
+                                                    <button type="submit"
+                                                            class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full font-medium transition-colors flex items-center space-x-2">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                                        </svg>
+                                                        <span class="hidden sm:inline">Send</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
-                            @endif
+                            </div>
                         </div>
+
                     </article>
                 @endforeach
             </div>
@@ -226,23 +470,168 @@
             </div>
         @endif
     </div>
+                    {{-- Image Modal for Full View --}}
+            <div id="imageModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300">
+                <div class="relative max-w-4xl max-h-full">
+                    {{-- Tombol close --}}
+                    <button onclick="closeImageModal()"
+                            class="absolute top-4 right-4 text-white hover:text-gray-300 z-10">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+
+                    {{-- Gambar ditampilkan di sini --}}
+                    <img id="modalImage"
+                        src=""
+                        class="max-w-full max-h-screen w-auto h-auto object-contain rounded-lg shadow-lg transform scale-95 transition-transform duration-300 ease-out cursor-zoom-out" />
+                </div>
+            </div>
+
+            {{-- Script Modal --}}
+            <script>
+                function openImageModal(imageSrc) {
+                    const modal = document.getElementById('imageModal');
+                    const modalImage = document.getElementById('modalImage');
+
+                    modalImage.src = imageSrc;
+                    modal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+
+                    // Animasi zoom-in
+                    setTimeout(() => {
+                        modalImage.classList.remove('scale-95');
+                        modalImage.classList.add('scale-100');
+                    }, 10);
+                }
+
+                function closeImageModal() {
+                    const modal = document.getElementById('imageModal');
+                    const modalImage = document.getElementById('modalImage');
+
+                    // Animasi zoom-out sebelum hide
+                    modalImage.classList.remove('scale-100');
+                    modalImage.classList.add('scale-95');
+
+                    setTimeout(() => {
+                        modal.classList.add('hidden');
+                        document.body.style.overflow = 'auto';
+                    }, 200);
+                }
+
+                // Close modal saat klik luar gambar
+                document.getElementById('imageModal').addEventListener('click', function(e) {
+                    if (e.target === this) closeImageModal();
+                });
+
+                // Tutup pakai ESC
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') closeImageModal();
+                });
+            </script>
 </div>
 
+<script>
+// Character counter for description
+document.getElementById('description').addEventListener('input', function() {
+    const charCount = this.value.length;
+    document.getElementById('char-count').textContent = charCount;
+});
 
+// Image preview functionality
+document.getElementById('images').addEventListener('change', function(e) {
+    const previewContainer = document.getElementById('preview-container');
+    const previewImages = document.getElementById('preview-images');
+
+    if (e.target.files.length > 0) {
+        previewContainer.classList.remove('hidden');
+        previewImages.innerHTML = '';
+
+        Array.from(e.target.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const div = document.createElement('div');
+                div.className = 'relative';
+                div.innerHTML = `
+                    <img src="${e.target.result}" class="w-full h-20 object-cover rounded-lg">
+                    <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg opacity-0 hover:opacity-100 transition-opacity">
+                        <span class="text-white text-xs">${file.name}</span>
+                    </div>
+                `;
+                previewImages.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        });
+    } else {
+        previewContainer.classList.add('hidden');
+    }
+});
+
+// Close modal when clicking outside
+document.getElementById('modal-create').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.classList.add('hidden');
+    }
+});
+</script>
+<script>
+// Function to open comment modal
+function openCommentModal(postId) {
+    const modal = document.getElementById(`comment-modal-${postId}`);
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+
+    // Auto-focus comment input
+    setTimeout(() => {
+        const commentInput = modal.querySelector('input[name="comment"]');
+        if (commentInput) {
+            commentInput.focus();
+        }
+    }, 100);
+}
+
+// Function to close comment modal
+function closeCommentModal(postId) {
+    const modal = document.getElementById(`comment-modal-${postId}`);
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('bg-black/60')) {
+        const postId = e.target.id.split('-')[2];
+        closeCommentModal(postId);
+    }
+});
+
+// Close modal with ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const openModals = document.querySelectorAll('[id^="comment-modal-"]:not(.hidden)');
+        openModals.forEach(modal => {
+            const postId = modal.id.split('-')[2];
+            closeCommentModal(postId);
+        });
+    }
+});
+</script>
+
+{{-- Add this CSS for the modal --}}
 <style>
-    .custom-scrollbar::-webkit-scrollbar {
-        width: 4px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-        background: #f1f5f9;
-        border-radius: 2px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 2px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-    }
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
 </style>
 @endsection
