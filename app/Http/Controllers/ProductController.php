@@ -7,12 +7,34 @@ use App\Models\Produk;
 use App\Services\FilterService;
 use App\Models\Wishlist;
 
-
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('pages.product.product-detail');
+        $category = $request->get('category', null);
+        $priceRange = $request->get('price_range', null);
+
+        $query = Product::where('status', 'active');
+
+        // Filter kategori jika ada
+        if ($category && $category !== 'all') {
+            $query->where('category', $category);
+        }
+
+        // Filter rentang harga jika ada
+        if ($priceRange) {
+            $rangeParts = explode('-', $priceRange);
+            if (count($rangeParts) === 2) {
+                $minPrice = (float) $rangeParts[0];
+                $maxPrice = (float) $rangeParts[1];
+                $query->whereBetween('price', [$minPrice, $maxPrice]);
+            }
+        }
+
+        $products = $query->get(); // atau bisa pakai paginate()
+        $initialCategory = $category ?? 'all';
+
+        return view('explore', compact('products', 'initialCategory'));
     }
 
     public function show($product_id)
@@ -82,32 +104,24 @@ class ProductController extends Controller
 
     public function explore(Request $request)
     {
-        // Ambil semua type unik dari database
-        $categories = Produk::select('type')
-            ->distinct()
-            ->orderBy('type')
-            ->pluck('type')
-            ->toArray();
-
-        // Format untuk tampilan dengan slug mapping
+        // Mapping category slug ke type database (CUMA INI YANG DIUBAH)
         $categorySlugs = [
             'nendoroid' => 'Nendoroid',
             'popup' => 'Pop Up Parade',
             'hottoys' => 'Hot Toys'
         ];
 
-        // Get initial category from URL parameter
+        // Get initial category dari URL parameter
         $initialCategory = request()->query('category', 'nendoroid');
-        $initialType = $categorySlugs[$initialCategory] ?? $categories[0] ?? 'Nendoroid';
+        $initialType = $categorySlugs[$initialCategory] ?? 'Nendoroid';
 
-
-        // Dengan ini:
+        // Pake FilterService yang udah ada (TETEP PAKE INI)
         $filterService = new \App\Services\FilterService();
         $query = Produk::with(['specification', 'seller'])->where('type', $initialType);
-        $products = $filterService->apply($query, $request->all())->paginate(12);
         $filterOptions = $filterService->getFilterOptions();
+        $products = $filterService->apply($query, $request->all())->paginate(12);
 
-        // Dan update return view:
+        // Return view tetep sama
         return view('pages.general.explore', [
             'categories' => $categorySlugs,
             'initialCategory' => $initialCategory,
@@ -119,7 +133,7 @@ class ProductController extends Controller
 
     public function getProductsByCategory(Request $request)
     {
-        // Step 1: Mapping slug ke nama tipe
+        // Mapping slug ke nama tipe (CUMA INI YANG DIUBAH)
         $categoryMap = [
             'nendoroid' => 'Nendoroid',
             'popup'     => 'Pop Up Parade',
@@ -129,18 +143,18 @@ class ProductController extends Controller
         $categorySlug = $request->query('category', 'nendoroid');
         $type = $categoryMap[$categorySlug] ?? 'Nendoroid';
 
-        // Step 2: Build query dasar
+        // Build query dasar
         $query = Produk::with(['specification', 'seller'])
             ->where('type', $type)
             ->inStock()
             ->orderBy('created_at', 'desc');
 
-        // Step 3: Apply filters via service
+        // Apply filters via service (TETEP PAKE FILTERSERVICE)
         $filters = array_merge($request->all(), ['type' => $type]);
         $filterService = new FilterService();
         $products = $filterService->apply($query, $filters)->paginate(12);
 
-        // Step 4: AJAX response
+        // AJAX response
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
@@ -158,19 +172,20 @@ class ProductController extends Controller
             ]);
         }
 
-        // Step 5: Fallback view
+        // Fallback view
         return view('partials.explore.products', [
             'products' => $products,
             'category' => $categorySlug
         ]);
     }
+
     public function filter(Request $request)
     {
         $filterService = new \App\Services\FilterService();
         $query = Produk::with(['specification', 'seller']);
         $products = $filterService->apply($query, $request->all())->paginate(12);
 
-        // Return JSON response aja
+        // Return JSON response
         return response()->json([
             'success' => true,
             'products' => $products->map(function ($product) {
@@ -191,9 +206,63 @@ class ProductController extends Controller
             })
         ]);
     }
+
     public function getFilterOptions()
     {
         $filterService = new \App\Services\FilterService();
         return response()->json($filterService->getFilterOptions());
     }
+    public function categoryResults($category, Request $request)
+    {
+        $categoryMap = [
+            'nendoroid' => 'Nendoroid',
+            'popup'     => 'Pop Up Parade',
+            'hottoys'   => 'Hot Toys'
+        ];
+
+        if (!isset($categoryMap[$category])) {
+            abort(404, 'Category not found');
+        }
+
+        $type = $categoryMap[$category];
+        $categoryName = $categoryMap[$category];
+
+        // Ambil sort dari request
+        $sort = $request->get('sort', 'latest');
+
+        // Mulai query
+        $query = Produk::with(['specification', 'seller'])
+            ->where('type', $type)
+            ->where('stock', '>', 0);
+
+        // Terapkan sorting
+        switch ($sort) {
+            case 'price_low':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'popular':
+                $query->orderBy('rating_total', 'desc'); // asumsi popular berdasarkan rating_total
+                break;
+            default:
+                $query->orderBy('created_at', 'desc');
+        }
+
+        $products = $query->paginate(12);
+
+        $totalProducts = Produk::where('type', $type)
+            ->where('stock', '>', 0)
+            ->count();
+
+        return view('pages.category-results', [
+            'products' => $products,
+            'category' => $category,
+            'categoryName' => $categoryName,
+            'totalProducts' => $totalProducts,
+            'sort' => $sort
+        ]);
+    }
+
 }

@@ -18,10 +18,6 @@
 
     <!-- Flowbite -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css" rel="stylesheet" />
-
-    <!-- Custom Script -->
-    <script src="/js/crud.js"></script>
-
     <!-- Scrollbar Hide -->
     <style>
         .scrollbar-hide::-webkit-scrollbar {
@@ -163,6 +159,8 @@
         // showToast('success', 'Berhasil menambahkan komentar!');
         // showToast('error', 'Gagal menyukai postingan.');
     </script>
+    @stack('scripts')
+
 </body>
 
 </html>
