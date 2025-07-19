@@ -15,7 +15,14 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::withCount(['likes', 'comments'])
-            ->with(['buyer', 'comments.buyer']) // Tambahkan eager loading komentar dan pembuatnya
+            ->with([
+                'buyer',
+                'comments' => function($query) {
+                    $query->parents() // Hanya parent comments
+                          ->with(['buyer', 'allReplies.buyer'])
+                          ->orderBy('created_at', 'desc');
+                }
+            ])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -37,32 +44,32 @@ class PostController extends Controller
     /**
      * Menyimpan postingan baru
      */
-        public function store(Request $request)
-        {
-            $request->validate([
-                'title' => 'required|max:255',
-                'description' => 'required',
-                'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-            $userId = session('user_id');
+        $userId = session('user_id');
 
-            $post = Post::create([
-                'title' => $request->title,
-                'description' => $request->description,
-                'status' => 'active',
-                'user_id' => $userId,
-            ]);
+        $post = Post::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'status' => 'active',
+            'user_id' => $userId,
+        ]);
 
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $imageFile) {
-                    $path = $imageFile->store('post_images', 'public');
-                    $post->images()->create(['image' => $path]);
-                }
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $imageFile) {
+                $path = $imageFile->store('post_images', 'public');
+                $post->images()->create(['image' => $path]);
             }
-
-            return redirect()->route('posts.index')->with('success', 'Post berhasil dibuat!');
         }
+
+        return redirect()->route('posts.index')->with('success', 'Post berhasil dibuat!');
+    }
 
     /**
      * Menyukai atau batal menyukai postingan
@@ -76,7 +83,7 @@ class PostController extends Controller
         $userId = session('user_id');
 
         $existingLike = PostLike::where('post_id', $post->id)
-            ->where('user_id', $userId) // PERBAIKAN: Pastikan ini menggunakan 'user_id'
+            ->where('user_id', $userId)
             ->first();
 
         if ($existingLike) {
@@ -86,7 +93,7 @@ class PostController extends Controller
 
         PostLike::create([
             'post_id' => $post->id,
-            'user_id' => $userId // PERBAIKAN PENTING: Tambahkan 'user_id' di sini!
+            'user_id' => $userId
         ]);
 
         return back()->with('success', 'Post disukai!');
@@ -105,13 +112,65 @@ class PostController extends Controller
             return redirect()->route('login')->with('error', 'Silakan login dulu.');
         }
 
-        $post->comments()->create([
+        $comment = $post->comments()->create([
             'user_id' => session('user_id'),
-            'comment' => $request->comment
+            'comment' => $request->comment,
+            'parent_id' => null,
+            'level' => 0
         ]);
 
         return back()->with('success', 'Komentar ditambahkan!');
     }
 
+    /**
+     * Menambahkan reply ke komentar
+     */
+    public function replyComment(Request $request, $commentId)
+    {
+        $request->validate([
+            'comment' => 'required|min:3|max:500'
+        ]);
 
+        if (session('role') !== 'buyer' || !session('user_id')) {
+            return redirect()->route('login')->with('error', 'Silakan login dulu.');
+        }
+
+        $parentComment = PostComment::findOrFail($commentId);
+
+        // Batasi level reply maksimal 3 level
+        if ($parentComment->level >= 2) {
+            return back()->with('error', 'Maksimal 3 level reply');
+        }
+
+        $reply = PostComment::create([
+            'post_id' => $parentComment->post_id,
+            'user_id' => session('user_id'),
+            'comment' => $request->comment,
+            'parent_id' => $commentId,
+            'level' => $parentComment->level + 1
+        ]);
+
+        return back()->with('success', 'Reply berhasil ditambahkan!');
+    }
+
+    /**
+     * Menghapus komentar
+     */
+    public function deleteComment($commentId)
+    {
+        if (session('role') !== 'buyer' || !session('user_id')) {
+            return redirect()->route('login')->with('error', 'Silakan login dulu.');
+        }
+
+        $comment = PostComment::findOrFail($commentId);
+
+        // Pastikan hanya pemilik comment yang bisa delete
+        if ($comment->user_id !== session('user_id')) {
+            return back()->with('error', 'Tidak bisa menghapus comment orang lain');
+        }
+
+        $comment->delete(); // Akan otomatis delete semua replies karena cascade
+
+        return back()->with('success', 'Comment berhasil dihapus!');
+    }
 }

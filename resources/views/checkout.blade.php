@@ -7,100 +7,7 @@
     <title>Checkout Page</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .card-shadow {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-
-        .input-focus {
-            transition: all 0.3s ease;
-        }
-
-        .input-focus:focus {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.25);
-        }
-
-        .btn-hover {
-            transition: all 0.3s ease;
-        }
-
-        .btn-hover:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.4);
-        }
-
-        .product-card {
-            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-        }
-
-        .price-highlight {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .payment-option {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .payment-option:hover {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            border-color: #3b82f6;
-        }
-
-        .step-indicator {
-            position: relative;
-        }
-
-        .step-indicator::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            right: -20px;
-            transform: translateY(-50%);
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #e5e7eb;
-        }
-
-        .step-active::after {
-            background: #3b82f6;
-        }
-
-
-
-        .pulse-ring {
-            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-        }
-
-        @keyframes pulse-ring {
-            0% {
-                transform: scale(0.8);
-                opacity: 1;
-            }
-
-            80%,
-            100% {
-                transform: scale(1.2);
-                opacity: 0;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/checkout.css') }}">
 </head>
 
 <body class="bg-gray-50 min-h-screen">
@@ -438,138 +345,19 @@
             </div>
         </div>
     </div>
-    @if ($isCart)
+
+    <!-- Data untuk JavaScript -->
     <script>
-        const subtotalCart = {
-            {
-                $subtotal
-            }
+        // Data dari PHP untuk JavaScript
+        const checkoutData = {
+            isCart: @json($isCart),
+            productPrice: @if(!$isCart && isset($product)) {{ $product->price }} @else 0 @endif,
+            subtotalCart: @if($isCart) {{ $subtotal }} @else 0 @endif
         };
     </script>
-    @endif
 
-    <script>
-        // Dapatkan harga produk dari backend jika bukan mode cart, jika cart maka default 0
-        const isCart = @json($isCart);
-        @if(!$isCart && isset($product))
-         const productPrice = {{ $product->price }};
-        @else
-        const productPrice = 0;
-        @endif
-
-        function selectPayment(method) {
-            const radio = document.querySelector(`input[value="${method}"]`);
-            if (radio) {
-                radio.checked = true;
-                updateTotal();
-            }
-        }
-
-        function increaseQuantity() {
-            const quantityInput = document.getElementById('quantity');
-            if (!quantityInput) return;
-
-            const max = parseInt(quantityInput.max);
-            let current = parseInt(quantityInput.value);
-
-            if (current < max) {
-                quantityInput.value = current + 1;
-                updateSubtotalOnly();
-            }
-        }
-
-        function decreaseQuantity() {
-            const quantityInput = document.getElementById('quantity');
-            if (!quantityInput) return;
-
-            if (parseInt(quantityInput.value) > 1) {
-                quantityInput.value = parseInt(quantityInput.value) - 1;
-                updateSubtotalOnly();
-            }
-        }
-
-        function updateSubtotalOnly() {
-            const quantityInput = document.getElementById('quantity');
-            const subtotalEl = document.getElementById('subtotal');
-            if (!quantityInput || !subtotalEl) return;
-
-            const quantity = parseInt(quantityInput.value) || 1;
-            const subtotal = productPrice * quantity;
-            subtotalEl.textContent = `IDR ${subtotal.toLocaleString()}`;
-        }
-
-        function updateTotal() {
-            const isCart = {
-                {
-                    $isCart ? 'true' : 'false'
-                }
-            };
-            const quantity = parseInt(document.getElementById('quantity')?.value || 1);
-            const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
-            const checkoutBtn = document.getElementById('checkoutBtn');
-
-            let subtotal = 0;
-            if (isCart) {
-                subtotal = subtotalCart;
-            } else {
-                subtotal = productPrice * quantity;
-            }
-
-            const tax = 50000;
-            const shipping = 100000;
-            let bankCharge = 0;
-
-            switch (paymentMethod) {
-                case 'BANK BCA':
-                    bankCharge = 350000;
-                    break;
-                case 'BANK MANDIRI':
-                    bankCharge = 300000;
-                    break;
-                case 'BANK BNI':
-                    bankCharge = 260000;
-                    break;
-                case 'BANK BRI':
-                    bankCharge = 250000;
-                    break;
-                default:
-                    document.getElementById('tax').textContent = "-";
-                    document.getElementById('shipping').textContent = "-";
-                    document.getElementById('bankCharge').textContent = "-";
-                    document.getElementById('total').textContent = "-";
-                    checkoutBtn.disabled = true;
-                    return;
-            }
-
-            const total = subtotal + tax + shipping + bankCharge;
-
-            document.getElementById('subtotal').innerText = `IDR ${subtotal.toLocaleString()}`;
-            document.getElementById('tax').innerText = `IDR ${tax.toLocaleString()}`;
-            document.getElementById('shipping').innerText = `IDR ${shipping.toLocaleString()}`;
-            document.getElementById('bankCharge').innerText = `IDR ${bankCharge.toLocaleString()}`;
-            document.getElementById('total').innerText = `IDR ${total.toLocaleString()}`;
-
-            checkoutBtn.disabled = false;
-        }
-
-        window.addEventListener('DOMContentLoaded', function() {
-            updateTotal();
-
-            // Event: perubahan payment method
-            document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
-                radio.addEventListener('change', updateTotal);
-            });
-
-            // Event: saat form dikirim
-            const form = document.getElementById('checkoutForm');
-            if (form) {
-                form.addEventListener('submit', function() {
-                    updateTotal();
-                });
-            }
-        });
-    </script>
-
+    <!-- Include JavaScript -->
+    <script src="{{ asset('js/checkout.js') }}"></script>
 </body>
 
 </html>

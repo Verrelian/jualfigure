@@ -198,10 +198,6 @@
                                             <span class="text-gray-600">Subtotal:</span>
                                             <span class="font-semibold text-gray-900">${formatRupiah(grandTotal)}</span>
                                         </div>
-                                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                                            <span class="text-gray-600">Biaya Admin:</span>
-                                            <span class="font-semibold text-green-600">Gratis</span>
-                                        </div>
                                     </div>
 
                                     <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6">

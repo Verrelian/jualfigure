@@ -372,6 +372,7 @@
                             </div>
 
                             {{-- Comment Modal Popup --}}
+                            {{-- Comment Modal Popup --}}
                             <div id="comment-modal-{{ $post->id }}" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                                 <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl h-[600px] flex flex-col">
                                     {{-- Modal Header --}}
@@ -389,17 +390,154 @@
                                         @if($post->comments->count() > 0)
                                             <div class="space-y-4">
                                                 @foreach($post->comments as $comment)
-                                                    <div class="flex space-x-3 group">
-                                                        <img src="{{ $comment->buyer->avatar_url }}" class="h-10 w-10 rounded-full flex-shrink-0" alt="Commenter Avatar">
-                                                        <div class="flex-1">
-                                                            <div class="bg-gray-100 rounded-2xl px-4 py-3 group-hover:bg-gray-150 transition-colors">
-                                                                <p class="font-semibold text-gray-900 text-sm mb-1">{{ $comment->buyer->username ?? 'Unknown Commenter' }}</p>
-                                                                <p class="text-gray-800 text-sm leading-relaxed">{{ $comment->comment }}</p>
-                                                            </div>
-                                                            <div class="flex items-center space-x-4 mt-2 ml-4">
-                                                                <span class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</span>
-                                                                <button class="text-xs text-gray-500 hover:text-blue-600 font-medium">Like</button>
-                                                                <button class="text-xs text-gray-500 hover:text-blue-600 font-medium">Reply</button>
+                                                    <div class="comment-thread">
+                                                        {{-- Parent Comment --}}
+                                                        <div class="flex space-x-3 group">
+                                                                @php
+                                                                    $isOwner = $comment->buyer->id === $post->buyer->id;
+                                                                    $isMyComment = $comment->buyer->id === auth()->id();
+                                                                @endphp
+
+                                                                <img
+                                                                    src="{{ $comment->buyer->avatar_url }}"
+                                                                    class="h-10 w-10 rounded-full flex-shrink-0
+                                                                        @if($isMyComment)
+                                                                            ring-2 ring-blue-500
+                                                                        @elseif($isOwner)
+                                                                            ring-2 ring-yellow-500
+                                                                        @else
+                                                                            ring-1 ring-gray-300
+                                                                        @endif
+                                                                    "
+                                                                    alt="Commenter Avatar">
+                                                            <div class="flex-1">
+                                                                <div class="bg-gray-100 rounded-2xl px-4 py-3 group-hover:bg-gray-150 transition-colors">
+                                                                    <p class="font-semibold text-gray-900 text-sm mb-1">{{ $comment->buyer->username ?? 'Unknown Commenter' }}</p>
+                                                                    <p class="text-gray-800 text-sm leading-relaxed">{{ $comment->comment }}</p>
+                                                                </div>
+                                                                <div class="flex items-center space-x-4 mt-2 ml-4">
+                                                                    <span class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</span>
+                                                                    <button class="text-xs text-gray-500 hover:text-blue-600 font-medium">Like</button>
+                                                                    <button onclick="toggleReplyForm({{ $comment->id }})" class="text-xs text-gray-500 hover:text-blue-600 font-medium">Reply</button>
+                                                                    @if($comment->user_id === session('user_id'))
+                                                                        <form action="{{ route('posts.comment.delete', $comment->id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus comment ini?')">
+                                                                            @csrf
+                                                                            @method('DELETE')
+                                                                            <button type="submit" class="text-xs text-red-500 hover:text-red-600 font-medium">Delete</button>
+                                                                        </form>
+                                                                    @endif
+                                                                </div>
+
+                                                                {{-- Reply Form (Hidden by default) --}}
+                                                                <div id="reply-form-{{ $comment->id }}" class="hidden mt-3 ml-4">
+                                                                    <form action="{{ route('posts.reply', $comment->id) }}" method="POST">
+                                                                        @csrf
+                                                                        <div class="flex space-x-2">
+                                                                            <img src="{{ session('buyer_avatar_url') }}" class="h-8 w-8 rounded-full flex-shrink-0" alt="Your Avatar">
+                                                                            <div class="flex-1 flex space-x-2">
+                                                                                <input type="text"
+                                                                                    name="comment"
+                                                                                    placeholder="Write a reply..."
+                                                                                    class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                                                                                    required>
+                                                                                <button type="submit"
+                                                                                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full font-medium transition-colors text-sm">
+                                                                                    Reply
+                                                                                </button>
+                                                                                <button type="button" onclick="toggleReplyForm({{ $comment->id }})"
+                                                                                        class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-full font-medium transition-colors text-sm">
+                                                                                    Cancel
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+
+                                                                {{-- Replies --}}
+                                                                @if($comment->replies->count() > 0)
+                                                                    <div class="mt-4 space-y-3">
+                                                                        @foreach($comment->replies as $reply)
+                                                                            <div class="flex space-x-3 ml-6 group">
+                                                                                <img src="{{ $reply->buyer->avatar_url }}" class="h-8 w-8 rounded-full flex-shrink-0" alt="Replier Avatar">
+                                                                                <div class="flex-1">
+                                                                                    <div class="bg-gray-50 rounded-2xl px-3 py-2 group-hover:bg-gray-100 transition-colors">
+                                                                                        <p class="font-semibold text-gray-900 text-xs mb-1">{{ $reply->buyer->username ?? 'Unknown User' }}</p>
+                                                                                        <p class="text-gray-700 text-xs leading-relaxed">{{ $reply->comment }}</p>
+                                                                                    </div>
+                                                                                    <div class="flex items-center space-x-3 mt-1 ml-3">
+                                                                                        <span class="text-xs text-gray-400">{{ $reply->created_at->diffForHumans() }}</span>
+                                                                                        <button class="text-xs text-gray-400 hover:text-blue-600 font-medium">Like</button>
+                                                                                        @if($reply->level < 2)
+                                                                                            <button onclick="toggleReplyForm({{ $reply->id }})" class="text-xs text-gray-400 hover:text-blue-600 font-medium">Reply</button>
+                                                                                        @endif
+                                                                                        @if($reply->user_id === session('user_id'))
+                                                                                            <form action="{{ route('posts.comment.delete', $reply->id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus reply ini?')">
+                                                                                                @csrf
+                                                                                                @method('DELETE')
+                                                                                                <button type="submit" class="text-xs text-red-400 hover:text-red-500 font-medium">Delete</button>
+                                                                                            </form>
+                                                                                        @endif
+                                                                                    </div>
+
+                                                                                    {{-- Reply to Reply Form --}}
+                                                                                    @if($reply->level < 2)
+                                                                                        <div id="reply-form-{{ $reply->id }}" class="hidden mt-2 ml-3">
+                                                                                            <form action="{{ route('posts.reply', $reply->id) }}" method="POST">
+                                                                                                @csrf
+                                                                                                <div class="flex space-x-2">
+                                                                                                    <img src="{{ session('buyer_avatar_url') }}" class="h-6 w-6 rounded-full flex-shrink-0" alt="Your Avatar">
+                                                                                                    <div class="flex-1 flex space-x-2">
+                                                                                                        <input type="text"
+                                                                                                            name="comment"
+                                                                                                            placeholder="Write a reply..."
+                                                                                                            class="flex-1 px-3 py-1 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-xs"
+                                                                                                            required>
+                                                                                                        <button type="submit"
+                                                                                                                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-full font-medium transition-colors text-xs">
+                                                                                                            Reply
+                                                                                                        </button>
+                                                                                                        <button type="button" onclick="toggleReplyForm({{ $reply->id }})"
+                                                                                                                class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-3 py-1 rounded-full font-medium transition-colors text-xs">
+                                                                                                            Cancel
+                                                                                                        </button>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </form>
+                                                                                        </div>
+                                                                                    @endif
+
+                                                                                    {{-- Nested Replies (Level 2) --}}
+                                                                                    @if($reply->replies->count() > 0)
+                                                                                        <div class="mt-3 space-y-2">
+                                                                                            @foreach($reply->replies as $nestedReply)
+                                                                                                <div class="flex space-x-2 ml-6 group">
+                                                                                                    <img src="{{ $nestedReply->buyer->avatar_url }}" class="h-6 w-6 rounded-full flex-shrink-0" alt="Nested Replier Avatar">
+                                                                                                    <div class="flex-1">
+                                                                                                        <div class="bg-gray-50 rounded-xl px-3 py-2 group-hover:bg-gray-100 transition-colors">
+                                                                                                            <p class="font-semibold text-gray-900 text-xs mb-1">{{ $nestedReply->buyer->username ?? 'Unknown User' }}</p>
+                                                                                                            <p class="text-gray-700 text-xs leading-relaxed">{{ $nestedReply->comment }}</p>
+                                                                                                        </div>
+                                                                                                        <div class="flex items-center space-x-3 mt-1 ml-3">
+                                                                                                            <span class="text-xs text-gray-400">{{ $nestedReply->created_at->diffForHumans() }}</span>
+                                                                                                            <button class="text-xs text-gray-400 hover:text-blue-600 font-medium">Like</button>
+                                                                                                            @if($nestedReply->user_id === session('user_id'))
+                                                                                                                <form action="{{ route('posts.comment.delete', $nestedReply->id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus reply ini?')">
+                                                                                                                    @csrf
+                                                                                                                    @method('DELETE')
+                                                                                                                    <button type="submit" class="text-xs text-red-400 hover:text-red-500 font-medium">Delete</button>
+                                                                                                                </form>
+                                                                                                            @endif
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            @endforeach
+                                                                                        </div>
+                                                                                    @endif
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                    </div>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </div>
@@ -575,46 +713,99 @@ document.getElementById('modal-create').addEventListener('click', function(e) {
 });
 </script>
 <script>
-// Function to open comment modal
-function openCommentModal(postId) {
-    const modal = document.getElementById(`comment-modal-${postId}`);
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
+        // Function to open comment modal
+        function openCommentModal(postId) {
+            const modal = document.getElementById(`comment-modal-${postId}`);
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
 
-    // Auto-focus comment input
-    setTimeout(() => {
-        const commentInput = modal.querySelector('input[name="comment"]');
-        if (commentInput) {
-            commentInput.focus();
+            // Auto-focus comment input
+            setTimeout(() => {
+                const commentInput = modal.querySelector('input[name="comment"]');
+                if (commentInput) {
+                    commentInput.focus();
+                }
+            }, 100);
         }
-    }, 100);
-}
 
-// Function to close comment modal
-function closeCommentModal(postId) {
-    const modal = document.getElementById(`comment-modal-${postId}`);
-    modal.classList.add('hidden');
-    document.body.style.overflow = 'auto';
-}
+        // Function to close comment modal
+        function closeCommentModal(postId) {
+            const modal = document.getElementById(`comment-modal-${postId}`);
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
 
-// Close modal when clicking outside
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('bg-black/60')) {
-        const postId = e.target.id.split('-')[2];
-        closeCommentModal(postId);
-    }
-});
+            // Close all open reply forms when closing modal
+            const replyForms = modal.querySelectorAll('[id^="reply-form-"]');
+            replyForms.forEach(form => {
+                form.classList.add('hidden');
+            });
+        }
 
-// Close modal with ESC key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const openModals = document.querySelectorAll('[id^="comment-modal-"]:not(.hidden)');
-        openModals.forEach(modal => {
-            const postId = modal.id.split('-')[2];
-            closeCommentModal(postId);
+        // Function to toggle reply form
+        function toggleReplyForm(commentId) {
+            const replyForm = document.getElementById(`reply-form-${commentId}`);
+            const isHidden = replyForm.classList.contains('hidden');
+
+            // Close all other reply forms first
+            const allReplyForms = document.querySelectorAll('[id^="reply-form-"]');
+            allReplyForms.forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            // Toggle current reply form
+            if (isHidden) {
+                replyForm.classList.remove('hidden');
+                // Focus on the reply input
+                setTimeout(() => {
+                    const replyInput = replyForm.querySelector('input[name="comment"]');
+                    if (replyInput) {
+                        replyInput.focus();
+                    }
+                }, 100);
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('bg-black/60')) {
+                const postId = e.target.id.split('-')[2];
+                closeCommentModal(postId);
+            }
         });
-    }
-});
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const openModals = document.querySelectorAll('[id^="comment-modal-"]:not(.hidden)');
+                openModals.forEach(modal => {
+                    const postId = modal.id.split('-')[2];
+                    closeCommentModal(postId);
+                });
+            }
+        });
+
+        // Handle form submissions with better UX
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle comment and reply form submissions
+            const commentForms = document.querySelectorAll('form[action*="/comment"], form[action*="/reply"]');
+
+            commentForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    const originalText = submitButton.textContent;
+
+                    // Disable button and show loading state
+                    submitButton.disabled = true;
+                    submitButton.textContent = 'Sending...';
+
+                    // Re-enable after a short delay (form will redirect anyway)
+                    setTimeout(() => {
+                        submitButton.disabled = false;
+                        submitButton.textContent = originalText;
+                    }, 3000);
+                });
+            });
+        });
 </script>
 
 {{-- Add this CSS for the modal --}}

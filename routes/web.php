@@ -166,8 +166,11 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
         Route::get('/', [PostController::class, 'index'])->name('posts.index');
         Route::post('/', [PostController::class, 'store'])->name('posts.store');
         Route::post('/{post}/like', [PostController::class, 'like'])->name('posts.like');
-        // Pastikan hanya ada satu route untuk comment
+
+        // Comment routes
         Route::post('/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
+        Route::post('/comment/{comment}/reply', [PostController::class, 'replyComment'])->name('posts.reply');
+        Route::delete('/comment/{comment}', [PostController::class, 'deleteComment'])->name('posts.comment.delete');
     });
     // web.php - Bagian Profile Routes (Cleaned)
 
