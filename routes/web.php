@@ -52,7 +52,6 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'submitReset'])
 Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/auth/register', [AuthController::class, 'register'])->name('auth.register');
 Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
-Route::get('/product/{product_id}', [ProductController::class, 'show'])->name('product.detail');
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +73,9 @@ Route::get('/product/{product_id}', [ProductController::class, 'show'])->name('p
 Route::get('/explore', [ProductController::class, 'explore'])->name('explore');
 Route::get('/products/filter', [ProductController::class, 'filter'])->name('products.filter');
 Route::get('/api/filter-options', [ProductController::class, 'getFilterOptions']);
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// Category results route
+Route::get('/category/{category}', [ProductController::class, 'categoryResults'])->name('category.results');
 
 // --- RUTE PROFIL PENGGUNA LAIN (PUBLIC) ---
 // Rute ini harus di luar middleware otentikasi agar bisa diakses oleh siapa saja
@@ -106,7 +108,6 @@ Route::prefix('order')->group(function () {
     });
 
 Route::middleware(['web', 'buyer.auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/history/{id?}', [OrderController::class, 'history'])->name('order.history');
     Route::get('/search', [SearchController::class, 'index'])->name('search');
     Route::get('/search/result', [SearchController::class, 'result'])->name('search.result');
