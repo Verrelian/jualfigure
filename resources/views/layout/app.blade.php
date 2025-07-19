@@ -122,7 +122,7 @@
                             fetch(`/mole/shipping/progress-data/${paymentId}`)
                                 .then(res => res.json())
                                 .then(progress => {
-                                    if (progress.diff >= 5) {
+                                    if (progress.diff >= 3) {
                                         fetch(`/mole/shipping/next-stage/${paymentId}`, {
                                             method: 'POST',
                                             headers: { 'X-CSRF-TOKEN': csrfToken }

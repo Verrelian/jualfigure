@@ -44,7 +44,7 @@
         <!-- Fields -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
             <input type="text" name="name" value="{{ $user->name }}" class="w-full border border-gray-300 rounded px-3 py-2 text-sm">
           </div>
           <div>
@@ -56,15 +56,15 @@
             <input type="email" name="email" value="{{ $user->email }}" class="w-full border border-gray-300 rounded px-3 py-2 text-sm">
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Birthdate</label>
             <input type="date" name="birthdate" value="{{ $user->birthdate }}" class="w-full border border-gray-300 rounded px-3 py-2 text-sm">
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">No. Telepon</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
             <input type="text" name="phone_number" value="{{ $user->phone_number }}" class="w-full border border-gray-300 rounded px-3 py-2 text-sm">
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
             <input type="text" name="address" value="{{ $user->address }}" class="w-full border border-gray-300 rounded px-3 py-2 text-sm">
           </div>
         </div>

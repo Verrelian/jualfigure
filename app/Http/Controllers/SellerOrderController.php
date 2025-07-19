@@ -31,52 +31,38 @@ class SellerOrderController extends Controller
     {
         $order = Payment::where('payment_id', $payment_id)->firstOrFail();
 
-        // Ambil semua record 1 transaksi berdasarkan order_id
+        // Ambil semua record 1 transaksi berdasarkan order_id (bisa cart, bisa 1 produk)
         $relatedOrders = Payment::where('order_id', $order->order_id)->get();
 
-        // Proses semua produk dalam order tsb (cart item)
+        // Cek apakah semua order ini statusnya masih "NOT YET PROCESSED"
+        $shouldProcess = $relatedOrders->every(function ($item) {
+            return $item->transaction_status === 'NOT YET PROCESSED';
+        });
+
+        if (!$shouldProcess) {
+            return response()->json(['error' => 'Beberapa item sudah diproses sebelumnya.'], 400);
+        }
+
+        // Proses setiap item dalam order ini
         foreach ($relatedOrders as $item) {
             $product = Produk::where('product_id', $item->product_id)->first();
             if (!$product) continue;
+
+            // Pastikan stok cukup
             if ($product->stock < $item->quantity) continue;
 
+            // Kurangi stok dan tambahkan ke sold
             $product->stock -= $item->quantity;
             $product->sold += $item->quantity;
             $product->save();
 
+            // Update status transaksi
             $item->transaction_status = 'PROCESSED';
             $item->shipping_ready_at = Carbon::now()->addSeconds(5);
             $item->save();
         }
 
-        if ($order->payment_status === 'PAID' && $order->transaction_status === 'NOT YET PROCESSED') {
-            // Ambil produk berdasarkan ID dari payment
-            $product = Produk::where('product_id', $order->product_id)->first();
-
-            if (!$product) {
-                return response()->json(['error' => 'Produk tidak ditemukan.'], 404);
-            }
-
-            // Validasi stok cukup
-            if ($product->stock < $order->quantity) {
-                return response()->json(['error' => 'Stok produk tidak mencukupi.'], 400);
-            }
-
-            // Kurangi stok
-            $product->stock -= $order->quantity;
-            // Tambahkan ke total penjualan
-            $product->sold += $order->quantity;
-            // Simpan perubahan produk
-            $product->save();
-            // Update status transaksi
-            $order->transaction_status = 'PROCESSED';
-            $order->shipping_ready_at = Carbon::now()->addSecond(5);
-            $order->save();
-
-            return response()->json(['success' => true]);
-        }
-
-        return response()->json(['error' => 'Pesanan tidak dapat diproses.'], 400);
+        return response()->json(['success' => true]);
     }
 
     public function cancel($payment_id)

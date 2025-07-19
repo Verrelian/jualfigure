@@ -377,6 +377,24 @@
             </div>
             <div class="order-details" aria-label="Order details">
                 <p class="title">Order Details</p>
+                @if ($isCart)
+                <div class="detail-row">
+                    <div class="detail-label">Products:</div>
+                    <div class="detail-value">
+                        @foreach ($payments as $p)
+                        {{ $p->product_name }} x{{ $p->quantity }}<br>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Subtotal:</div>
+                    <div class="detail-value">IDR {{ number_format($subtotal) }}</div>
+                </div>
+                <div class="detail-row total">
+                    <div class="detail-label"><strong>Total (Tax + Shipping):</strong></div>
+                    <div class="detail-value"><strong>IDR {{ number_format($cartTotal, 2, ',', '.') }}</strong></div>
+                </div>
+                @else
                 <div class="detail-row">
                     <div class="detail-label">Product:</div>
                     <div class="detail-value">{{ $payment->product_name }}</div>
@@ -393,6 +411,7 @@
                     <div class="detail-label"><strong>Total (Tax + Shipping):</strong></div>
                     <div class="detail-value"><strong>IDR {{ number_format($payment->price_total, 2, ',', '.') }}</strong></div>
                 </div>
+                @endif
             </div>
 
             <p class="footer-text" aria-label="Payment instructions and delivery estimate">
