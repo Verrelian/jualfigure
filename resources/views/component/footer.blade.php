@@ -9,7 +9,7 @@
                         <svg class="h-10 w-auto text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
-                        <span class="ml-3 text-xl font-bold">Brand Name</span>
+                        <span class="ml-3 text-xl font-bold">M.O.L.</span>
                     </a>
                 </div>
                 <p class="text-gray-400 text-sm leading-6">
@@ -35,33 +35,10 @@
             <!-- Footer Links -->
             <div class="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-3">
                 <div>
-                    <h3 class="text-sm font-semibold uppercase">Produk</h3>
-                    <ul class="mt-4 space-y-4">
-                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Produk Terbaru</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Produk Terlaris</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Katalog Produk</a></li>
-                    </ul>
-                </div>
-                <div>
                     <h3 class="text-sm font-semibold uppercase">Bantuan</h3>
                     <ul class="mt-4 space-y-4">
                         <li><a href="/mole/ambabot" class="text-gray-400 hover:text-blue-400">Pusat Bantuan</a></li>
                         <li><a href="/mole/contact-us" class="text-gray-400 hover:text-blue-400">Hubungi Kami</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-sm font-semibold uppercase">Perusahaan</h3>
-                    <ul class="mt-4 space-y-4">
-                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Tentang Kami</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Karir</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Blog</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-sm font-semibold uppercase">Legal</h3>
-                    <ul class="mt-4 space-y-4">
-                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Syarat & Ketentuan</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-blue-400">Privasi</a></li>
                     </ul>
                 </div>
             </div>
@@ -77,7 +54,7 @@
                 <a href="/mole/ambabot" class="text-sm text-gray-400 hover:text-blue-400">FAQ</a>
             </div>
             <p class="mt-4 md:mt-0 text-sm text-gray-400 md:order-1">
-                &copy; <span id="year"></span> Brand Name. All rights reserved.
+                &copy; <span id="year"></span> M.O.L.E. All rights reserved.
             </p>
         </div>
     </div>

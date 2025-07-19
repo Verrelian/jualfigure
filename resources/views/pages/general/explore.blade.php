@@ -12,31 +12,11 @@
                 <form action="{{ route('search') }}" method="GET" class="flex-1 max-w-md w-full">
                     <div class="relative">
                         <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" name="search_keyword" placeholder="Search figures, characters, series..."
+                        <input type="text" name="search_keyword" id="search-input" placeholder="Search figures, characters, series..."
                             class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
                             required />
                     </div>
                 </form>
-
-                {{-- ✅ Filter Section tetap sama --}}
-                <div class="flex gap-3">
-                    <select id="category-filter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="">All Categories</option>
-                        <option value="nendoroid" {{ $initialCategory == 'nendoroid' ? 'selected' : '' }}>Nendoroid</option>
-                        <option value="popup" {{ $initialCategory == 'popup' ? 'selected' : '' }}>Pop Up Parade</option>
-                        <option value="hottoys" {{ $initialCategory == 'hottoys' ? 'selected' : '' }}>Hot Toys</option>
-                    </select>
-                    <select id="price-filter" class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="">Price: All</option>
-                        <option value="0-30">Under $30</option>
-                        <option value="30-60">$30 - $60</option>
-                        <option value="60-999">$60+</option>
-                    </select>
-                    <button id="apply-filters" type="button"
-                        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-filter mr-2"></i>Filter
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -82,90 +62,67 @@
         </div>
     </div>
 
-    <!-- Category Cards -->
-    <div class="mb-12">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold">Browse by Category</h2>
-            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">View All Categories</a>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Nendoroid Category -->
-            <div class="category-card relative rounded-lg overflow-hidden shadow-lg bg-gray-800 group cursor-pointer transform hover:scale-105 transition-transform {{ $initialCategory == 'nendoroid' ? 'ring-4 ring-blue-500' : '' }}"
-                 data-category="nendoroid">
-                <div class="aspect-[4/3] w-full">
-                    <img src="{{ asset('images/p6.jpg') }}" alt="Nendoroid" class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300">
-                </div>
-                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/60 to-transparent text-white p-4">
-                    <h3 class="font-bold text-lg mb-1">Nendoroid</h3>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <span class="text-sm">Popular</span>
-                            <span class="ml-1 text-yellow-500">★★★★★</span>
-                        </div>
-                        <span class="text-sm bg-red-500 px-2 py-1 rounded-full">150+ items</span>
-                    </div>
-                    <p class="text-xs mt-2 opacity-80">Cute chibi-style collectibles</p>
-                </div>
+        <!-- Category Cards -->
+        <div class="mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Browse by Category</h2>
+                <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">View All Categories</a>
             </div>
-
-            <!-- Pop Up Parade Category -->
-            <div class="category-card relative rounded-lg overflow-hidden shadow-lg bg-gray-800 group cursor-pointer transform hover:scale-105 transition-transform {{ $initialCategory == 'popup' ? 'ring-4 ring-blue-500' : '' }}"
-                 data-category="popup">
-                <img src="{{ asset('images/p3.png') }}" alt="Pop Up Parade" class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300">
-                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/60 to-transparent text-white p-4">
-                    <h3 class="font-bold text-lg mb-1">Pop Up Parade</h3>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <span class="text-sm">Trending</span>
-                            <span class="ml-1 text-green-500">🔥</span>
-                        </div>
-                        <span class="text-sm bg-blue-500 px-2 py-1 rounded-full">80+ items</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Nendoroid Category -->
+                <a href="{{ route('category.results', 'nendoroid') }}"
+                class="category-card relative rounded-lg overflow-hidden shadow-lg bg-gray-800 group cursor-pointer transform hover:scale-105 transition-transform">
+                    <div class="aspect-[4/3] w-full">
+                        <img src="{{ asset('images/p6.jpg') }}" alt="Nendoroid" class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300">
                     </div>
-                    <p class="text-xs mt-2 opacity-80">Affordable premium figures</p>
-                </div>
-            </div>
-
-            <!-- Hot Toys Category -->
-            <div class="category-card relative rounded-lg overflow-hidden shadow-lg bg-gray-800 group cursor-pointer transform hover:scale-105 transition-transform {{ $initialCategory == 'hottoys' ? 'ring-4 ring-blue-500' : '' }}"
-                 data-category="hottoys">
-                <img src="{{ asset('images/figure4.jpg') }}" alt="Hot Toys" class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300">
-                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/60 to-transparent text-white p-4">
-                    <h3 class="font-bold text-lg mb-1">Hot Toys</h3>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <span class="text-sm">Premium</span>
-                            <span class="ml-1 text-yellow-500">👑</span>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/60 to-transparent text-white p-4">
+                        <h3 class="font-bold text-lg mb-1">Nendoroid</h3>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <span class="text-sm">Popular</span>
+                                <span class="ml-1 text-yellow-500">★★★★★</span>
+                            </div>
+                            <span class="text-sm bg-red-500 px-2 py-1 rounded-full">150+ items</span>
                         </div>
-                        <span class="text-sm bg-purple-500 px-2 py-1 rounded-full">45+ items</span>
+                        <p class="text-xs mt-2 opacity-80">Cute chibi-style collectibles</p>
                     </div>
-                    <p class="text-xs mt-2 opacity-80">Ultra-detailed collectibles</p>
-                </div>
+                </a>
+
+                <!-- Pop Up Parade Category -->
+                <a href="{{ route('category.results', 'popup') }}"
+                class="category-card relative rounded-lg overflow-hidden shadow-lg bg-gray-800 group cursor-pointer transform hover:scale-105 transition-transform">
+                    <img src="{{ asset('images/p3.png') }}" alt="Pop Up Parade" class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/60 to-transparent text-white p-4">
+                        <h3 class="font-bold text-lg mb-1">Pop Up Parade</h3>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <span class="text-sm">Trending</span>
+                                <span class="ml-1 text-green-500">🔥</span>
+                            </div>
+                            <span class="text-sm bg-blue-500 px-2 py-1 rounded-full">80+ items</span>
+                        </div>
+                        <p class="text-xs mt-2 opacity-80">Affordable premium figures</p>
+                    </div>
+                </a>
+
+                <!-- Hot Toys Category -->
+                <a href="{{ route('category.results', 'hottoys') }}"
+                class="category-card relative rounded-lg overflow-hidden shadow-lg bg-gray-800 group cursor-pointer transform hover:scale-105 transition-transform">
+                    <img src="{{ asset('images/figure4.jpg') }}" alt="Hot Toys" class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/60 to-transparent text-white p-4">
+                        <h3 class="font-bold text-lg mb-1">Hot Toys</h3>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <span class="text-sm">Premium</span>
+                                <span class="ml-1 text-yellow-500">👑</span>
+                            </div>
+                            <span class="text-sm bg-purple-500 px-2 py-1 rounded-full">45+ items</span>
+                        </div>
+                        <p class="text-xs mt-2 opacity-80">Ultra-detailed collectibles</p>
+                    </div>
+                </a>
             </div>
         </div>
-    </div>
-        <!-- Loading Indicator -->
-    <div id="loading-indicator" class="hidden text-center py-8">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-        <p class="mt-2 text-gray-600">Loading products...</p>
-    </div>
-
-    <!-- Products Section -->
-    <div class="bg-gray-200 p-4 rounded-md mb-7">
-        <h2 class="text-lg font-bold mb-3" id="products-title">
-            {{ $categories[$initialCategory] ?? 'All Products' }}
-        </h2>
-        <div id="products-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            @foreach($products as $product)
-                @include('component.product-card', [
-                    'product_id' => $product->product_id,
-                    'image' => $product->gambar_url,
-                    'type' => $product->type,
-                    'title' => $product->nama,
-                    'price' => $product->formatted_harga ?? '$' . number_format($product->harga, 2)
-                ])
-            @endforeach
-        </div>
-
         <!-- No Products Message -->
         <div id="no-products" class="hidden text-center py-8">
             <p class="text-gray-600">No products found matching your criteria.</p>
@@ -255,37 +212,36 @@
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
         </div>
     </div>
+@endsection
 
-    <!-- Quick Links -->
-    <div class="bg-gray-50 p-6 rounded-lg mb-10">
-        <h3 class="text-lg font-bold mb-4 text-center">Quick Navigation</h3>
-        <div class="grid grid-cols-2 md:grid-cols-6 gap-3">
-            <a href="#" class="text-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors">
-                <i class="fas fa-fire text-red-500 mb-2"></i>
-                <p class="text-sm font-medium">Hot Deals</p>
-            </a>
-            <a href="#" class="text-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors">
-                <i class="fas fa-clock text-blue-500 mb-2"></i>
-                <p class="text-sm font-medium">Pre-Orders</p>
-            </a>
-            <a href="#" class="text-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors">
-                <i class="fas fa-star text-yellow-500 mb-2"></i>
-                <p class="text-sm font-medium">Top Rated</p>
-            </a>
-            <a href="#" class="text-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors">
-                <i class="fas fa-percentage text-green-500 mb-2"></i>
-                <p class="text-sm font-medium">On Sale</p>
-            </a>
-            <a href="#" class="text-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors">
-                <i class="fas fa-gift text-purple-500 mb-2"></i>
-                <p class="text-sm font-medium">Gift Cards</p>
-            </a>
-            <a href="#" class="text-center p-3 bg-white rounded-lg hover:bg-blue-50 transition-colors">
-                <i class="fas fa-headset text-indigo-500 mb-2"></i>
-                <p class="text-sm font-medium">Support</p>
-            </a>
-        </div>
-    </div>
-<script src="{{ asset('js/explore.js') }}"></script>
+{{-- BUAT SECTION SCRIPTS TERPISAH --}}
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryCards = document.querySelectorAll('.category-card');
 
+        categoryCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+
+                // Update visual state
+                categoryCards.forEach(c => c.classList.remove('ring-4', 'ring-blue-500'));
+                this.classList.add('ring-4', 'ring-blue-500');
+
+                // Redirect ke route explore dengan parameter category
+                window.location.href = `{{ route('explore') }}?category=${category}`;
+            });
+        });
+
+        // Price range buttons (yang sudah ada tetap sama)
+        const priceButtons = document.querySelectorAll('.price-range-btn');
+        priceButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const range = this.getAttribute('data-range');
+                const currentCategory = new URLSearchParams(window.location.search).get('category') || 'nendoroid';
+                window.location.href = `{{ route('explore') }}?category=${currentCategory}&price_range=${range}`;
+            });
+        });
+    });
+</script>
 @endsection
