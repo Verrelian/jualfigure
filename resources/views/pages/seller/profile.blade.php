@@ -3,71 +3,115 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Seller Profile</title>
+    <title>{{ $user->name }} - Seller Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #475569;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
-<body class="bg-gray-100 text-gray-800 font-sans">
+<body class="bg-gray-50 min-h-screen text-gray-800 font-sans text-[18px]">
 
-    <!-- Top Bar -->
-    <div class="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
-        <h1 class="text-xl font-bold">MOLE</h1>
-        <div class="flex items-center gap-4">
-            <span class="text-sm text-gray-600">Profil Seller</span>
-            <button onclick="window.location.href='{{ route('seller.dashboard') }}'" class="text-sm bg-gray-200 px-4 py-1 rounded">Back</button>
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <span class="text-white font-bold text-lg">M</span>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900">MOLE</h1>
+            </div>
+            <button onclick="window.location.href='{{ route('seller.dashboard') }}'" class="btn-secondary">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back to Dashboard
+            </button>
         </div>
-    </div>
+    </header>
 
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto mt-6 px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Sidebar -->
-        <div class="md:col-span-1">
-            <div class="bg-white rounded-lg p-6 shadow-sm flex flex-col items-center">
-                {{ $user->name }}
-                <div class="w-40 h-40 rounded-full overflow-hidden mb-4 border-4 border-gray-200">
-                    <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('images/muka.jpg') }}" alt="Profile" class="w-full h-full object-cover rounded-full">
-                </div>
-                <h2 class="text-lg font-bold">{{ $user->name }}</h2>
-                <p class="text-gray-600 text-sm mb-4">{{ '@' . $user->username }}</p>
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <div class="flex justify-center">
+            <!-- Sidebar Info -->
+            <div class="w-full md:w-3/4 lg:w-2/3 xl:w-1/2">
+                <div class="card rounded-2xl p-8 animate-fade-in text-center shadow-xl">
+                    <div class="relative inline-block mb-6">
+                        <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('images/muka.jpg') }}"
+                             alt="{{ $user->username ?? 'Profile' }}"
+                             class="w-40 h-40 rounded-full object-cover mx-auto shadow-lg border-4 border-blue-500">
+                    </div>
+                    <h2 class="text-3xl font-bold mb-1">{{ $user->name }}</h2>
+                    <p class="text-blue-600 text-lg font-medium mb-6">{{ '@' . $user->username }}</p>
 
-                <div class="w-full text-sm text-gray-600 space-y-1 text-left mt-2">
-                    <p><strong>Tanggal Lahir:</strong> {{ $user->birthdate ?? '-' }}</p>
-                    <p><strong>Telepon:</strong> {{ $user->phone_number }}</p>
-                    <p><strong>Email:</strong> {{ $user->email }}</p>
-                    <p><strong>Alamat:</strong> {{ $user->address ?? '-' }}</p>
-                </div>
+                    <div class="text-left mt-4 text-[17px] space-y-4 text-gray-700 leading-relaxed">
+                        <p><strong>Email:</strong> {{ $user->email }}</p>
+                        <p><strong>Phone:</strong> {{ $user->phone_number }}</p>
+                        <p><strong>Address:</strong> {{ $user->address ?? '-' }}</p>
+                        <p><strong>Birthdate:</strong> {{ $user->birthdate ?? '-' }}</p>
+                    </div>
 
-                <button onclick="window.location.href='{{ route('seller.edit_profile') }}'" class="bg-black text-white mt-4 w-full py-2 text-sm rounded-md">Edit Profile</button>
-            </div>
-        </div>
-
-        <!-- Main Section -->
-        <div class="md:col-span-2 space-y-6">
-            <div class="bg-white rounded-lg shadow-sm p-6">
-                <h3 class="text-xl font-semibold mb-4">Toys Collection</h3>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                    @foreach ([
-                        'Golden Toy' => 'bg-yellow-500',
-                        'Emerald' => 'bg-green-500',
-                        'Wizard' => 'bg-purple-500',
-                        'Princess' => 'bg-pink-500',
-                        'Ninja' => 'bg-teal-500'
-                    ] as $name => $color)
-                        <div class="flex flex-col items-center">
-                            <div class="rounded-md p-3 w-full flex justify-center mb-1 bg-opacity-20 {{ $color }}">
-                                <div class="w-10 h-12 rounded {{ $color }}"></div>
-                            </div>
-                            <span class="text-xs text-gray-600">{{ $name }}</span>
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="mt-6 flex gap-3">
-                    <button onclick="window.location.href='{{ route('seller.posts') }}'" class="bg-black text-white rounded-full px-6 py-2 text-sm font-medium">View Post</button>
-                    <button onclick="window.location.href='{{ route('seller.toys') }}'" class="bg-gray-200 text-black rounded-full px-6 py-2 text-sm font-medium">View Toys</button>
+                    <button onclick="window.location.href='{{ route('seller.edit_profile') }}'" class="btn-primary w-full mt-8">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        Edit Profile
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-
 </body>
 </html>
