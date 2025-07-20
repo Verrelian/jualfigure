@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Produk;
+use App\Models\Seller;
 use App\Models\Specification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -59,12 +60,21 @@ class ListProdukController extends Controller
             return redirect()->route('login')->with('error', 'Silakan login sebagai seller.');
         }
 
+        $seller = Seller::find($sellerId);
+
+        $isProfileComplete =
+            $seller &&
+            $seller->name &&
+            $seller->phone_number &&
+            $seller->address &&
+            $seller->bio;
+
         $produk = Produk::with('specification')
-                        ->where('seller_id', $sellerId)
+            ->where('seller_id', $sellerId)
                         ->orderBy('price', 'desc')
                         ->get();
 
-        return view('pages.seller.crud', compact('produk'));
+        return view('pages.seller.crud', compact('produk', 'isProfileComplete'));
     }
 
     public function getSpecification($product_id)

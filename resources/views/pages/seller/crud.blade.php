@@ -322,6 +322,10 @@
   <span id="toastMessage">Berhasil!</span>
 </div>
 
+<script>
+  window.isProfileComplete = @json($isProfileComplete);
+  console.log("isProfileComplete (from blade):")
+</script>
 <!-- Load External JavaScript -->
 <script src="{{ asset('js/crud.js') }}"></script>
 

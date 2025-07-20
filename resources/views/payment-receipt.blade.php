@@ -338,6 +338,23 @@
     </script>
     @endif
 
+    @if ($payment->payment_status === 'PAID' && $payment->transaction_status === 'CANCELED')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'info',
+                title: 'Order Cancelled',
+                html: 'Seller has canceled your order due to technical issues. Your money will be refunded within 2x24 hours.<br><br><strong>Contact : {{ $payment->seller->phone_number ?? 'Tidak tersedia' }}</strong> <br>for more info',
+                confirmButtonText: 'Oke',
+                customClass: {
+                    confirmButton: 'bg-blue-600 text-white px-4 py-2 rounded'
+                }
+            });
+        });
+    </script>
+    @endif
+
 </body>
 <div id="toast" class="fixed left-1/2 bottom-52 transform -translate-x-1/2 bg-none text-black text-sm px-4 py-2 rounded opacity-0 transition-opacity duration-300 z-50">
     Copied !

@@ -48,7 +48,7 @@ class CheckoutController extends Controller
         // Kode shared untuk semua payment
         $orderId = '#' . str_pad(random_int(0, 9999999), 7, '0', STR_PAD_LEFT);
         $paymentCode = str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT);
-        $expiredAt = now()->addMinutes(60);
+        $expiredAt = now()->addSeconds(30);
 
         // Tentukan biaya bank
         $bankCharge = match ($request->payment_method) {

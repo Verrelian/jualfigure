@@ -90,7 +90,7 @@ class ShippingProgressController extends Controller
         $last = Carbon::parse($shipping->last_updated_at);
         $diff = $last->floatDiffInSeconds(now());
 
-        if ($shipping->stage_index < 4 && $diff >= 5) {
+        if ($shipping->stage_index < 4 && $diff >= 3) {
             $shipping->stage_index += 1;
             $shipping->last_updated_at = now();
             $shipping->save();
@@ -143,7 +143,7 @@ class ShippingProgressController extends Controller
             ]);
         }
 
-        if ($shipping->stage_index === 4 && $diff >= 5) {
+        if ($shipping->stage_index === 4 && $diff >= 3) {
             $payment = Payment::where('payment_id', $payment_id)->first();
             if ($payment) {
                 $payment->transaction_status = 'DELIVERED';

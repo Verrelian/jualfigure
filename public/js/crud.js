@@ -58,7 +58,7 @@ function openEditModal(product) {
   isEditMode = true;
   currentEditId = product.product_id;
 
-  document.getElementById('modalTitle').textContent = 'Edit Produk';
+  document.getElementById('modalTitle').textContent = 'Tambah Produk Baru';
   document.getElementById('saveButtonText').textContent = 'Update';
   document.getElementById('productId').value = product.product_id;
   document.getElementById('productName').value = product.product_name;
@@ -279,9 +279,27 @@ function showToast(message, type = 'success') {
 }
 
 // Event listeners
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Add product button
-  document.getElementById('btnAddProduct').addEventListener('click', openAddModal);
+  const btn = document.getElementById('btnAddProduct');
+
+  btn.addEventListener('click', function () {
+    console.log("Status profil lengkap:", window.isProfileComplete);
+
+if (!window.isProfileComplete) {
+  Swal.fire({
+    icon: 'warning',
+    title: 'Profil Belum Lengkap',
+    text: 'Silakan lengkapi profil anda terlebih dahulu sebelum menambahkan produk.',
+    confirmButtonText: 'Oke',
+    customClass: {
+      confirmButton: 'bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded'
+    }
+  });
+  return;
+    }
+    openAddModal();
+  });
 
   // Modal cancel buttons
   document.getElementById('btnCancelModal').addEventListener('click', closeProductModal);

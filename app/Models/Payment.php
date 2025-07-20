@@ -48,4 +48,9 @@ class Payment extends Model
     {
         return $this->belongsTo(Produk::class, 'product_id');
     }
+
+    public function seller()
+    {
+        return $this->belongsTo(Seller::class, 'seller_id');
+    }
 }

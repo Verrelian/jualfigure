@@ -52,7 +52,7 @@
                         </div>
                         <div class="p-4">
                             <span class="product-type inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-semibold mb-2">
-                                {{ $wishlist->product->category ?? 'Figure' }}
+                                {{ $wishlist->product->type ?? 'Figure' }}
                             </span>
                             <h3 class="product-title font-semibold text-sm mb-1 text-gray-800 line-clamp-2" title="{{ $wishlist->product->name }}">
                                 {{ $wishlist->product->name }}
