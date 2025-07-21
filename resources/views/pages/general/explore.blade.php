@@ -3,23 +3,7 @@
 @section('type', 'Explore - Figure Collection Store')
 
 @section('content')
-    <!-- Search & Filter Bar -->
-    <div id="explore-root" data-fetch-url="{{ route('products.by-category') }}">
-        <div class="bg-white p-6 rounded-lg shadow-md mb-8 mt-6">
-            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
 
-                {{-- ✅ Search Form dengan fungsi working --}}
-                <form action="{{ route('search') }}" method="GET" class="flex-1 max-w-md w-full">
-                    <div class="relative">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" name="search_keyword" id="search-input" placeholder="Search figures, characters, series..."
-                            class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
-                            required />
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
     <!-- Breadcrumb -->
     <nav class="flex mb-6" aria-label="Breadcrumb">
@@ -48,19 +32,35 @@
         </div>
     </div>
 
-    <!-- Featured Banner -->
-    <div class="bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg p-8 mb-10 text-white">
-        <div class="flex flex-col md:flex-row items-center justify-between">
-            <div>
-                <h2 class="text-2xl font-bold mb-2">🎉 Limited Edition Drop!</h2>
-                <p class="text-lg opacity-90">Exclusive figures available now</p>
-                <p class="text-sm opacity-75">Only 48 hours left!</p>
-            </div>
-            <button class="mt-4 md:mt-0 bg-white text-purple-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors">
-                Shop Limited Edition
-            </button>
+        <!-- Search Banner -->
+            <div class="bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg p-8 mb-10 text-white">
+                <form action="{{ route('search') }}" method="GET">
+                <input type="hidden" name="source" value="dashboard"> {{-- Tambahkan ini --}}
+                <h2 class="text-2xl font-bold mb-4">Cari Produk Favoritmu</h2>
+
+                <div class="flex flex-col md:flex-row items-center gap-4">
+                    {{-- Input --}}
+                    <div class="relative w-full md:flex-1">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                            </svg>
+                        </div>
+                        <input type="search" name="search_keyword" required
+                            class="w-full py-3 pl-10 pr-4 rounded-lg text-gray-900 focus:outline-none"
+                            placeholder="Cari produk, pelanggan, pesanan..." />
+                    </div>
+
+                    {{-- Tombol --}}
+                    <button type="submit"
+                        class="bg-white text-purple-600 font-bold px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors">
+                        Cari
+                    </button>
+                </div>
+            </form>
         </div>
-    </div>
+
 
         <!-- Category Cards -->
         <div class="mb-12">

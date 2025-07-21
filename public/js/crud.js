@@ -454,8 +454,6 @@ document.addEventListener('keydown', function(e) {
       closeSpecModal();
     }
   }
-  // Tambahkan ini di dalam document.addEventListener('DOMContentLoaded', function () { ... });
-
   // Aktifkan event klik untuk toggle deskripsi
   document.querySelectorAll('.truncate-description').forEach(el => {
     el.addEventListener('click', function () {
