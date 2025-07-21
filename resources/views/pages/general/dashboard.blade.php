@@ -37,7 +37,8 @@
     </div>
     <!-- Search Banner -->
     <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-8 mb-12 text-white">
-        <form action="{{ route('search') }}" method="GET">
+            <form action="{{ route('search') }}" method="GET">
+            <input type="hidden" name="source" value="dashboard"> {{-- Tambahkan ini --}}
             <h2 class="text-2xl font-bold mb-4">Cari Produk Favoritmu</h2>
 
             <div class="flex flex-col md:flex-row items-center gap-4">
@@ -67,7 +68,6 @@
     <div class="bg-white p-6 md:p-8 rounded-lg mb-12 shadow-lg">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl md:text-2xl font-bold text-gray-800">🔥 Trending Now</h2>
-            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">View All</a>
         </div>
         <div class="flex space-x-4 md:space-x-6 overflow-x-auto scrollbar-hide pb-2">
             @foreach($trendingProducts as $product)
@@ -89,7 +89,6 @@
     <div class="bg-white p-6 md:p-8 rounded-lg mb-12 shadow-lg">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl md:text-2xl font-bold text-gray-800">✨ New Arrivals</h2>
-            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">View All</a>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             @foreach($newProducts as $product)
@@ -110,7 +109,6 @@
     <div class="bg-white p-6 md:p-8 rounded-lg mb-12 shadow-lg">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl md:text-2xl font-bold text-gray-800">🌟 Featured Collection</h2>
-            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">Browse All</a>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @foreach($regularProducts as $product)
@@ -153,9 +151,12 @@
             <p class="mb-6 opacity-90">Get the latest news about new arrivals and exclusive deals</p>
             <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                 <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-3 rounded-lg text-gray-800">
-                <button class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors">
+                <button
+                    onclick="alert('Terima kasih! Email kamu sudah tercatat untuk newsletter.')"
+                    class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors">
                     Subscribe
                 </button>
+
             </div>
         </div>
     </div>

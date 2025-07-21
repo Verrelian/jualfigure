@@ -58,6 +58,8 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 | PUBLIC ROUTES
 |--------------------------------------------------------------------------
 */
+Route::get('/explore/manufacture/{manufacture}', [ProductController::class, 'manufactureResults'])->name('explore.manufacture');
+Route::view('/privacy-policy', 'pages.privacy-policy')->name('privacy');
 Route::get('/', [WebController::class, 'index'])->name('home');
 Route::view('/filter', 'filter')->name('filter');
 Route::view('/webs', 'welcome')->name('webs');

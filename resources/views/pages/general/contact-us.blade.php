@@ -96,7 +96,7 @@
                 </div>
                 <div class="ml-3 text-sm">
                     <label for="terms" class="text-gray-600">
-                        Saya menyetujui <a href="#" class="text-blue-600 hover:underline">kebijakan privasi</a> dan izin untuk menyimpan data kontak saya
+                        Saya menyetujui <a href="{{ url('/privacy-policy') }}" class="text-blue-600 hover:underline">kebijakan privasi</a> dan izin untuk menyimpan data kontak saya
                     </label>
                 </div>
             </div>
@@ -133,7 +133,7 @@
                 </svg>
             </div>
             <h3 class="text-lg font-medium text-gray-900 mb-1">Email</h3>
-            <p class="text-gray-600">cs@namawebsiteanda.com</p>
+            <p class="text-gray-600">cs@Mole.com</p>
             <p class="text-gray-600">Respon dalam 24 jam</p>
         </div>
 
@@ -145,8 +145,8 @@
                 </svg>
             </div>
             <h3 class="text-lg font-medium text-gray-900 mb-1">Alamat</h3>
-            <p class="text-gray-600">Jl. Contoh No. 123</p>
-            <p class="text-gray-600">Jakarta Selatan, 12345</p>
+            <p class="text-gray-600">Jl. Ahmad Yani</p>
+            <p class="text-gray-600">Batam Center</p>
         </div>
     </div>
 </div>
@@ -168,5 +168,20 @@
             }
         });
     });
+</script>
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    @if(session('success'))
+        Swal.fire({
+            title: 'Sukses!',
+            text: '{{ session('success') }}',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            timer: 4000,
+            timerProgressBar: true
+        });
+    @endif
 </script>
 @endsection

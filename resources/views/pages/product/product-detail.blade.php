@@ -6,7 +6,7 @@
 <div class="container mx-auto p-4">
     {{-- Breadcrumb --}}
     <nav class="flex items-center space-x-2 text-sm text-gray-500 mb-8">
-        <a href="{{ route('home') }}" class="hover:text-gray-900 transition-colors">Home</a>
+        <a href="{{ route('dashboard') }}" class="hover:text-gray-900 transition-colors">Home</a>
         <span>/</span>
         <a href="{{ route('explore') }}" class="hover:text-gray-900 transition-colors">Products</a>
         <span>/</span>

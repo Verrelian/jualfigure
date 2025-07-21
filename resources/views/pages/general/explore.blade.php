@@ -25,7 +25,7 @@
     <nav class="flex mb-6" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-3">
             <li class="inline-flex items-center">
-                <a href="{{ route('home') }}" class="text-gray-700 hover:text-blue-600">Home</a>
+                <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-blue-600">Home</a>
             </li>
             <li>
                 <div class="flex items-center">
@@ -66,7 +66,6 @@
         <div class="mb-12">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold">Browse by Category</h2>
-                <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">View All Categories</a>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Nendoroid Category -->
@@ -82,7 +81,8 @@
                                 <span class="text-sm">Popular</span>
                                 <span class="ml-1 text-yellow-500">★★★★★</span>
                             </div>
-                            <span class="text-sm bg-red-500 px-2 py-1 rounded-full">150+ items</span>
+                            {{-- UBAH BAGIAN INI --}}
+                            <span class="text-sm bg-red-500 px-2 py-1 rounded-full">{{ $categoryCounts['nendoroid'] ?? 0 }}+ items</span>
                         </div>
                         <p class="text-xs mt-2 opacity-80">Cute chibi-style collectibles</p>
                     </div>
@@ -99,7 +99,8 @@
                                 <span class="text-sm">Trending</span>
                                 <span class="ml-1 text-green-500">🔥</span>
                             </div>
-                            <span class="text-sm bg-blue-500 px-2 py-1 rounded-full">80+ items</span>
+                            {{-- UBAH BAGIAN INI --}}
+                            <span class="text-sm bg-blue-500 px-2 py-1 rounded-full">{{ $categoryCounts['popup'] ?? 0 }}+ items</span>
                         </div>
                         <p class="text-xs mt-2 opacity-80">Affordable premium figures</p>
                     </div>
@@ -116,7 +117,8 @@
                                 <span class="text-sm">Premium</span>
                                 <span class="ml-1 text-yellow-500">👑</span>
                             </div>
-                            <span class="text-sm bg-purple-500 px-2 py-1 rounded-full">45+ items</span>
+                            {{-- UBAH BAGIAN INI --}}
+                            <span class="text-sm bg-purple-500 px-2 py-1 rounded-full">{{ $categoryCounts['hottoys'] ?? 0 }}+ items</span>
                         </div>
                         <p class="text-xs mt-2 opacity-80">Ultra-detailed collectibles</p>
                     </div>
@@ -130,7 +132,74 @@
                 Clear Filters
             </button>
         </div>
-    </div>
+
+                {{-- PERUBAHAN 2: Update Browse by Manufacture dengan count dinamis --}}
+                @php
+                $brands = [
+                    [
+                        'name' => 'Bandai',
+                        'image' => 'images/brands/bandai.jpg',
+                        'tag' => 'Popular',
+                        'color' => 'red'
+                    ],
+                    [
+                        'name' => 'Banpresto',
+                        'image' => 'images/brands/banpresto.jpg',
+                        'tag' => 'Trending',
+                        'color' => 'blue'
+                    ],
+                    [
+                        'name' => 'Good Smile Company',
+                        'image' => 'images/brands/goodsmile.png',
+                        'tag' => 'Premium',
+                        'color' => 'purple'
+                    ],
+                    [
+                        'name' => 'Kotobukiya',
+                        'image' => 'images/brands/kotobukiya.png',
+                        'tag' => 'Limited',
+                        'color' => 'green'
+                    ],
+                    [
+                        'name' => 'Max Factory',
+                        'image' => 'images/brands/max-factory.png',
+                        'tag' => 'Classic',
+                        'color' => 'yellow'
+                    ],
+                    [
+                        'name' => 'Funko',
+                        'image' => 'images/brands/funko.jpg',
+                        'tag' => 'Cute',
+                        'color' => 'pink'
+                    ]
+                ];
+                @endphp
+
+                <h3 class="text-xl font-semibold mt-10 mb-4">Browse by Manufacture</h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach ($brands as $brand)
+                        <a href="{{ route('explore.manufacture', ['manufacture' => urlencode($brand['name'])]) }}"
+                        class="relative rounded-xl overflow-hidden shadow group transition hover:shadow-lg bg-white">
+
+                            <!-- Gambar -->
+                            <img src="{{ asset($brand['image']) }}"
+                                alt="{{ $brand['name'] }}"
+                                class="w-full h-52 object-cover object-center group-hover:scale-105 transition duration-300">
+
+                            <!-- Overlay -->
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                                <h4 class="text-white text-lg font-bold">{{ $brand['name'] }}</h4>
+                                <p class="text-sm text-white/90">{{ $brand['tag'] }}</p>
+                                {{-- UBAH BAGIAN INI --}}
+                                <span class="inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full bg-{{ $brand['color'] }}-600 text-white">
+                                    {{ $manufactureCounts[$brand['name']] ?? 0 }}+ items
+                                </span>
+                            </div>
+                        </a>
+                    @endforeach
+            </div>
+
 
     <!-- Trending This Week -->
     <div class="bg-white p-6 rounded-lg shadow-md mb-10">
@@ -139,7 +208,6 @@
                 <h2 class="text-xl font-bold">📈 Trending This Week</h2>
                 <p class="text-gray-600 text-sm">Most viewed and purchased figures</p>
             </div>
-            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">View All Trending</a>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
             @for($i = 1; $i <= 5; $i++)
@@ -159,7 +227,6 @@
                 <h2 class="text-xl font-bold">🌟 Popular Collections</h2>
                 <p class="text-gray-600 text-sm">Shop by your favorite anime & game series</p>
             </div>
-            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">Browse All Series</a>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
         </div>

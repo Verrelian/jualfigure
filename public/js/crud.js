@@ -290,7 +290,7 @@ if (!window.isProfileComplete) {
   Swal.fire({
     icon: 'warning',
     title: 'Profil Belum Lengkap',
-    text: 'Silakan lengkapi profil anda terlebih dahulu sebelum menambahkan produk.',
+    text: 'Silakan lengkapi profil anda terlebih dahulu(Nama, Alamat dan No Handphone) sebelum menambahkan produk.',
     confirmButtonText: 'Oke',
     customClass: {
       confirmButton: 'bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded'

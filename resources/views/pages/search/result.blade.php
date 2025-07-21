@@ -8,7 +8,7 @@
     <!-- Search Box -->
     <div class="bg-white p-6 rounded-xl shadow mb-8">
         <form action="{{ route('search') }}" method="GET" class="flex gap-2">
-            <input type="text" name="keyword" value="{{ request('keyword') }}"
+            <input type="text" name="search_keyword" value="{{ request('search_keyword') }}"
                    placeholder="Cari produk, pelanggan, pesanan..."
                    class="flex-1 border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
             <button type="submit"
@@ -45,8 +45,9 @@
     @else
         <div class="text-center text-gray-500 py-20">
             <p class="text-lg">Tidak ada produk yang ditemukan untuk <strong>"{{ $keyword }}"</strong>.</p>
-            <a href="{{ route('products') }}" class="inline-block mt-6 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow">
-                Kembali ke produk
+            <a href="{{ $source === 'explore' ? route('explore') : route('dashboard') }}"
+            class="inline-block mt-6 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow">
+            Kembali ke Produk
             </a>
         </div>
     @endif

@@ -66,8 +66,7 @@ class ListProdukController extends Controller
             $seller &&
             $seller->name &&
             $seller->phone_number &&
-            $seller->address &&
-            $seller->bio;
+            $seller->address;
 
         $produk = Produk::with('specification')
             ->where('seller_id', $sellerId)

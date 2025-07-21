@@ -372,7 +372,6 @@
                             </div>
 
                             {{-- Comment Modal Popup --}}
-                            {{-- Comment Modal Popup --}}
                             <div id="comment-modal-{{ $post->id }}" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                                 <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl h-[600px] flex flex-col">
                                     {{-- Modal Header --}}
