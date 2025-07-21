@@ -90,15 +90,15 @@
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl md:text-2xl font-bold text-gray-800">✨ New Arrivals</h2>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="flex space-x-4 md:space-x-6 overflow-x-auto scrollbar-hide pb-2">
             @foreach($newProducts as $product)
-                <div class="bg-gray-50 rounded-lg p-4">
+                <div class="flex-shrink-0 w-36 md:w-44 lg:w-52">
                     @include('component.product-card', [
                         'product_id' => $product->product_id,
                         'image' => $product->image,
                         'type' => $product->type,
                         'title' => $product->nama,
-                        'price' => $product->formatted_harga
+                        'price' => $product->formatted_harga,
                     ])
                 </div>
             @endforeach
@@ -110,15 +110,15 @@
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl md:text-2xl font-bold text-gray-800">🌟 Featured Collection</h2>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="flex space-x-4 md:space-x-6 overflow-x-auto scrollbar-hide pb-2">
             @foreach($regularProducts as $product)
-                <div>
+                <div class="flex-shrink-0 w-36 md:w-44 lg:w-52">
                     @include('component.product-card', [
                         'product_id' => $product->product_id,
                         'image' => $product->image,
                         'type' => $product->type,
                         'title' => $product->nama,
-                        'price' => $product->formatted_harga
+                        'price' => $product->formatted_harga,
                     ])
                 </div>
             @endforeach

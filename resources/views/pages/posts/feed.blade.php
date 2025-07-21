@@ -7,9 +7,6 @@
         <div class="container mx-auto max-w-4xl px-4 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                        <span class="text-white font-bold text-lg">R</span>
-                    </div>
                     <div>
                         <h1 class="text-xl font-bold text-gray-900">MoFeed</h1>
                         <p class="text-sm text-gray-500">Discover amazing content</p>
@@ -231,12 +228,34 @@
                                     </p>
                                 </div>
                                 </a>
-                                <div class="flex items-center space-x-2">
-                                    <button class="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                <div class="relative">
+                                    <button onclick="toggleDropdown(this)" class="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                        <!-- Icon 3 titik -->
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 12h.01M12 12h.01M19 12h.01" />
                                         </svg>
                                     </button>
+
+                                    <!-- Dropdown Menu -->
+                                    <div class="dropdown-menu absolute right-0 mt-2 w-36 bg-white border border-gray-200 rounded-md shadow-lg hidden z-10">
+                                        {{-- Tombol share --}}
+                                        <button class="share-btn w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                data-url="{{ url('/feed/' . $post->id) }}">
+                                            🔗 Salin Tautan
+                                        </button>
+
+                                        @if (session('user_id') == $post->user_id)
+                                        <form action="{{ route('posts.destroy', $post->id) }}" method="POST"
+                                            onsubmit="return confirm('Yakin ingin menghapus postingan ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100">
+                                                🗑️ Hapus Postingan
+                                            </button>
+                                        </form>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
 
@@ -251,7 +270,7 @@
                                 @if($post->images->count() == 1)
                                     {{-- Single Image: Full Width --}}
                                     <div class="rounded-2xl overflow-hidden bg-gray-100 max-w-2xl mx-auto">
-                                        <img src="{{ asset('storage/' . $post->images->first()->image) }}"
+                                        <img src="{{ asset($post->images->first()->image) }}"
                                             class="w-full h-auto object-contain max-h-[600px]"
                                             alt="Post Image">
                                     </div>
@@ -260,7 +279,8 @@
                                     <div class="grid grid-cols-2 gap-2 max-w-3xl mx-auto">
                                         @foreach($post->images as $img)
                                             <div class="rounded-xl overflow-hidden bg-gray-100 aspect-[4/3]">
-                                                <img src="{{ asset('storage/' . $img->image) }}"
+                                                <img src="{{ asset($post->images->first()->image) }}"
+
                                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
                                                     alt="Post Image"
                                                     onclick="openImageModal('{{ asset('storage/' . $img->image) }}')">
@@ -279,7 +299,8 @@
                                         <div class="grid grid-rows-2 gap-2">
                                             @foreach($post->images->skip(1) as $img)
                                                 <div class="rounded-xl overflow-hidden bg-gray-100 aspect-[4/3]">
-                                                    <img src="{{ asset('storage/' . $img->image) }}"
+                                                    <img src="{{ asset($post->images->first()->image) }}"
+
                                                         class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
                                                         alt="Post Image"
                                                         onclick="openImageModal('{{ asset('storage/' . $img->image) }}')">
@@ -292,7 +313,8 @@
                                     <div class="grid grid-cols-2 gap-2 max-w-2xl mx-auto">
                                         @foreach($post->images as $img)
                                             <div class="rounded-xl overflow-hidden bg-gray-100 aspect-square">
-                                                <img src="{{ asset('storage/' . $img->image) }}"
+                                                <img src="{{ asset($post->images->first()->image) }}"
+
                                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
                                                     alt="Post Image"
                                                     onclick="openImageModal('{{ asset('storage/' . $img->image) }}')">
@@ -305,7 +327,8 @@
                                         {{-- First two images full height --}}
                                         @foreach($post->images->take(2) as $img)
                                             <div class="rounded-xl overflow-hidden bg-gray-100 aspect-[4/3]">
-                                                <img src="{{ asset('storage/' . $img->image) }}"
+                                                <img src="{{ asset($post->images->first()->image) }}"
+
                                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
                                                     alt="Post Image"
                                                     onclick="openImageModal('{{ asset('storage/' . $img->image) }}')">
@@ -317,7 +340,8 @@
                                             <div class="col-span-2 grid grid-cols-3 gap-2 mt-2">
                                                 @foreach($post->images->skip(2)->take(3) as $index => $img)
                                                     <div class="rounded-xl overflow-hidden bg-gray-100 aspect-square relative">
-                                                        <img src="{{ asset('storage/' . $img->image) }}"
+                                                        <img src="{{ asset($post->images->first()->image) }}"
+
                                                             class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
                                                             alt="Post Image"
                                                             onclick="openImageModal('{{ asset('storage/' . $img->image) }}')">
@@ -364,11 +388,15 @@
                                     </button>
                                 </div>
 
-                                <button class="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                                <button class="share-btn text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors"
+                                        data-url="{{ url('/feed/' . $post->id) }}"
+                                        title="Salin tautan">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                                     </svg>
                                 </button>
+
                             </div>
 
                             {{-- Comment Modal Popup --}}
@@ -806,6 +834,32 @@ document.getElementById('modal-create').addEventListener('click', function(e) {
             });
         });
 </script>
+<script>
+    function toggleDropdown(button) {
+        const dropdown = button.parentElement.querySelector('.dropdown-menu');
+        dropdown.classList.toggle('hidden');
+    }
+
+    // Tombol share
+    document.querySelectorAll('.share-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const url = this.getAttribute('data-url');
+            navigator.clipboard.writeText(url)
+                .then(() => alert('Tautan berhasil disalin!'))
+                .catch(() => alert('Gagal menyalin tautan.'));
+        });
+    });
+
+    // Klik di luar dropdown → tutup
+    document.addEventListener('click', function (e) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (!menu.parentElement.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+    });
+</script>
+
 
 {{-- Add this CSS for the modal --}}
 <style>

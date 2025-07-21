@@ -94,12 +94,12 @@
     <!-- Header -->
     <header class="bg-white shadow-sm border-b">
         <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <span class="text-white font-bold text-sm">M</span>
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12">
+                        <img src="{{ asset('images/logo.jpeg') }}" alt="MOLE Logo" class="w-full h-full object-contain">
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-900">MOLE</h1>
                 </div>
-                <h1 class="text-xl font-bold text-gray-900">MOLE</h1>
-            </div>
             <button id="back-btn" class="btn-secondary">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>

@@ -168,6 +168,8 @@ Route::middleware(['web', 'buyer.auth'])->group(function () {
     Route::prefix('feed')->group(function () {
         Route::get('/', [PostController::class, 'index'])->name('posts.index');
         Route::post('/', [PostController::class, 'store'])->name('posts.store');
+        Route::delete('/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+
         Route::post('/{post}/like', [PostController::class, 'like'])->name('posts.like');
 
         // Comment routes

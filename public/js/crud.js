@@ -144,19 +144,20 @@ function showSpecModal(productId) {
 }
 
 function toggleDescription(el) {
+  const shortText = el.querySelector('.short-text');
   const fullText = el.querySelector('.full-text');
-  const isExpanded = !fullText.classList.contains('hidden');
+  const toggleBtn = el.querySelector('.toggle-btn');
 
-  if (isExpanded) {
-    // Collapse ke ringkasan
-    fullText.classList.add('hidden');
-    el.childNodes[0].textContent = fullText.textContent.substring(0, 100);
-    el.querySelector('span.text-blue-500').textContent = ' Show more';
-  } else {
-    // Expand full
+  if (fullText.classList.contains('hidden')) {
+    // Show full
+    shortText.classList.add('hidden');
     fullText.classList.remove('hidden');
-    el.childNodes[0].textContent = '';
-    el.querySelector('span.text-blue-500').textContent = ' Show less';
+    toggleBtn.textContent = ' less';
+  } else {
+    // Show short
+    shortText.classList.remove('hidden');
+    fullText.classList.add('hidden');
+    toggleBtn.textContent = '...more';
   }
 }
 
@@ -453,4 +454,12 @@ document.addEventListener('keydown', function(e) {
       closeSpecModal();
     }
   }
+  // Tambahkan ini di dalam document.addEventListener('DOMContentLoaded', function () { ... });
+
+  // Aktifkan event klik untuk toggle deskripsi
+  document.querySelectorAll('.truncate-description').forEach(el => {
+    el.addEventListener('click', function () {
+      toggleDescription(this);
+    });
+  });
 });

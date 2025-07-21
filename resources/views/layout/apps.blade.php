@@ -29,7 +29,7 @@
     </main>
 
     {{-- Footer (jika ada) --}}
-    @include('component.footer')
+    @include('component.seller.footer')
 
     {{-- Script Section --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>

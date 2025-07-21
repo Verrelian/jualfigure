@@ -50,7 +50,7 @@
               </td>
 
               <!-- Product Name with Tooltip -->
-              <td class="px-4 py-3">
+              <td class="px-4 py-3 w-40 whitespace-normal break-words">
                 <div class="text-sm font-medium text-gray-900 cursor-help relative group">
                   <span class="truncate block max-w-48">{{ $item->product_name }}</span>
                   <!-- Tooltip -->
@@ -60,15 +60,17 @@
                 </div>
               </td>
 
-              <!-- Description with Tooltip -->
+              <!-- GANTI bagian ini aja di HTML table -->
               <td class="px-6 py-4 text-gray-700">
-                <div class="truncate-description" onclick="toggleDescription(this)">
-                  {{ Str::limit($item->description, 100) }}
-                  @if(strlen($item->description) > 100)
-                    <span class="text-blue-500 cursor-pointer"> Show more</span>
-                  @endif
-                  <span class="full-text hidden">{{ $item->description }}</span>
-                </div>
+                @if(strlen($item->description) > 50)
+                  <div class="truncate-description cursor-pointer" onclick="toggleDescription(this)">
+                    <span class="short-text">{{ Str::limit($item->description, 100, '') }}</span>
+                    <span class="full-text hidden">{{ $item->description }}</span>
+                    <span class="toggle-btn text-blue-500 hover:text-blue-600 ml-1">...more</span>
+                  </div>
+                @else
+                  {{ $item->description }}
+                @endif
               </td>
 
               <!-- Type Badge -->
@@ -240,19 +242,8 @@
                 </div>
                 <div>
                   <label for="manufacture" class="block text-sm font-medium text-gray-700 mb-1">Manufaktur</label>
-                  <select id="manufacture" name="specification[manufacture]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                      <option value="">-- Pilih Manufaktur --</option>
-                      <option value="Bandai">Bandai</option>
-                      <option value="Banpresto">Banpresto</option>
-                      <option value="Good Smile Company">Good Smile Company</option>
-                      <option value="Kotobukiya">Kotobukiya</option>
-                      <option value="Max Factory">Max Factory</option>
-                      <option value="Funko">Funko</option>
-                      <option value="Hasbro">Hasbro</option>
-                      <option value="Lainnya">Lainnya</option>
-                  </select>
+                  <input type="text" id="manufacture" name="specification[manufacture]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Good Smile Company">
                 </div>
-
                 <div>
                   <label for="release_date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Rilis</label>
                   <input type="date" id="release_date" name="specification[release_date]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">

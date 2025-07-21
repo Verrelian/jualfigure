@@ -66,12 +66,12 @@
     <!-- Header -->
     <header class="bg-white shadow-sm border-b">
         <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <span class="text-white font-bold text-lg">M</span>
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12">
+                        <img src="{{ asset('images/logo.jpeg') }}" alt="MOLE Logo" class="w-full h-full object-contain">
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-900">MOLE</h1>
                 </div>
-                <h1 class="text-2xl font-bold text-gray-900">MOLE</h1>
-            </div>
             <button onclick="window.location.href='{{ route('seller.dashboard') }}'" class="btn-secondary">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -100,6 +100,7 @@
                         <p><strong>Phone:</strong> {{ $user->phone_number }}</p>
                         <p><strong>Address:</strong> {{ $user->address ?? '-' }}</p>
                         <p><strong>Birthdate:</strong> {{ $user->birthdate ?? '-' }}</p>
+                        <p><strong>Bio:</strong> {{ $user->bio ?? '-' }}</p>
                     </div>
 
                     <button onclick="window.location.href='{{ route('seller.edit_profile') }}'" class="btn-primary w-full mt-8">

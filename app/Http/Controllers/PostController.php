@@ -63,8 +63,9 @@ class PostController extends Controller
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $imageFile) {
-                $path = $imageFile->store('post_images', 'public');
-                $post->images()->create(['image' => $path]);
+            $filename = time() . '_' . $imageFile->getClientOriginalName();
+            $path = $imageFile->move(public_path('images/post'), $filename);
+            $post->images()->create(['image' => 'images/post/' . $filename]);
             }
         }
 
@@ -173,4 +174,27 @@ class PostController extends Controller
 
         return back()->with('success', 'Comment berhasil dihapus!');
     }
+    public function destroy(Post $post)
+    {
+        if (session('user_id') !== $post->user_id) {
+            return back()->with('error', 'Kamu tidak bisa menghapus postingan orang lain.');
+        }
+
+        // Hapus file gambar di public
+        foreach ($post->images as $image) {
+            $imagePath = public_path($image->image);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
+        // Hapus data relasi
+        $post->images()->delete();
+        $post->likes()->delete();
+        $post->comments()->delete();
+        $post->delete();
+
+        return redirect()->route('posts.index')->with('success', 'Postingan berhasil dihapus.');
+    }
+
 }
