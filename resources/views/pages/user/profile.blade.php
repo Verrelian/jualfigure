@@ -266,43 +266,6 @@
                         </div>
                     @endif
                 </div>
-
-                <!-- Toys Collection -->
-                <div class="card rounded-xl p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Toys Collection</h3>
-                    <div class="grid grid-cols-5 gap-3">
-                        @foreach ([
-                            'Golden Toy' => ['bg-yellow-500', '🏆'],
-                            'Emerald' => ['bg-green-500', '💎'],
-                            'Wizard' => ['bg-purple-500', '🧙'],
-                            'Princess' => ['bg-pink-500', '👸'],
-                            'Ninja' => ['bg-gray-700', '🥷']
-                        ] as $name => $data)
-                        <div class="toy-item text-center">
-                            <div class="w-12 h-12 rounded-lg {{ $data[0] }} flex items-center justify-center mx-auto mb-2">
-                                <span class="text-lg">{{ $data[1] }}</span>
-                            </div>
-                            <span class="text-xs text-gray-600">{{ $name }}</span>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex gap-4">
-                    <a href="{{ route('posts.profile', $user->buyer_id) }}" class="btn-primary flex-1 justify-center">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                        </svg>
-                        View All Posts
-                    </a>
-                    <button class="btn-secondary flex-1 justify-center" onclick="showComingSoon()">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                        </svg>
-                        View Collection
-                    </button>
-                </div>
             </div>
         </div>
     </div>
