@@ -22,7 +22,9 @@ class SellerOrderController extends Controller
             ->groupBy('order_id')
             ->pluck('payment_id');
 
-        $orders = Payment::whereIn('payment_id', $grouped)->get();
+        $orders = Payment::whereIn('payment_id', $grouped)
+        ->orderBy('payment_date', 'desc')
+        ->get();
 
         return view('pages.seller.order', compact('orders'));
     }
